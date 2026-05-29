@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Light Theme Workspace Wrapper Layout Box Container -->
+<div class="page-container wide" style="padding: 32px; font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
+    
+    <!-- Dashboard Top Header Layout -->
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
+        <div>
+            <h1 style="font-size: 32px; font-weight: 700; color: #1e40af; margin: 0 0 6px 0; letter-spacing: -0.02em;">Task List</h1>
+            <p style="color: #64748b; font-size: 14px; margin: 0; font-weight: 500;">Manage and track all tasks</p>
+        </div>
+        <!-- Handles redirect mapping base routing placeholder -->
+        {% if request.user.role == 'hr'  or request.user.role == 'admin' %}
+        <a href="{% url 'add_task_form' %}" class="btn btn-primary" style="padding: 10px 18px; font-weight: 600; background: #2563eb; color: white; border: none; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);">
+            <i class="fa-solid fa-plus"></i> Add Task
+        </a>
+        {% endif %}
+
+    </div>
+
+    <!-- Reconstructed React Status Action Filter Tab row items -->
+    <div style="display: flex; gap: 10px; margin-bottom: 2rem; flex-wrap: wrap;">
+        <a href="?filter=All" style="padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.15s; {% if current_filter == 'All' %} background: #2563eb; color: #ffffff; {% else %} background: #ffffff; color: #475569; border: 1px solid #d0d5dd; {% endif %}">All</a>
+        <a href="?filter=Pending" style="padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.15s; {% if current_filter == 'Pending' %} background: #2563eb; color: #ffffff; {% else %} background: #ffffff; color: #475569; border: 1px solid #d0d5dd; {% endif %}">Pending</a>
+        <a href="?filter=In Progress" style="padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.15s; {% if current_filter == 'In Progress' %} background: #2563eb; color: #ffffff; {% else %} background: #ffffff; color: #475569; border: 1px solid #d0d5dd; {% endif %}">In Progress</a>
+        <a href="?filter=Completed" style="padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.15s; {% if current_filter == 'Completed' %} background: #2563eb; color: #ffffff; {% else %} background: #ffffff; color: #475569; border: 1px solid #d0d5dd; {% endif %}">Completed</a>
+    </div>
+
+    <!-- Main Solid White Presentation Table Grid Box Card -->
+    <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div class="table-container" style="overflow-x: auto;">
+            <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #f1f5f9; background: #f8fafc; color: #475569;">
+                        <th style="padding: 14px 16px; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; width: 20%;">Title</th>
+                        <th style="padding: 14px 16px; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; width: 25%;">Description</th>
+                        <th style="padding: 14px 16px; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; width: 25%;">Assigned To</th>
+                        <th style="padding: 14px 16px; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; width: 15%;">Due Date</th>
+                        <th style="padding: 14px 16px; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; width: 15%;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in tasks %}
+                    <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.15s ease;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
+                        
+                        <!-- Title Cell with custom OVERDUE condition indicator -->
+                        <td style="padding: 16px; font-weight: 600; color: #0f172a;">
+                            {{ t.data.title }}
+                            {% if t.is_overdue %}
+                                <span style="margin-left: 8px; font-size: 11px; color: #dc2626; font-weight: 800; letter-spacing: 0.02em;">OVERDUE</span>
+                            {% endif %}
+                        </td>
+                        
+                        <!-- Description Cell handling text truncation ellipsis wrapper limits -->
+                        <td style="padding: 16px; color: #475569; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            {{ t.data.description|default:"—" }}
+                        </td>
+                        
+                        <!-- Worker Allocation Status Cell -->
+                        <td style="padding: 16px;">
+                            {% if t.data.assigned_to %}
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <!-- Dynamic Initials Avatar Circle -->
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; border: 1px solid #e0e7ff;">
+                                        {{ t.initial }}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; color: #2563eb;">
+                                            {{ t.data.assigned_to.first_name }} {{ t.data.assigned_to.last_name|default:'' }}
+                                        </div>
+                                        <div style="font-size: 11px; color: #64748b; margin-top: 1px;">
+                                            {{ t.data.assigned_to.email }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <!-- Replicated React fallback badge wrapper for unallocated tasks -->
+                                <span class="status-badge" style="background: #fef2f2; color: #991b1b; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #fee2e2;">
+                                    <i class="fa-solid fa-user-slash"></i> Awaiting Assignment
+                                </span>
+                            {% endif %}
+                        </td>
+                        
+                        <!-- Due Date Row picker -->
+                        <td style="padding: 16px; color: #334155;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                                <i class="fa-regular fa-calendar" style="color: #94a3b8; font-size: 14px;"></i>
+                                {{ t.data.due_date|date:"m/d/Y" }}
+                            </div>
+                        </td>
+                        
+                        <!-- Status Badge Cell matching status classes -->
+                                               <!-- 📊 STATUS CELL WITH INTERACTIVE CLICK TOGGLE ACCELERATOR -->
+                                             <!-- 📊 DYNAMIC STATUS CELL WITH MULTI-STATE TRANSACTION CLICK ACCELERATORS -->
+                        <td style="padding: 16px;">
+                            <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+                                <!-- Status Badge Display Indicator -->
+                                <span class="status-badge" style="padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; display: inline-block;
+                                    {% if t.data.status == 'Completed' %} background-color: #dcfce7; color: #166534;
+                                    {% elif t.data.status == 'In Progress' %} background-color: #fffbeb; color: #d97706;
+                                    {% else %} background-color: #f1f5f9; color: #475569; {% endif %}">
+                                    {{ t.data.status|default:"Pending" }}
+                                </span>
+
+                                <!-- Quick Trigger Action Button Container Matrix -->
+                                {% if t.data.status != 'Completed' %}
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                    
+                                    <!-- 🟡 STEP A TIER: Only show 'Start Work' button if the task is completely new/Pending -->
+                                    {% if t.data.status != 'In Progress' %}
+                                    <form method="POST" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="update_task_status_id" value="{{ t.data.id }}">
+                                        <input type="hidden" name="target_status_value" value="In Progress">
+                                        <button type="submit" style="padding: 4px 10px; font-size: 11px; font-weight: 700; color: white; background-color: #d97706; border: none; border-radius: 4px; cursor: pointer; transition: background 0.15s; display: inline-flex; align-items: center; gap: 4px;" onmouseover="this.style.backgroundColor='#b45309'" onmouseout="this.style.backgroundColor='#d97706'">
+                                            <i class="fa-solid fa-play"></i> Start Work
+                                        </button>
+                                    </form>
+                                    {% endif %}
+
+                                    <!-- 🟢 STEP B TIER: Always available until task reaches final absolute verification state -->
+                                    <form method="POST" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="update_task_status_id" value="{{ t.data.id }}">
+                                        <input type="hidden" name="target_status_value" value="Completed">
+                                        <button type="submit" style="padding: 4px 10px; font-size: 11px; font-weight: 700; color: white; background-color: #166534; border: none; border-radius: 4px; cursor: pointer; transition: background 0.15s; display: inline-flex; align-items: center; gap: 4px;" onmouseover="this.style.backgroundColor='#14532d'" onmouseout="this.style.backgroundColor='#166534'">
+                                            <i class="fa-solid fa-check-double"></i> Mark Completed
+                                        </button>
+                                    </form>
+
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 40px; color: #64748b; font-size: 14px; font-weight: 500;">
+                            No tasks found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

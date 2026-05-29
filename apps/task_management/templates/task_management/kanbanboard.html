@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Light Theme Workspace Wrapper Layout Box Container -->
+<div class="page-container wide" style="padding: 32px; font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
+    
+    <!-- Dashboard Top Header Layout Frame -->
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
+        <div>
+            <h1 style="font-size: 32px; font-weight: 700; color: #1e40af; margin: 0 0 6px 0; letter-spacing: -0.02em;">Task Kanban Board</h1>
+            <p style="color: #64748b; font-size: 14px; margin: 0; font-weight: 500;">Monitor project progress and employee assignments</p>
+        </div>
+        <a href="{% url 'add_task_form' %}" class="btn btn-primary" style="padding: 10px 18px; font-weight: 600; background: #2563eb; color: white; border: none; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);">
+            <i class="fa-solid fa-plus"></i> Add Task
+        </a>
+    </div>
+
+    <!-- Overview Statistics Grid Row Matrix -->
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px;">
+        <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            <div style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fa-solid fa-list-check"></i></div>
+            <div><h3 style="margin: 0; font-size: 20px; font-weight: 700;">{{ total_count|default:"0" }}</h3><p style="margin: 0; color: #64748b; font-size: 12px; font-weight: 500;">Total Tasks</p></div>
+        </div>
+        <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            <div class="stat-icon" style="background: rgba(234, 179, 8, 0.1); color: #eab308; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fa-solid fa-clock"></i></div>
+            <div><h3 style="margin: 0; font-size: 20px; font-weight: 700;">{{ pending_count|default:"0" }}</h3><p style="margin: 0; color: #64748b; font-size: 12px; font-weight: 500;">Pending</p></div>
+        </div>
+        <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fa-solid fa-spinner"></i></div>
+            <div><h3 style="margin: 0; font-size: 20px; font-weight: 700;">{{ progress_count|default:"0" }}</h3><p style="margin: 0; color: #64748b; font-size: 12px; font-weight: 500;">In Progress</p></div>
+        </div>
+        <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;"><i class="fa-solid fa-check-circle"></i></div>
+            <div><h3 style="margin: 0; font-size: 20px; font-weight: 700;">{{ completed_count|default:"0" }}</h3><p style="margin: 0; color: #64748b; font-size: 12px; font-weight: 500;">Completed</p></div>
+        </div>
+    </div>
+
+    <!-- 3-Column Kanban Board Container -->
+    <div style="display: flex; gap: 2rem; overflow-x: auto; padding-bottom: 1rem; align-items: flex-start;">
+        
+        <!-- ==================== COLUMN 1: PENDING ==================== -->
+        <div class="kanban-column" style="flex: 1; min-width: 300px; background: #f1f5f9; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0;">
+            <div class="card-header" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">
+                <i class="fa-solid fa-clock" style="color: #eab308; font-size: 1.1rem;"></i>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Pending</h3>
+            </div>
+            <div class="tasks-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                {% for t in pending_tasks %}
+                    <div class="card" style="padding: 1.5rem; border-radius: 12px; background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 10px; {% if t.is_overdue %} border-left: 4px solid #dc2626; {% else %} border-left: 4px solid #2563eb; {% endif %}">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #0f172a; line-height: 1.3;">{{ t.data.title }}</h4>
+                            {% if t.is_overdue %}
+                                <span style="font-size: 10px; font-weight: 800; color: #dc2626; letter-spacing: 0.05em; background: #fee2e2; padding: 2px 6px; border-radius: 4px;">OVERDUE</span>
+                            {% endif %}
+                        </div>
+                        <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.4;">{{ t.data.description|default:"No description Summary" }}</p>
+                        
+                        {% if t.data.assigned_to %}
+                        <div style="display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #f1f5f9; width: max-content;">
+                            <i class="fa-solid fa-user" style="font-size: 10px; color: #4f46e5;"></i>
+                            <div style="font-size: 11px; font-weight: 600; color: #334155;">{{ t.data.assigned_to.full_name|default:t.data.assigned_to.username }}</div>
+                        </div>
+                        {% endif %}
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 4px;">
+                            <span style="font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 4px;"><i class="fa-regular fa-calendar"></i> {{ t.data.due_date|date:"m/d/Y" }}</span>
+                            <!-- REMOVED SELECT DROPDOWN FOR STATIC TEXT BADGE -->
+                            <span style="padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #fff7ed; color: #9a3412;">Pending</span>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div style="padding: 1.5rem; text-align: center; color: #64748b; border: 1px dashed #cbd5e1; border-radius: 12px; background: white;">No pending tasks</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ==================== COLUMN 2: IN PROGRESS ==================== -->
+        <div class="kanban-column" style="flex: 1; min-width: 300px; background: #f1f5f9; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0;">
+            <div class="card-header" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">
+                <i class="fa-solid fa-spinner" style="color: #3b82f6; font-size: 1.1rem;"></i>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700;">In Progress</h3>
+            </div>
+            <div class="tasks-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                {% for t in progress_tasks %}
+                    <div class="card" style="padding: 1.5rem; border-radius: 12px; background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 10px; {% if t.is_overdue %} border-left: 4px solid #dc2626; {% else %} border-left: 4px solid #3b82f6; {% endif %}">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #0f172a; line-height: 1.3;">{{ t.data.title }}</h4>
+                            {% if t.is_overdue %}
+                                <span style="font-size: 10px; font-weight: 800; color: #dc2626; letter-spacing: 0.05em; background: #fee2e2; padding: 2px 6px; border-radius: 4px;">OVERDUE</span>
+                            {% endif %}
+                        </div>
+                        <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.4;">{{ t.data.description|default:"No description Summary" }}</p>
+                        
+                        {% if t.data.assigned_to %}
+                        <div style="display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #f1f5f9; width: max-content;">
+                            <i class="fa-solid fa-user" style="font-size: 10px; color: #4f46e5;"></i>
+                            <div style="font-size: 11px; font-weight: 600; color: #334155;">{{ t.data.assigned_to.full_name|default:t.data.assigned_to.username }}</div>
+                        </div>
+                        {% endif %}
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 4px;">
+                            <span style="font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 4px;"><i class="fa-regular fa-calendar"></i> {{ t.data.due_date|date:"m/d/Y" }}</span>
+                            <!-- REMOVED SELECT DROPDOWN FOR STATIC TEXT BADGE -->
+                            <span style="padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #eff6ff; color: #1e40af;">In Progress</span>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div style="padding: 1.5rem; text-align: center; color: #64748b; border: 1px dashed #cbd5e1; border-radius: 12px; background: #ffffff;">No tasks</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ==================== COLUMN 3: COMPLETED ==================== -->
+        <div class="kanban-column" style="flex: 1; min-width: 300px; background: #f1f5f9; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0;">
+            <div class="card-header" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">
+                <i class="fa-solid fa-check-circle" style="color: #10b981; font-size: 1.1rem;"></i>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Completed</h3>
+            </div>
+            <div class="tasks-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                {% for t in completed_tasks %}
+                    <div class="card" style="padding: 1.5rem; border-radius: 12px; background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 10px; border-left: 4px solid #10b981;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #0f172a; line-height: 1.3;">{{ t.data.title }}</h4>
+                        </div>
+                        <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.4;">{{ t.data.description|default:"No description Summary" }}</p>
+                        
+                        {% if t.data.assigned_to %}
+                        <div style="display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #f1f5f9; width: max-content;">
+                            <i class="fa-solid fa-user" style="font-size: 10px; color: #4f46e5;"></i>
+                            <div style="font-size: 11px; font-weight: 600; color: #334155;">{{ t.data.assigned_to.full_name|default:t.data.assigned_to.username }}</div>
+                        </div>
+                        {% endif %}
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 4px;">
+                            <span style="font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 4px;"><i class="fa-regular fa-calendar"></i> {{ t.data.due_date|date:"m/d/Y" }}</span>
+                            <!-- REMOVED SELECT DROPDOWN FOR STATIC TEXT BADGE -->
+                            <span style="padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #dcfce7; color: #166534;">Completed</span>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div style="padding: 1.5rem; text-align: center; color: #64748b; border: 1px dashed #cbd5e1; border-radius: 12px; background: #ffffff;">No tasks</div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

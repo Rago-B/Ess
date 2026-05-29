@@ -1,0 +1,733 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="premium-profile-workspace">
+
+    <!-- Profile Hero Banner -->
+    <div class="profile-hero">
+        <div class="hero-cover">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <div class="avatar-container">
+                {% if employee.profile_photo %}
+                <img src="{{ employee.profile_photo.url }}" alt="Headshot" class="avatar-img">
+                {% else %}
+                <div class="avatar-fallback"><i class="fa-solid fa-user"></i></div>
+                {% endif %}
+                <div class="status-indicator" title="Active"></div>
+            </div>
+
+            <div class="hero-details">
+                <div class="hero-title-row">
+                    <h1>{{ employee.personal_details.identity_demographics.form_of_address }} {{ employee.personal_details.identity_demographics.first_name }} {{ employee.personal_details.identity_demographics.last_name }}</h1>
+                    <span class="role-badge">{{ employee.role|upper }}</span>
+                </div>
+                <p class="hero-subtitle">Employee Directory Profile &bull; Voxlom Corporate Systems</p>
+
+                <div class="hero-quick-stats">
+                    <div class="stat-pill"><i class="fa-solid fa-droplet" style="color: #ef4444;"></i> Blood: {{ employee.personal_details.identity_demographics.blood_group|default:"O+" }}</div>
+                    <div class="stat-pill"><i class="fa-solid fa-venus-mars" style="color: #3b82f6;"></i> Gender: {{ employee.personal_details.identity_demographics.gender|default:"-" }}</div>
+                    <div class="stat-pill"><i class="fa-solid fa-cake-candles" style="color: #f59e0b;"></i> DOB: {{ employee.personal_details.identity_demographics.dob|default:"-" }}</div>
+                </div>
+            </div>
+
+            <div class="hero-actions">
+                <button class="btn-premium"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="premium-tabs-container">
+        <div class="premium-tabs">
+            <a href="#" class="tab active"><i class="fa-solid fa-user-circle"></i> Personal Info</a>
+            <a href="#" class="tab"><i class="fa-solid fa-briefcase"></i> Employment</a>
+            <a href="#" class="tab"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+        </div>
+    </div>
+
+    <!-- Details Grid Layout -->
+    <div class="details-grid">
+
+        <!-- Left Column: Primary Details -->
+        <div class="primary-column">
+
+            <!-- Basic Info Card -->
+            <div class="premium-card hover-lift">
+                <div class="card-header">
+                    <h3>
+                        <div class="icon-box-sm"><i class="fa-solid fa-id-card-clip"></i></div> Basic Information
+                    </h3>
+                </div>
+                <div class="card-body data-grid-3">
+                    <div class="data-group">
+                        <label>Full Name</label>
+                        <p>{{ employee.personal_details.identity_demographics.form_of_address }} {{ employee.personal_details.identity_demographics.first_name }} {{ employee.personal_details.identity_demographics.last_name }}</p>
+                    </div>
+                    <div class="data-group">
+                        <label>Certificate Name</label>
+                        <p>{{ employee.personal_details.identity_demographics.certificate_name|default:"-" }}</p>
+                    </div>
+                    <div class="data-group">
+                        <label>Marital Status</label>
+                        <p>{{ employee.personal_details.identity_demographics.marital_status|default:"—" }}</p>
+                    </div>
+                    <div class="data-group">
+                        <label>Dual Citizenship</label>
+                        <p>{{ employee.personal_details.identity_demographics.dual_citizenship|default:"No" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address Card -->
+            <div class="premium-card hover-lift">
+                <div class="card-header">
+                    <h3>
+                        <div class="icon-box-sm"><i class="fa-solid fa-location-dot"></i></div> Address Information
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="address-list">
+                        <div class="address-item">
+                            <div class="address-icon"><i class="fa-regular fa-id-badge"></i></div>
+                            <div class="address-text">
+                                <label>Citizen ID Address</label>
+                                <p>{{ employee.personal_details.addresses.current_address|default:"—" }}</p>
+                            </div>
+                        </div>
+                        <div class="address-item">
+                            <div class="address-icon"><i class="fa-solid fa-house"></i></div>
+                            <div class="address-text">
+                                <label>Residential Address</label>
+                                <p>{{ employee.personal_details.addresses.permanent_address|default:"—" }}</p>
+                            </div>
+                        </div>
+                        <div class="address-item">
+                            <div class="address-icon"><i class="fa-regular fa-envelope"></i></div>
+                            <div class="address-text">
+                                <label>Mailing / Postal Delivery Address</label>
+                                <p>{{ employee.personal_details.addresses.mailing_address|default:"—" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Secondary Details -->
+        <div class="secondary-column">
+
+            <!-- Emergency Contact -->
+            <div class="premium-card hover-lift">
+                <div class="card-header">
+                    <h3>
+                        <div class="icon-box-sm"><i class="fa-solid fa-heart-pulse"></i></div> Emergency Contact
+                    </h3>
+                </div>
+                <div class="card-body data-grid-1">
+                    <div class="data-group">
+                        <label>Name</label>
+                        <p style="text-transform: capitalize;">{{ employee.personal_details.emergency_contact.contact_name|default:"—" }}</p>
+                    </div>
+                    <div class="data-group">
+                        <label>Relationship</label>
+                        <p>{{ employee.personal_details.emergency_contact.relationship|default:"—" }}</p>
+                    </div>
+                    <div class="data-group">
+                        <label>Phone number</label>
+                        <p class="phone-text"><i class="fa-solid fa-phone"></i> {{ employee.personal_details.emergency_contact.phone|default:"—" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents -->
+            <div class="premium-card hover-lift doc-card">
+                <div class="card-header">
+                    <h3>
+                        <div class="icon-box-sm"><i class="fa-solid fa-file-shield"></i></div> Documents & Compliance
+                    </h3>
+                </div>
+                <div class="card-body">
+
+                    <div class="compliance-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot start"></div>
+                            <div class="timeline-content">
+                                <label>Onboarding Start Date</label>
+                                <p>{{ employee.personal_details.hr_compliance.personal_data_begin_date|default:"-" }}</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot end"></div>
+                            <div class="timeline-content">
+                                <label>Contract End Timeline</label>
+                                <p>{{ employee.personal_details.hr_compliance.personal_data_end_date|default:"-" }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="doc-list">
+                        {% if employee.passport_doc %}
+                        <a href="{{ employee.passport_doc.url }}" target="_blank" class="doc-link">
+                            <div class="doc-icon pdf"><i class="fa-solid fa-file-pdf"></i></div>
+                            <div class="doc-details">
+                                <span class="doc-title">Passport Attachment</span>
+                                <span class="doc-status success"><i class="fa-solid fa-check"></i> Uploaded</span>
+                            </div>
+                            <div class="download-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                        </a>
+                        {% else %}
+                        <div class="doc-link missing">
+                            <div class="doc-icon"><i class="fa-solid fa-file-circle-xmark"></i></div>
+                            <div class="doc-details">
+                                <span class="doc-title">Passport Attachment</span>
+                                <span class="doc-status error"><i class="fa-solid fa-triangle-exclamation"></i> Missing
+                                    File</span>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if employee.tenth_certificate_doc %}
+                        <a href="{{ employee.tenth_certificate_doc.url }}" target="_blank" class="doc-link">
+                            <div class="doc-icon pdf"><i class="fa-solid fa-file-pdf"></i></div>
+                            <div class="doc-details">
+                                <span class="doc-title">10th Certificate</span>
+                                <span class="doc-status success"><i class="fa-solid fa-check"></i> Uploaded</span>
+                            </div>
+                            <div class="download-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                        </a>
+                        {% else %}
+                        <div class="doc-link missing">
+                            <div class="doc-icon"><i class="fa-solid fa-file-circle-xmark"></i></div>
+                            <div class="doc-details">
+                                <span class="doc-title">10th Certificate</span>
+                                <span class="doc-status error"><i class="fa-solid fa-triangle-exclamation"></i> Missing
+                                    File</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Workspace Base */
+    .premium-profile-workspace {
+        padding: clamp(16px, 3vw, 32px);
+        font-family: 'Inter', system-ui, sans-serif;
+        background: #f8fafc !important;
+        min-height: 100vh;
+        color: #0f172a;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Hero Banner */
+    .profile-hero {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        position: relative;
+        border: 1px solid #e2e8f0;
+    }
+
+    .hero-cover {
+        height: 160px;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        position: relative;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PHBhdGggZD0iTTAgMGgyMHYyMEgwem0xMCAxMGE1IDUgMCAxIDAgMC0xMCA1IDUgMCAwIDAgMCAxMHoiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iLjA1Ii8+PC9zdmc+');
+        opacity: 0.6;
+    }
+
+    .hero-content {
+        padding: 0 32px 32px 32px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        align-items: flex-end;
+        position: relative;
+    }
+
+    .avatar-container {
+        position: relative;
+        margin-top: -60px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 6px solid #fff;
+        background: #fff;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+    }
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .avatar-fallback {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.5rem;
+        color: #94a3b8;
+    }
+
+    .status-indicator {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 24px;
+        height: 24px;
+        background: #10b981;
+        border: 4px solid #fff;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-details {
+        flex-grow: 1;
+        padding-bottom: 8px;
+    }
+
+    .hero-title-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 4px;
+        flex-wrap: wrap;
+    }
+
+    .hero-title-row h1 {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+    }
+
+    .role-badge {
+        background: rgba(99, 102, 241, 0.1);
+        color: #4f46e5;
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .hero-subtitle {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin: 0 0 16px 0;
+        font-weight: 500;
+    }
+
+    .hero-quick-stats {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .stat-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #475569;
+    }
+
+    .hero-actions {
+        padding-bottom: 8px;
+    }
+
+    .btn-premium {
+        background: #0f172a;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-premium:hover {
+        background: #1e293b;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Tabs */
+    .premium-tabs-container {
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 24px;
+    }
+
+    .premium-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+    }
+
+    .premium-tabs .tab {
+        padding: 14px 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: #64748b;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .premium-tabs .tab:hover {
+        color: #0f172a;
+        background: rgba(241, 245, 249, 0.5);
+    }
+
+    .premium-tabs .tab.active {
+        color: #4f46e5;
+        border-bottom-color: #4f46e5;
+    }
+
+    /* Grid Layout */
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 24px;
+        align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .primary-column,
+    .secondary-column {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* Cards */
+    .premium-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08);
+        border-color: #cbd5e1;
+    }
+
+    .card-header {
+        margin-bottom: 24px;
+        border-bottom: 1px dashed #e2e8f0;
+        padding-bottom: 16px;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .icon-box-sm {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(99, 102, 241, 0.1);
+        color: #6366f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+    /* Data Elements */
+    .data-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 24px;
+    }
+
+    .data-grid-1 {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .data-group label {
+        display: block;
+        font-size: 0.75rem;
+        color: #64748b;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+    }
+
+    .data-group p {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .phone-text {
+        color: #4f46e5 !important;
+        background: rgba(99, 102, 241, 0.05);
+        padding: 8px 12px;
+        border-radius: 8px;
+        display: inline-block;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+
+    /* Address List */
+    .address-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .address-item {
+        display: flex;
+        gap: 16px;
+        padding: 16px;
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        border-radius: 12px;
+        transition: background 0.2s;
+    }
+
+    .address-item:hover {
+        background: #fff;
+        border-color: #e2e8f0;
+    }
+
+    .address-icon {
+        width: 40px;
+        height: 40px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .address-text label {
+        display: block;
+        font-size: 0.75rem;
+        color: #64748b;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+    }
+
+    .address-text p {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1e293b;
+        line-height: 1.4;
+    }
+
+    /* Timeline */
+    .compliance-timeline {
+        position: relative;
+        padding-left: 16px;
+        margin-bottom: 24px;
+        border-left: 2px dashed #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .timeline-item {
+        position: relative;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -23px;
+        top: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid #10b981;
+    }
+
+    .timeline-dot.end {
+        border-color: #f59e0b;
+    }
+
+    .timeline-content label {
+        display: block;
+        font-size: 0.75rem;
+        color: #64748b;
+        margin-bottom: 4px;
+        font-weight: 600;
+    }
+
+    .timeline-content p {
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    /* Documents */
+    .doc-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .doc-link {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .doc-link:hover {
+        border-color: #6366f1;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        transform: translateX(4px);
+    }
+
+    .doc-link.missing {
+        background: #fdf2f8;
+        border-color: #fce7f3;
+        pointer-events: none;
+    }
+
+    .doc-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: #f1f5f9;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+
+    .doc-icon.pdf {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+    }
+
+    .doc-link.missing .doc-icon {
+        background: rgba(244, 63, 94, 0.1);
+        color: #f43f5e;
+    }
+
+    .doc-details {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .doc-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .doc-status {
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .doc-status.success {
+        color: #10b981;
+    }
+
+    .doc-status.error {
+        color: #f43f5e;
+    }
+
+    .download-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        transition: background 0.2s;
+    }
+
+    .doc-link:hover .download-btn {
+        background: #e0e7ff;
+        color: #4f46e5;
+    }
+</style>
+{% endblock %}

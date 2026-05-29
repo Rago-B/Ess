@@ -1,0 +1,61 @@
+
+<!-- Google Sign-In Official JavaScript API Library -->
+<script src="https://google.com" async defer></script>
+
+<div style="display: flex; min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; background: #0f172a;">
+    
+    <!-- LEFT AUTH PANEL -->
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #f8fafc; padding: 40px;">
+        <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 40px; width: 100%; max-width: 440px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); text-align: center;">
+            
+            <div style="background: rgba(124, 58, 237, 0.1); color: #7c3aed; width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 20px auto;"><i class="fa-solid fa-user-graduate"></i></div>
+            
+            <h2 style="margin: 0 0 6px 0; font-size: 26px; font-weight: 700; color: #0f172a;">Candidate Portal</h2>
+            <p style="margin: 0 0 28px 0; font-size: 14px; color: #64748b; font-weight: 500;">Authenticate via Google to access your private Background Verification document upload workspace.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div style="padding: 11px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: 600; text-align: left; background: #fee2e2; color: #991b1b;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- ==================== GOOGLE SIGN-IN INTERACTION ELEMENT ==================== -->
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 24px 0;">
+                
+                <!-- Initialization Anchor: Paste your exact client ID here -->
+                <div id="g_id_onload"
+                     data-client_id="PASTE_YOUR_COPIED_GOOGLE_CLIENT_ID_://googleusercontent.com"
+                     data-context="signin"
+                     data-ux_mode="redirect"
+                     data-login_uri="http://127.0.0"
+                     data-auto_prompt="false">
+                </div>
+
+                <!-- Google Render Button Design Customisation Matrix -->
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-shape="rectangular"
+                     data-theme="filled_blue"
+                     data-text="continue_with"
+                     data-size="large"
+                     data-logo_alignment="left"
+                     style="width: 100%;">
+                </div>
+                
+            </div>
+
+            <div style="margin-top: 32px; border-top: 1px solid #f1f5f9; padding-top: 16px; font-size: 13px;">
+                <span style="color: #64748b;">Staff Employee?</span> <a href="/login/" style="color: #2563eb; text-decoration: none; font-weight: 600;">Main Portal Login</a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- RIGHT DECORATIVE CANVA -->
+    <div style="flex: 1.2; display: flex; flex-direction: column; justify-content: center; padding: 60px; color: #ffffff; background: radial-gradient(circle at top right, #1e1b4b, #0f172a);">
+        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 12px;">Secure Verification Entry</h2>
+        <p style="color: #94a3b8; font-size: 15px; line-height: 1.6;">Identity submission operations execute through centralized Google OAuth endpoints protecting personal verification files completely.</p>
+    </div>
+</div>

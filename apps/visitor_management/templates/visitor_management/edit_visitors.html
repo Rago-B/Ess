@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'visitor_management/css/style.css' %}">
+    
+    <style>
+.table-row-item {
+    contain: layout style;
+    content-visibility: auto; 
+    contain-intrinsic-size: 53px; 
+}
+
+.vizmo-style-table {
+    table-layout: fixed; 
+    width: 100%;
+}
+
+        .btn-table-delete {
+            background: #fff5f5;         
+            color: #ef4444;               
+            border: 1px solid #fecaca;    
+            padding: 6px 14px;            
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;           
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;                     
+            transition: all 0.2s ease-in-out; 
+        }
+
+        .btn-table-delete:hover {
+            background: #ef4444;          
+            color: #ffffff;               
+            border-color: #ef4444;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); 
+        }
+
+        .btn-table-delete:active {
+            transform: scale(0.96);       
+        }
+        .btn-table-edit{
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-table-edit:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+.modal-overlay {
+    background-color: rgba(255, 255, 255, 0.2); 
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    border-radius: 12px; 
+    padding: 15px;
+    width: 900px;
+    
+}
+
+    </style>
+{% endblock %}
+
+
+
+
+
+
+
+{% block content %}
+
+{% csrf_token %}
+
+<div class="visitor-management-system" id="visitormanagementsystem">
+
+    <div class="table-toolbar-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 20px;">
+        <div class="date-selector-wrap" style="display: flex; align-items: center; gap: 12px; background: var(--sidebar-bg); padding: 10px 16px; border-radius: 12px; border: 1px solid var(--border);">
+            <i class="fa-solid fa-chevron-left" style="cursor: pointer; font-size: 13px; color: var(--text-sub);"></i>
+            <span style="font-weight: 700; font-size: 14px;"><i class="fa-solid fa-calendar-days" style="margin-right: 8px; color: var(--primary);"></i> 14 May 2026</span>
+            <i class="fa-solid fa-chevron-right" style="cursor: pointer; font-size: 13px; color: var(--text-sub);"></i>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="table-search-box" style="position: relative; width: 280px;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-sub); font-size: 14px;"></i>
+                <input type="text" placeholder="Quick search database..." style="width: 100%; height: 40px; border-radius: 10px; border: 1px solid var(--border); padding-left: 40px; padding-right: 14px; outline: none; font-family: inherit; font-size: 13px;">
+            </div>
+            {% if request.user.role == 'admin' or  request.user.role == 'hr' %}
+            <a href="{% url 'addvisitors' %}" class="btn-action-primary" style="background: #0ea5e9; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-user-plus"></i> Add Visitor
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card" style="padding: 20px; overflow: hidden; width: 100%;">
+        <div class="table-scroll-container" style="width: 100%; overflow-x: auto;">
+            <table class="vizmo-style-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border);">
+                        <th style="width: 40px; padding: 14px 12px;"><input type="checkbox" style="cursor: pointer;"></th>
+                        <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">ID</th>
+                        <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">Visitor Name Info</th>
+                        <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">Purpose</th>
+                        <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">Check-In</th>
+                        <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">Check-Out</th>
+                        {% if request.user.role == 'admin' or  request.user.role == 'hr' %}
+                        <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">Edit</th>
+                        {% endif %}
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in visitors %}
+                    <tr class="table-row-item"   style="cursor: pointer;" 
+                        data-name="{{ v.name|escapejs }}" 
+                        data-email="{{ v.email|escapejs }}" 
+                        data-phone="{{ v.phone|escapejs }}" 
+                        data-college="{{ v.college_name|default:'—'|escapejs }}" 
+                        data-year="{{ v.passed_out_year|default:'—'|escapejs }}" 
+                        data-purpose="{{ v.purpose|escapejs }}"
+                        data-avatar="{% if v.profile_photo %}{{ v.profile_photo.url }}{% else %}https://dicebear.com{{ v.name|urlencode }}{% endif %}">
+                        
+                        
+                        <td style="padding: 16px 12px; border-bottom: 1px solid var(--border);"><input type="checkbox" style="cursor: pointer;"></td>
+                        <td style="padding: 16px 12px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--primary);">#{{ v.id }}</td>
+                        <td style="padding: 16px 12px; border-bottom: 1px solid var(--border);">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div class="avatar-frame-badge" style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; overflow: hidden;">
+    {% if v.profile_photo %}
+        <img src="{{ v.profile_photo.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+    {% else %}
+        {{ v.name|slice:":2"|upper }}
+    {% endif %}
+</div>
+                                <span style="font-weight: 700; font-size: 14px;">{{ v.name }}</span>
+                            </div>
+                        </td>
+                        <td style="padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500;">{{ v.purpose }}</td>
+                        <td style="padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 13px;">{{ v.check_in|date:"h:i A" }}</td>
+                        <td style="padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 13px;">
+                            {% if v.check_out %}{{ v.check_out|date:"h:i A" }}{% else %}<span style="color: var(--primary); font-weight: 700;">On-Site</span>{% endif %}
+                        </td>
+<td style="padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500;">
+    {% if request.user.role == 'admin' or  request.user.role == 'hr' %}
+    <button class="btn-table-edit" type="button" 
+        data-id="{{ v.id }}"
+        data-name="{{ v.name|escapejs }}"
+        data-email="{{ v.email|escapejs }}"
+        data-phone="{{ v.phone|escapejs }}"
+        data-college="{{ v.college_name|default:''|escapejs }}"
+        data-year="{{ v.passed_out_year|default:''|escapejs }}"
+        data-purpose="{{ v.purpose|escapejs }}"
+        data-avatar="{% if v.profile_photo %}{{ v.profile_photo.url }}{% else %}/static/images/default-avatar.png{% endif %}"
+        onclick="editUserProfile(this, event)">
+    <i class="fa-solid fa-pen-to-square" style="margin-right: 4px;"></i> Edit
+</button>
+    <button   class="btn-table-delete" type="button" onclick="fireDeleteAPI(this, '{{ v.id }}')">
+        Delete
+    </button>
+    {% endif %}
+</td>
+
+
+
+
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-sub);">No records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    
+
+</div>
+
+    
+<div id="visitorModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000;">
+    <div class="modal-content" style="width: 100%;max-height: 90vh;  max-width: 600px; padding: 24px; background: var(--sidebar-bg); border-radius: 16px; border: 1px solid var(--border);">
+
+        
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0;">Edit Visitor Profile</h3>
+            <button id="closeModalBtn" onclick="closePopup()" class="close-btn" style="background: transparent; border: none; font-size: 24px; cursor: pointer; color: var(--text-sub);">&times;</button>
+        </div>
+
+        <!-- Wrapped body with a form pointing back to your Django view endpoint -->
+        <form method="POST" action="{% url 'editvisitors' %}" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 16px;">
+            {% csrf_token %}
+            
+            <!-- CRITICAL: Hidden field to store the specific visitor ID -->
+            <input type="hidden" name="visitor_id" id="modalVisitorId">
+
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+                
+                <!-- Avatar Section -->
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <img id="modalAvatar" src="" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); background: #f1f5f9;">
+                    <div style="margin-top: 8px;">
+                        <input type="file" name="profile_photo" accept="image/*" style="font-size: 12px;">
+                    </div>
+                </div>
+
+                <!-- Input Fields mapped with your registration variables -->
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-size: 12px; font-weight: 600; color: var(--text-sub);">Full Name</label>
+                    <input type="text" name="name" id="modalNameInput" required class="form-theme-input" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-size: 12px; font-weight: 600; color: var(--text-sub);">Email Address</label>
+                    <input type="email" name="email" id="modalEmailInput" required class="form-theme-input" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-size: 12px; font-weight: 600; color: var(--text-sub);">Phone Number</label>
+                    <input type="tel" name="phone" id="modalPhoneInput" required class="form-theme-input" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-size: 12px; font-weight: 600; color: var(--text-sub);">Institution / College Name</label>
+                    <input type="text" name="college_name" id="modalCollegeInput" class="form-theme-input" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-size: 12px; font-weight: 600; color: var(--text-sub);">Graduation Year</label>
+                    <input type="number" name="passed_out_year" id="modalYearInput" class="form-theme-input" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-size: 12px; font-weight: 600; color: var(--text-sub);">Purpose of Visit</label>
+                    <input type="text" name="purpose" id="modalPurposeInput" required class="form-theme-input" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 10px;">
+                <button type="button" onclick="closePopup()" class="btn-form-cancel" style="padding: 8px 16px; background: #f1f5f9; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancel</button>
+                <button type="submit" class="btn-form-submit" style="padding: 8px 16px; background: #0ea5e9; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function fireDeleteAPI (clickedButton, visitorId){
+    const userConfirmed = confirm("Are u want to permantly delete this visitor profile ?")
+    if(!userConfirmed){ return; }
+
+    const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]')
+    if (!csrfElement) { return; }
+
+    const csrfToken = csrfElement.value;
+
+    
+    
+
+    fetch(`/delete-visitors/${visitorId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": csrfToken,
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const targetRow = clickedButton.closest('.table-row-item');
+            if (targetRow) targetRow.remove();
+        }
+    });
+
+
+
+
+}
+
+function editUserProfile(button, event) {
+    if (event) event.stopPropagation();
+
+    document.getElementById("modalVisitorId").value = button.getAttribute("data-id");
+    document.getElementById("modalNameInput").value = button.getAttribute("data-name");
+    document.getElementById("modalEmailInput").value = button.getAttribute("data-email");
+    document.getElementById("modalPhoneInput").value = button.getAttribute("data-phone");
+    document.getElementById("modalCollegeInput").value = button.getAttribute("data-college");
+    document.getElementById("modalYearInput").value = button.getAttribute("data-year");
+    document.getElementById("modalPurposeInput").value = button.getAttribute("data-purpose");
+
+    document.getElementById("modalAvatar").src = button.getAttribute("data-avatar");
+    document.getElementById("visitorModal").style.display = 'flex';
+}
+
+
+function closePopup()
+{
+    document.getElementById("visitorModal").style.display='none'
+
+
+}
+</script>
+
+
+
+{% endblock %}

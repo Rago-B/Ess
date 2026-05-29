@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="passport-page-wrapper" style="padding: 24px; font-family: 'Poppins', sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
+    
+    <!-- Header Title Panel -->
+    <div style="margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+        <h1 style="font-size: 24px; font-weight: 800; color: #1e3a8a; margin: 0; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-passport" style="color:#1d4ed8;"></i> Passport Profile Vitals
+        </h1>
+        <p style="color: #64748b; font-size: 13px; margin: 4px 0 0 0; font-weight: 500;">Dedicated audit view for your international travel credentials and compliance verification copy</p>
+    </div>
+
+    <!-- Main Content 2-Column Split -->
+    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start;">
+        
+        <!-- COLUMN A: TEXT DATA PORTLET CARD -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+            <h3 style="margin: 0 0 16px 0; font-size: 14px; font-weight: 700; color: #1e293b; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;"><i class="fa-solid fa-circle-info" style="color:#1d4ed8;"></i> Typed Metadata</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px; font-size: 13px;">
+                <div>
+                    <span style="color: #64748b; display: block; margin-bottom: 2px; font-weight: 500;">Passport Number</span>
+                    <b style="font-family: monospace; font-size: 15px; color: #0f172a;">{{ employee.personal_details.hr_compliance.passport_number|default:"N/A" }}</b>
+                </div>
+                <div>
+                    <span style="color: #64748b; display: block; margin-bottom: 2px; font-weight: 500;">Expiration Date</span>
+                    <b style="color: #0f172a; font-size: 14px;">{{ employee.personal_details.hr_compliance.passport_expiry|default:"N/A" }}</b>
+                </div>
+                <div>
+                   
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN B: INLINE ATTACHMENT DISPLAY CARD -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
+                <h3 style="margin: 0; font-size: 14px; font-weight: 700; color: #1e293b;"><i class="fa-solid fa-paperclip" style="color:#1d4ed8;"></i> Attachment Link</h3>
+                {% if employee.passport_doc %}
+                    <a href="{% url 'preview_verification_doc' doc_type='passport' %}" target="_blank" style="padding: 4px 10px; background: #1d4ed8; color: #fff; border-radius: 6px; font-size: 11px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open in New Tab</a>
+                {% endif %}
+            </div>
+
+            <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; min-height: 280px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                {% if employee.passport_doc %}
+                    <!-- Checks if the file is a PDF to draw an interactive embed window framework -->
+                    {% if ".pdf" in employee.passport_doc.url|lower %}
+                        <embed src="{% url 'preview_verification_doc' doc_type='passport' %}" type="application/pdf" width="100%" height="450px" style="border-radius: 6px;">
+                    {% else %}
+                        <!-- Renders directly as an on-screen image if it's a JPG/PNG snapshot -->
+                        <img src="{{ employee.passport_doc.url }}" alt="Passport Preview" style="max-width: 100%; max-height: 450px; object-fit: contain; padding: 10px;">
+                    {% endif %}
+                {% else %}
+                    <div style="text-align: center; color: #94a3b8; padding: 40px;">
+                        <i class="fa-solid fa-file-circle-exclamation" style="font-size: 2.5rem; margin-bottom: 8px; color: #cbd5e1;"></i>
+                        <p style="margin: 0; font-size: 13px; font-weight: 500;">No physical passport document copy has been uploaded to the system drive yet.</p>
+                        <p style="margin: 4px 0 0 0; font-size: 11px; color: #a3a3a3;">Please navigate to the Upload view tab to submit your document file scan copy.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Place this at the top of passport_detail_page.html content block -->
+<style>
+
+    h1,p{
+  font-family: "Poppins", sans-serif;
+    }
+    /* 1. Base Layer State Configuration for your View Cards */
+    .passport-page-wrapper div[style*="background: #ffffff"] {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transform: translateY(0);
+    }
+
+    /* 2. 🚀 THE READ-ONLY INTERACTIVE HOVER REACTION */
+    .passport-page-wrapper div[style*="background: #ffffff"]:hover {
+        transform: translateY(-4px) !important; /* Elegant upward micro-lift */
+        border-color: #1d4ed8 !important;       /* Shifts card outline to corporate blue */
+        box-shadow: 0 10px 20px -5px rgba(29, 78, 216, 0.08), 
+                    0 4px 12px rgba(15, 23, 42, 0.03) !important; /* Modern glowing shadow drop */
+    }
+
+    /* Interactive response pass for the "Open in New Tab" link anchor button */
+    .passport-page-wrapper a[href*="preview"]:hover {
+        background-color: #111827 !important; /* Darkens button background color to charcoal gray on hover */
+        transform: scale(1.02);
+        transition: all 0.2s ease;
+    }
+</style>
+
+
+{% endblock %}

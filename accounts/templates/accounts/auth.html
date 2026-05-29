@@ -1,0 +1,149 @@
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voxlom | Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=3.0">
+</head>
+
+<body>
+    <div class="background-decor">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container" id="container">
+
+        <!-- SECURE INBOX LOGIN (Acts as the 'Sign Up' panel) -->
+        <div class="form-container inbox-login-container">
+            <!-- Normal Inbox Form -->
+            <form id="inbox-login-form" method="POST" class="auth-form active-form">
+                {% csrf_token %}
+                <div class="logo-box">
+                    <div class="logo-icon-wrapper"><i class="fas fa-shield-alt"></i></div>
+                </div>
+                <h2>Secure Inbox</h2>
+                <p class="subtitle">Access your sensitive emails via IMAP</p>
+
+                <div class="field-wrapper">
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" id="inbox-email" placeholder="Inbox Email" required>
+                    </div>
+                </div>
+                <div class="field-wrapper">
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" id="inbox-password" placeholder="Password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-solid" id="btn-inbox-login">
+                    <span>Connect</span>
+                    <i class="fas fa-spinner fa-spin loader-icon" style="display: none;"></i>
+                </button>
+                <div id="inbox-error" class="error-msg" style="display: none;"></div>
+            </form>
+
+            <!-- OTP Verification Form (Hidden Initially) -->
+            <form id="otp-form" method="POST" class="auth-form hidden-form">
+                <div class="logo-box">
+                    <div class="logo-icon-wrapper"><i class="fas fa-key"></i></div>
+                </div>
+                <h2>Verification</h2>
+                <p class="subtitle">We sent a 6-digit code to your email.</p>
+
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                </div>
+
+                <button type="submit" class="btn-solid" id="btn-verify-otp">
+                    <span>Verify Code</span>
+                    <i class="fas fa-spinner fa-spin loader-icon" style="display: none;"></i>
+                </button>
+                <div id="otp-error" class="error-msg" style="display: none;"></div>
+            </form>
+        </div>
+
+        <!-- MAIN EMS LOGIN (Acts as the 'Sign In' panel) -->
+        <div class="form-container main-ems-container">
+            <form action="{% url 'login' %}" method="POST" class="auth-form active-form">
+                {% csrf_token %}
+                <div class="logo-box">
+                    <div class="logo-icon-wrapper"><i class="fab fa-dyalog"></i></div>
+                </div>
+                <h2>Employee Portal</h2>
+                <p class="subtitle">Welcome back to Voxlom EMS</p>
+
+                <div class="field-wrapper">
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Work Email" required>
+                    </div>
+                </div>
+                <div class="field-wrapper">
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <label class="remember-me">
+                        <input type="checkbox"> <span>Remember me</span>
+                    </label>
+                    <a href="#" class="reset-pass">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-solid">Login</button>
+
+                <div class="divider-text"><span>or</span></div>
+
+                <div class="social-login">
+                    <button type="button" class="social-btn"><img
+                            src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="Google"></button>
+                    <button type="button" class="social-btn"><img
+                            src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook"></button>
+                    <button type="button" class="social-btn"><i class="fab fa-apple"></i></button>
+                </div>
+            </form>
+        </div>
+
+        <!-- SLIDING OVERLAY -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <!-- Left Panel (Shown when viewing Inbox form) -->
+                <div class="overlay-panel overlay-left">
+                    <h1>Employee Portal</h1>
+                    <p>Access your main employee dashboard, HR tools, and performance metrics.</p>
+                    <button class="btn-ghost" id="signIn">Main Login</button>
+                </div>
+                <!-- Right Panel (Shown when viewing Main form) -->
+                <div class="overlay-panel overlay-right">
+                    <h1>Secure Inbox</h1>
+                    <p>Access your confidential emails with our IMAP-secured, 2FA protected client.</p>
+                    <button class="btn-ghost" id="signUp">Access Inbox</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Need to expose URL for JS -->
+    <script>
+        const INBOX_LOGIN_URL = "{% url 'inbox_login_ajax' %}";
+        const VERIFY_OTP_URL = "{% url 'verify_otp_ajax' %}";
+        const CSRF_TOKEN = "{{ csrf_token }}";
+    </script>
+    <script src="{% static 'js/main.js' %}?v=3.0"></script>
+</body>
+
+</html> -->

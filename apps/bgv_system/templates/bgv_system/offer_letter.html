@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Offer Letter</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6;">
+    <h2>Offer Letter</h2>
+    <p>Dear Candidate (Submission ID: {{ candidate.submission_id }}),</p>
+
+    <p>We are pleased to inform you that your background verification has been successfully completed. Based on your Aadhaar ({{ candidate.aadhaar }}) and PAN ({{ candidate.pan }}), you are now eligible to join our workforce.</p>
+
+    <p>Course Type: {{ candidate.course_type|default:"Not Provided" }}</p>
+
+    <p>We look forward to welcoming you onboard.</p>
+
+    <p>Sincerely,<br>
+    HR Department</p>
+</body>
+</html>

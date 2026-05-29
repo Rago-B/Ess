@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="stream-wrapper">
+    
+    <!-- SYSTEM CONTROLLER HEADER -->
+    <div class="stream-header-row">
+        <div class="header-titles">
+            <h1>Gate Activity Stream</h1>
+            <div class="status-meta">
+                <span class="pulse-indicator-green"></span>
+                <p>Security Terminal Feeds: <strong>Active</strong></p>
+            </div>
+        </div>
+        
+        <div class="action-bar-group" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <!-- MANUAL HARDWARE SIMULATOR INPUT BAR (Pressing enter reloads page with URL data) -->
+            <form method="GET" action="{% url 'gateactivity' %}" style="background: #1e293b; padding: 12px 20px; border-radius: 12px; border: 1px solid #334155; display: flex; align-items: center; gap: 10px;">
+                <label for="scan_uid" style="font-size: 13px; color: #94a3b8; font-weight: 600; text-transform: uppercase;">Swipe Simulation:</label>
+                <input type="text" id="scan_uid" name="scan_uid" placeholder="Type UID & press Enter" 
+                       style="background: #0f172a; border: 1px solid #475569; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-family: monospace; outline: none; width: 180px;">
+            </form>
+
+            <!-- DATE-WISE FILTER CONTROL -->
+            <form method="GET" id="dateFilterForm" class="filter-card-wrapper">
+                <div class="input-inline-group">
+                    <label for="date_filter">Target Date:</label>
+                    <input type="date" id="date_filter" name="date_filter" value="{{ selected_date }}" onchange="document.getElementById('dateFilterForm').submit();">
+                </div>
+                <a href="#" class="reset-link-btn">Reset</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- DATA GRID TABLE CONTAINER -->
+    <div class="stream-matrix-panel">
+        <div class="panel-inner-title">
+            <h2>Real-Time Access Log Journal</h2>
+        </div>
+        
+        <div class="table-scroll-container">
+            <table class="stream-production-table">
+                <thead>
+                    <tr>
+                        <th>Card UID</th>
+                        <th>Card Holder Name</th>
+                        <th>Calendar Date</th>
+                        <th>Gate Entry (IN)</th>
+                        <th>Gate Exit (OUT)</th>
+                        <th>Occupancy Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+    {% if filtering is not None %}
+        <!-- Loop through the filtered date logs -->
+        {% for log in filtering %}
+        <tr>
+            <td><code class="uid-pill-badge">{{ log.employee.rfid_uid }}</code></td>
+            <td>
+                <div class="user-profile-cell">
+                    <span class="avatar-fallback">{{ log.employee.first_name|slice:":1" }}</span>
+                    <strong class="user-fullname">{{ log.employee.first_name }} {{ log.employee.last_name }}</strong>
+                </div>
+            </td>
+            <td class="date-stamp-text">{{ log.date|date:"M d, Y" }}</td>
+            <td class="timestamp-text">{{ log.check_in|date:"h:i:s A"|default:"--" }}</td>
+            <td class="timestamp-text">{{ log.check_out|date:"h:i:s A"|default:"Inside Building" }}</td>
+            <td>
+                {% if log.check_out %}
+                    <span class="badge-duration-complete">{{ log.total_hours }} hours</span>
+                {% else %}
+                    <span class="badge-duration-active">
+                        <span class="blinking-dot"></span> Currently Inside
+                    </span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="empty-buffer-state">
+                <div class="empty-content-box">
+                    <span class="empty-icon">📂</span>
+                    <p>No terminal scanner activity found for this selected date.</p>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+
+    {% else %}
+        <!-- Default: Loop through today's live stream logs -->
+        {% for log in stream_logs %}
+        <tr>
+            <td><code class="uid-pill-badge">{{ log.employee.rfid_uid }}</code></td>
+            <td>
+                <div class="user-profile-cell">
+                    <span class="avatar-fallback">{{ log.employee.first_name|slice:":1" }}</span>
+                    <strong class="user-fullname">{{ log.employee.first_name }} {{ log.employee.last_name }}</strong>
+                </div>
+            </td>
+            <td class="date-stamp-text">{{ log.date|date:"M d, Y" }}</td>
+            <td class="timestamp-text">{{ log.check_in|date:"h:i:s A"|default:"--" }}</td>
+            <td class="timestamp-text">{{ log.check_out|date:"h:i:s A"|default:"Inside Building" }}</td>
+            <td>
+                {% if log.check_out %}
+                    <span class="badge-duration-complete">{{ log.total_hours }} hours</span>
+                {% else %}
+                    <span class="badge-duration-active">
+                        <span class="blinking-dot"></span> Currently Inside
+                    </span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="empty-buffer-state">
+                <div class="empty-content-box">
+                    <span class="empty-icon">📂</span>
+                    <p>No terminal scanner activity found matching the selected query filters.</p>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    {% endif %} <!-- FIX: This closing tag was completely missing -->
+</tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- STYLES COPIED FROM PREVIOUS SYSTEM LOOK -->
+<style>
+    .stream-wrapper { padding: 32px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0f172a; color: #f8fafc; min-height: 100vh; box-sizing: border-box; }
+    .stream-wrapper * { box-sizing: border-box; }
+    .stream-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 20px; }
+    .header-titles h1 { font-size: 26px; font-weight: 700; margin: 0; color: #f8fafc; }
+    .status-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .status-meta p { margin: 0; font-size: 14px; color: #64748b; }
+    .pulse-indicator-green { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); animation: rippleEffect 2s infinite; }
+    @keyframes rippleEffect { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+    .filter-card-wrapper { background: #1e293b; border: 1px solid #334155; padding: 12px 20px; border-radius: 12px; display: flex; align-items: center; gap: 16px; }
+    .input-inline-group { display: flex; align-items: center; gap: 10px; }
+    .input-inline-group label { font-size: 13px; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+    .input-inline-group input[type="date"] { background: #0f172a; border: 1px solid #475569; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px; color-scheme: dark; }
+    .reset-link-btn { color: #3b82f6; text-decoration: none; font-size: 13px; font-weight: 600; border-left: 1px solid #334155; padding-left: 16px; }
+    .stream-matrix-panel { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 24px; }
+    .panel-inner-title h2 { font-size: 15px; text-transform: uppercase; color: #64748b; margin-top: 0; margin-bottom: 20px; }
+    .table-scroll-container { overflow-x: auto; width: 100%; }
+    .stream-production-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; min-width: 800px; }
+    .stream-production-table th { padding: 16px 14px; border-bottom: 2px solid #334155; color: #94a3b8; font-weight: 600; }
+    .stream-production-table td { padding: 16px 14px; border-bottom: 1px solid #334155; color: #cbd5e1; vertical-align: middle; }
+    .stream-production-table tr:hover td { background-color: rgba(51, 65, 85, 0.3); }
+    .uid-pill-badge { background: #0f172a; padding: 6px 12px; border-radius: 8px; border: 1px solid #334155; color: #3b82f6; font-family: monospace; font-weight: 700; }
+    .user-profile-cell { display: flex; align-items: center; gap: 12px; }
+    .avatar-fallback { width: 32px; height: 32px; background: #334155; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #f8fafc; font-weight: 700; font-size: 13px; text-transform: uppercase; }
+    .user-fullname { color: #f8fafc; font-weight: 600; }
+    .date-stamp-text { color: #94a3b8; }
+    .timestamp-text { font-family: sans-serif; color: #e2e8f0; }
+    .badge-duration-complete { background-color: rgba(30, 41, 59, 0.8); border: 1px solid #475569; padding: 6px 12px; border-radius: 6px; color: #cbd5e1; }
+    .badge-duration-active { background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; padding: 6px 12px; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+    .blinking-dot { width: 6px; height: 6px; background-color: #fbbf24; border-radius: 50%; animation: beaconFlash 1.5s infinite; }
+    @keyframes beaconFlash { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .empty-content-box { text-align: center; padding: 40px; color: #64748b; }
+</style>
+{% endblock %}

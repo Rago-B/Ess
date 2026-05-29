@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="view-vault-wrapper" style="padding: 24px; font-family: 'Poppins', sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
+    
+    <!-- Top Action Title Panel -->
+    <div style="margin-bottom: 28px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+        <h1 style="font-size: 24px; font-weight: 800; color: #1e3a8a; margin: 0;"><i class="fa-solid fa-folder-open" style="color:#1d4ed8;"></i> Verification Folder Directory</h1>
+        <p style="color: #64748b; font-size: 13px; margin: 4px 0 0 0; font-weight: 500;">Review verified documents or launch on-screen inline document previews.</p>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 🏢 IDENTITY ACCREDITATIONS IDENTITY SEGMENT -->
+    <!-- ========================================================================= -->
+    <div style="margin-bottom: 32px;">
+        <h3 style="font-size: 12px; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-id-card"></i> Identity Documents</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            
+            <!-- PAN PREVIEW CARD -->
+            <div class="audit-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; display:flex; justify-content:space-between; align-items:center; transition: all 0.2s ease-in-out;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; background: rgba(29, 78, 216, 0.06); color: #1d4ed8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="fa-solid fa-address-card"></i></div>
+                    <div>
+                        <h4 style="margin:0 0 4px 0; font-size:14px; font-weight:700; color:#1e293b;">PAN Card</h4>
+                        <span style="font-size:11px; font-weight:600; color:{% if employee.pan_card_doc %}#16a34a{% else %}#b45309{% endif %};">
+                            {% if employee.pan_card_doc %}<i class="fa-solid fa-circle-check"></i> File Available{% else %}<i class="fa-solid fa-circle-exclamation"></i> Unuploaded{% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% if employee.pan_card_doc %}
+                    <a href="{% url 'preview_verification_doc' doc_type='pan' %}" target="_blank" style="padding:6px 14px; background:#f1f5f9; color:#1e3a8a; font-size:12px; font-weight:700; text-decoration:none; border-radius:6px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-eye"></i> Preview</a>
+                {% endif %}
+            </div>
+
+            <!-- AADHAR PREVIEW CARD -->
+            <div class="audit-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; display:flex; justify-content:space-between; align-items:center; transition: all 0.2s ease-in-out;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; background: rgba(29, 78, 216, 0.06); color: #1d4ed8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="fa-solid fa-id-card-clip"></i></div>
+                    <div>
+                        <h4 style="margin:0 0 4px 0; font-size:14px; font-weight:700; color:#1e293b;">Aadhar Card</h4>
+                        <span style="font-size:11px; font-weight:600; color:{% if employee.aadhar_card_doc %}#16a34a{% else %}#b45309{% endif %};">
+                            {% if employee.aadhar_card_doc %}<i class="fa-solid fa-circle-check"></i> File Available{% else %}<i class="fa-solid fa-circle-exclamation"></i> Unuploaded{% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% if employee.aadhar_card_doc %}
+                    <a href="{% url 'preview_verification_doc' doc_type='aadhar' %}" target="_blank" style="padding:6px 14px; background:#f1f5f9; color:#1e3a8a; font-size:12px; font-weight:700; text-decoration:none; border-radius:6px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-eye"></i> Preview</a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 🏢 EDUCATIONAL ACCREDITATIONS SEGMENT -->
+    <!-- ========================================================================= -->
+    <div>
+        <h3 style="font-size: 12px; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-graduation-cap"></i> Educational Documents</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            
+            <!-- 10TH PREVIEW CARD -->
+            <div class="audit-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; display:flex; justify-content:space-between; align-items:center; transition: all 0.2s ease-in-out;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; background: rgba(29, 78, 216, 0.06); color: #1d4ed8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div>
+                        <h4 style="margin:0 0 4px 0; font-size:14px; font-weight:700; color:#1e293b;">10th Marksheet Portfolio</h4>
+                        <span style="font-size:11px; font-weight:600; color:{% if employee.tenth_marksheet_doc %}#16a34a{% else %}#b45309{% endif %};">
+                            {% if employee.tenth_marksheet_doc %}<i class="fa-solid fa-circle-check"></i> File Available{% else %}<i class="fa-solid fa-circle-exclamation"></i> Unuploaded{% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% if employee.tenth_marksheet_doc %}
+                    <a href="{% url 'preview_verification_doc' doc_type='10th' %}" target="_blank" style="padding:6px 14px; background:#f1f5f9; color:#1e3a8a; font-size:12px; font-weight:700; text-decoration:none; border-radius:6px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-eye"></i> Preview</a>
+                {% endif %}
+            </div>
+
+            <!-- 12TH PREVIEW CARD -->
+            <div class="audit-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; display:flex; justify-content:space-between; align-items:center; transition: all 0.2s ease-in-out;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; background: rgba(29, 78, 216, 0.06); color: #1d4ed8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div>
+                        <h4 style="margin:0 0 4px 0; font-size:14px; font-weight:700; color:#1e293b;">12th Marksheet Portfolio</h4>
+                        <span style="font-size:11px; font-weight:600; color:{% if employee.twelfth_marksheet_doc %}#16a34a{% else %}#b45309{% endif %};">
+                            {% if employee.twelfth_marksheet_doc %}<i class="fa-solid fa-circle-check"></i> File Available{% else %}<i class="fa-solid fa-circle-exclamation"></i> Unuploaded{% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% if employee.twelfth_marksheet_doc %}
+                    <a href="{% url 'preview_verification_doc' doc_type='12th' %}" target="_blank" style="padding:6px 14px; background:#f1f5f9; color:#1e3a8a; font-size:12px; font-weight:700; text-decoration:none; border-radius:6px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-eye"></i> Preview</a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    /* Premium Interactive Lift Hovers Rules */
+    .audit-card:hover { 
+        transform: translateY(-2px); 
+        border-color: #1d4ed8 !important; 
+        box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.04) !important; 
+    }
+</style>
+{% endblock %}

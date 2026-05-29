@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voxlom | Secure Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=6.0">
+    <style>
+        body {
+            background: #07070e !important;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="container" id="container">
+
+        <!-- SECURE INBOX LOGIN -->
+        <div class="form-container inbox-login-container">
+            <form id="inbox-login-form" method="POST" class="auth-form active-form">
+                {% csrf_token %}
+                <div class="logo-box">
+                    <div class="logo-icon-wrapper" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;"><i
+                            class="fas fa-shield-alt"></i></div>
+                </div>
+                <h2>Secure Inbox</h2>
+                <p class="subtitle">Access your sensitive emails via IMAP</p>
+
+                <div class="field-wrapper">
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" id="inbox-email" placeholder="Inbox Email" required>
+                    </div>
+                </div>
+                <div class="field-wrapper">
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" id="inbox-password" placeholder="Password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-solid" id="btn-inbox-login">
+                    <span>Connect</span>
+                    <i class="fas fa-spinner fa-spin loader-icon" style="display: none;"></i>
+                </button>
+                <div id="inbox-error" class="error-msg" style="display: none;"></div>
+            </form>
+
+            <form id="otp-form" method="POST" class="auth-form hidden-form">
+                <div class="logo-box">
+                    <div class="logo-icon-wrapper" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;"><i
+                            class="fas fa-key"></i></div>
+                </div>
+                <h2>Verification</h2>
+                <p class="subtitle">Enter the 6-digit code sent to your email.</p>
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                    <input type="text" maxlength="1" class="otp-box">
+                </div>
+                <button type="button" class="btn-solid" id="btn-verify-otp" onclick="handleVerify(event)">
+                    <span>Verify Code</span>
+                    <i class="fas fa-spinner fa-spin loader-icon" style="display: none;"></i>
+                </button>
+                <div id="otp-error" class="error-msg" style="display: none;"></div>
+            </form>
+        </div>
+
+        <!-- MAIN EMS LOGIN -->
+        <div class="form-container main-ems-container">
+            <form action="{% url 'login' %}" method="POST" class="auth-form active-form">
+                {% csrf_token %}
+                <div class="logo-box">
+                    <div class="logo-icon-wrapper" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;"><i
+                            class="fab fa-dyalog"></i></div>
+                </div>
+                <h2>Employee Portal</h2>
+                <p class="subtitle">Welcome back to Voxlom EMS</p>
+
+                <div class="field-wrapper">
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Work Email" required>
+                    </div>
+                </div>
+                <div class="field-wrapper">
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <label class="remember-me"><input type="checkbox"> <span>Remember me</span></label>
+                    <a href="#" class="forgot-pass"
+                        style="color: #a855f7; text-decoration: none; font-weight: 600;">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-solid">Login</button>
+
+                <div class="divider-text"><span>or</span></div>
+
+                <a href="{% url 'google_login' %}" 
+   style="text-decoration: none; 
+          color: #344054; 
+          background: #ffffff; 
+          border: 1px solid #d0d5dd; 
+          padding: 10px 18px; 
+          border-radius: 8px; 
+          font-size: 14px; 
+          font-weight: 600; 
+          display: inline-flex; 
+          align-items: center; 
+          gap: 8px; 
+          box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05); 
+          transition: all 0.15s ease-in-out;"
+   onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#cbd5e1'; this.style.transform='translateY(-1px)';" 
+   onmouseout="this.style.background='#ffffff'; this.style.borderColor='#d0d5dd'; this.style.transform='none';">
+    <i class="fa-brands fa-google" style="color: #ea4335; font-size: 15px;"></i> 
+    Selected Candidates Login
+</a>
+
+
+
+                <div class="social-login">
+                    <button type="button" class="social-btn"><img
+                            src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="Google"></button>
+                    <button type="button" class="social-btn"><img
+                            src="https://cdn-icons-png.flaticon.com/512/732/732221.png" alt="Microsoft"></button>
+                    <button type="button" class="social-btn"><i class="fab fa-apple"></i></button>
+                </div>
+            </form>
+        </div>
+
+        <!-- SLIDING OVERLAY -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Employee Portal</h1>
+                    <p>Access your main employee dashboard and HR tools.</p>
+                    <button class="btn-ghost" id="signIn">Main Login</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Secure Inbox</h1>
+                    <p>Access your confidential emails with 2FA protection.</p>
+                    <button class="btn-ghost" id="signUp">Access Inbox</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const INBOX_LOGIN_URL = "{% url 'inbox_login_ajax' %}";
+        const VERIFY_OTP_URL = "{% url 'verify_otp_ajax' %}";
+        const CSRF_TOKEN = "{{ csrf_token }}";
+
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        class Particle {
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5; this.r = Math.random() * 1.5; }
+            update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > canvas.width) this.vx *= -1; if (this.y < 0 || this.y > canvas.height) this.vy *= -1; }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill(); }
+        }
+        for (let i = 0; i < 100; i++) particles.push(new Particle());
+        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+        animate();
+    </script>
+    <script src="{% static 'js/main.js' %}?v=11.0"></script>
+</body>
+
+</html>

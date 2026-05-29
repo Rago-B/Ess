@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    /* 1. Add a smooth transition property onto your base cards first */
+    .card {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 2. Apply a premium corporate hover interaction layout matrix */
+    .card:hover {
+        background-color: #f8fafc !important; /* Elegant light slate tint */
+        transform: translateY(-2px);           /* Smooth upward floating lift */
+        box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 
+                    0 4px 6px -4px rgba(15, 23, 42, 0.08); /* Sophisticated deep shadow elevation */
+        border-color: #5396e7 !important;      /* Softens the border edge line nicely */
+    }
+</style>
+<div class="page-container wide" style="padding: 32px; background-color: #f8fafc; min-height: 100vh;">
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header" style="margin-bottom: 28px;">
+        <h1 style="font-size: 28px; font-weight: 700; color: #1152ca;">BGV Officer Dashboard</h1>
+        <p style="color: #64748b; font-size: 14px;">View candidates already dispatched to BGV agency</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+        <h3 style="margin: 0; font-size: 20px; font-weight: 700; color: #1246ee;">{{ stats.total_sent }}</h3>
+        <p style="margin: 0; color: #64748b; font-size: 12px;">Total Candidates Sent</p>
+    </div>
+
+    <!-- Candidate Table -->
+    <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <thead>
+                <tr style="border-bottom: 1px solid #f1f5f9; background: #f8fafc; color: #475569;">
+                    <th style="padding: 12px;">Submission ID</th>
+                    <th style="padding: 12px;">Aadhaar</th>
+                    <th style="padding: 12px;">PAN</th>
+                    <th style="padding: 12px;">Course</th>
+                    <th style="padding: 12px; align-items: center;">Marksheet</th>
+                    <th style="padding: 12px;">Experience</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in profiles %}
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 12px;">{{ c.submission_id }}</td>
+                    <td style="padding: 12px;">{{ c.aadhaar }}</td>
+                    <td style="padding: 12px;">{{ c.pan }}</td>
+                    <td style="padding: 12px;">{{ c.course_type|default:"-" }}</td>
+                    <td style="padding: 12px;">
+                        {% if c.marksheet_file %}
+                            <a href="{{ c.marksheet_file.url }}" target="_blank" style="color:#1e40af; padding: 30px; text-decoration: none; font-weight:600;">View</a>
+                        {% else %}
+                            <span style="color:#94a3b8;">No File</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px;">
+                        {% if c.experience_file %}
+                            <a href="{{ c.experience_file.url }}" target="_blank" style="color:#1e40af; padding: 30px; text-decoration: none; font-weight:600;">View</a>
+                        {% else %}
+                            <span style="color:#94a3b8; padding: 30px;" >No File</span>
+                        {% endif %}
+                    </td>
+<td style="padding: 12px; text-align: center;">
+    {% if not c.is_verified_by_officer %}
+        <form method="POST" action="{% url 'verify_candidate' c.submission_id %}">
+            {% csrf_token %}
+            <button type="submit" style="padding: 6px 14px; background: #16a34a; color: white; border-radius: 6px; border: none; font-weight: 600; cursor: pointer;">
+                <i class="fa-solid fa-circle-check"></i> Verify
+            </button>
+        </form>
+    {% else %}
+        <button disabled style="padding: 6px 14px; background: #f1f5f9; color: #94a3b8; border-radius: 6px; border: none; font-weight: 600;">
+            Verified
+        </button>
+    {% endif %}
+</td>
+
+
+
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" style="text-align: center; padding: 20px; color: #64748b;">No candidates dispatched yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="offerLetterModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px;">
+    <div class="modal-content" style="width: 100%; max-width: 540px; padding: 24px; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; color: #0f172a; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); margin: auto;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
+            <h3 style="margin: 0; font-size: 1.15rem; color: #166534;"><i class="fa-solid fa-file-pen"></i>Offer Letter Generation</h3>
+            <button type="button" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #94a3b8;" onclick="document.getElementById('offerLetterModal').style.display='none'">&times;</button>
+        </div>
+
+        <form id="offerForm" method="POST" action="" style="display: flex; flex-direction: column; gap: 12px; font-size: 13px; text-align: left;">
+            {% csrf_token %}
+            
+            <!-- Row 1: Company Name & Date -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Company Name]</label>
+                    <input type="text" name="company_name" required placeholder="e.g. Voxlom Technologies" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Date]</label>
+                    <input type="text" name="letter_date" required placeholder="e.g. May 22, 2026" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+            </div>
+
+            <!-- Row 2: Candidate name & Designation -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Candidate's First Name]</label>
+                    <input type="text" name="candidate_name" required placeholder="e.g. John" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Designation]</label>
+                    <input type="text" name="designation" required placeholder="e.g. Software Engineer" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+            </div>
+
+            <!-- Row 3: CTC Numeric blocks & Word configurations -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">Annual CTC (₹ xxx,xxx)</label>
+                    <input type="text" name="annual_ctc" required placeholder="e.g. 6,00,000" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[In Words]</label>
+                    <input type="text" name="ctc_words" required placeholder="e.g. Six Lakh Rupees" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+            </div>
+
+            <!-- Row 4: Timeline Targets metrics mapping -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Joining Date]</label>
+                    <input type="text" name="joining_date" required placeholder="e.g. June 15, 2026" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Work Location]</label>
+                    <input type="text" name="work_location" required placeholder="e.g. Chennai Office" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+            </div>
+
+            <!-- Row 5: Structural operational details -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Team's Name (Dev/Marketing/HR)]</label>
+                    <input type="text" name="team_name" required placeholder="e.g. Development" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Manager's Name & Designation]</label>
+                    <input type="text" name="manager_meta" required placeholder="e.g. Rajesh, Tech Lead" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+            </div>
+
+            <!-- Row 6: Deadline & Authorization footprints -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Offer Expiry Date]</label>
+                    <input type="text" name="expiry_date" required placeholder="e.g. May 30, 2026" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-weight: 600; color: #344054;">[Sender Name]</label>
+                    <input type="text" name="sender_name" required placeholder="e.g. Priya Sharma" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+                <label style="font-weight: 600; color: #344054;">[Designation] (Sender)</label>
+                <input type="text" name="sender_designation" required placeholder="e.g. Human Resources Manager" style="padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 13px;">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; border-top: 1px solid #f1f5f9; padding-top: 14px;">
+                <button type="button" class="btn btn-secondary" style="padding: 8px 14px; background: white; border: 1px solid #d0d5dd; border-radius: 6px; cursor: pointer; font-weight: 600;" onclick="document.getElementById('offerLetterModal').style.display='none'">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="padding: 8px 16px; background: #16a34a; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;"><i class="fa-solid fa-file-pdf"></i> Download Offer PDF</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

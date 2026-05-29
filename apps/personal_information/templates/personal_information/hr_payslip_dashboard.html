@@ -1,0 +1,777 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="payroll-workspace">
+
+    <!-- ══════════ HEADER BANNER ══════════ -->
+    <div class="payroll-header">
+        <div class="header-left">
+            <div class="header-icon-box"><i class="fa-solid fa-coins"></i></div>
+            <div>
+                <h1>Executive Payroll Console</h1>
+                <p>Filter workforce by month, track salary generation, and process compensation distributions.</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <label for="month-filter">Active Payroll Month</label>
+            <div class="select-wrapper">
+                <select id="month-filter" onchange="location.href='?month=' + this.value">
+                    <option value="May 2026" {% if selected_month == "May 2026" %}selected{% endif %}>May 2026</option>
+                    <option value="June 2026" {% if selected_month == "June 2026" %}selected{% endif %}>June 2026</option>
+                    <option value="July 2026" {% if selected_month == "July 2026" %}selected{% endif %}>July 2026</option>
+                </select>
+                <i class="fa-solid fa-chevron-down select-chevron"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════ SUMMARY STAT CARDS ══════════ -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(99,102,241,0.1); color: #6366f1;"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-data">
+                <span class="stat-value" id="stat-total">{{ employees|length }}</span>
+                <span class="stat-label">Total Employees</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16,185,129,0.1); color: #10b981;"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-data">
+                <span class="stat-value stat-green" id="stat-generated">0</span>
+                <span class="stat-label">Payslips Generated</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245,158,11,0.1); color: #f59e0b;"><i class="fa-solid fa-clock"></i></div>
+            <div class="stat-data">
+                <span class="stat-value stat-amber" id="stat-pending">0</span>
+                <span class="stat-label">Pending Generation</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(59,130,246,0.1); color: #3b82f6;"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div class="stat-data">
+                <span class="stat-value stat-blue" id="stat-disbursed">₹0</span>
+                <span class="stat-label">Total Disbursed</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════ SEARCH BAR ══════════ -->
+    <div class="search-bar-container">
+        <div class="search-input-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="employeeSearch" placeholder="Search by name, department, or designation..." oninput="filterTable()">
+        </div>
+        <div class="search-meta">
+            <span id="result-count">Showing all records</span>
+        </div>
+    </div>
+
+    <!-- ══════════ MASTER TABLE ══════════ -->
+    <div class="table-card">
+        <table class="payroll-table" id="payrollTable">
+            <thead>
+                <tr>
+                    <th class="th-name">Employee</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th class="th-center">Net Take-Home</th>
+                    <th class="th-center th-action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in employees %}
+                <tr class="{% if row.has_payslip %}row-generated{% else %}row-pending{% endif %}">
+                    <td class="td-name">
+                        <div class="emp-avatar">{{ row.name|slice:":2"|upper }}</div>
+                        <span>{{ row.name }}</span>
+                    </td>
+                    <td class="td-dept">{{ row.department }}</td>
+                    <td class="td-desg">{{ row.designation }}</td>
+                    <td class="td-center">
+                        {% if row.has_payslip %}
+                            <span class="amount-tag">₹{{ row.payslip_data.net_pay }}</span>
+                        {% else %}
+                            <span class="amount-empty">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="td-center">
+                        {% if row.has_payslip %}
+                            <span class="badge-generated"><i class="fa-solid fa-circle-check"></i> Generated</span>
+                        {% else %}
+                            <button class="btn-generate" onclick="launchPayrollModal('{{ row.id }}', '{{ row.name }}')">
+                                <i class="fa-solid fa-calculator"></i> Generate Payslip
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="td-empty">
+                        <i class="fa-solid fa-inbox"></i>
+                        <p>No employee records found for this period.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ══════════ GENERATE PAYSLIP MODAL ══════════ -->
+<div class="modal-overlay" id="payrollModal">
+    <div class="modal-panel">
+        <div class="modal-header">
+            <div class="modal-header-icon"><i class="fa-solid fa-calculator"></i></div>
+            <div>
+                <h3>Compute Salary Details</h3>
+                <p>Processing payroll for <strong id="modal_target_name"></strong> — <span class="month-highlight">{{ selected_month }}</span></p>
+            </div>
+            <button class="modal-close" onclick="closePayrollModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form method="POST" class="modal-form">
+            {% csrf_token %}
+            <input type="hidden" name="generate_payslip_trigger" value="1">
+            <input type="hidden" name="target_employee_id" id="modal_target_id">
+            <input type="hidden" name="payroll_month" value="{{ selected_month }}">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-wallet"></i> Basic Salary (₹)</label>
+                    <input type="number" name="basic_salary" required value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-house"></i> HRA Allowance (₹)</label>
+                    <input type="number" name="hra" required value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-plus"></i> Special Allowances (₹)</label>
+                    <input type="number" name="allowances" required value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label><i class="fa-solid fa-minus"></i> Deductions / PF / Tax (₹)</label>
+                    <input type="number" name="deductions" required value="0" min="0">
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closePayrollModal()">Cancel</button>
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-check"></i> Commit Salary Layout</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function launchPayrollModal(empId, name) {
+    document.getElementById('modal_target_id').value = empId;
+    document.getElementById('modal_target_name').innerText = name;
+    document.getElementById('payrollModal').classList.add('open');
+}
+
+function closePayrollModal() {
+    document.getElementById('payrollModal').classList.remove('open');
+}
+
+// Close modal on overlay click
+document.getElementById('payrollModal').addEventListener('click', function(e) {
+    if (e.target === this) closePayrollModal();
+});
+
+// Table search filter
+function filterTable() {
+    const query = document.getElementById('employeeSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#payrollTable tbody tr');
+    let visibleCount = 0;
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const match = text.includes(query);
+        row.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+    });
+    document.getElementById('result-count').textContent = query ? `Showing ${visibleCount} result${visibleCount !== 1 ? 's' : ''}` : 'Showing all records';
+}
+
+// Compute summary stats on load
+document.addEventListener('DOMContentLoaded', function() {
+    const rows = document.querySelectorAll('#payrollTable tbody tr');
+    let generated = 0, pending = 0, totalPay = 0;
+    rows.forEach(row => {
+        if (row.classList.contains('row-generated')) {
+            generated++;
+            const amt = row.querySelector('.amount-tag');
+            if (amt) totalPay += parseFloat(amt.textContent.replace(/[₹,]/g, '')) || 0;
+        } else if (row.classList.contains('row-pending')) {
+            pending++;
+        }
+    });
+    document.getElementById('stat-generated').textContent = generated;
+    document.getElementById('stat-pending').textContent = pending;
+    document.getElementById('stat-disbursed').textContent = '₹' + totalPay.toLocaleString('en-IN', {minimumFractionDigits: 2});
+});
+</script>
+
+<style>
+/* ─── Workspace Base ─── */
+.payroll-workspace {
+    padding: clamp(16px, 3vw, 32px);
+    font-family: 'Inter', 'Poppins', system-ui, sans-serif;
+    background: #f8fafc;
+    min-height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ─── Header Banner ─── */
+.payroll-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 28px 32px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+}
+
+.header-left p {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-right label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper select {
+    appearance: none;
+    padding: 10px 40px 10px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #0f172a;
+    background: #f8fafc;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.select-wrapper select:hover { border-color: #6366f1; }
+.select-wrapper select:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+
+.select-chevron {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+/* ─── Summary Stats ─── */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px -4px rgba(0,0,0,0.06);
+    border-color: #cbd5e1;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.stat-data {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.stat-green { color: #10b981; }
+.stat-amber { color: #f59e0b; }
+.stat-blue  { color: #3b82f6; }
+
+.stat-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* ─── Search Bar ─── */
+.search-bar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 16px;
+}
+
+.search-input-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-input-wrap i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.search-input-wrap input {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #0f172a;
+    background: #fff;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.search-input-wrap input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
+}
+
+.search-input-wrap input::placeholder { color: #94a3b8; }
+
+.search-meta {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+/* ─── Table Card ─── */
+.table-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+}
+
+.payroll-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.payroll-table thead tr {
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.payroll-table th {
+    padding: 16px 24px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.th-center { text-align: center; }
+.th-action { width: 200px; }
+
+.payroll-table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s;
+}
+
+.payroll-table tbody tr:last-child { border-bottom: none; }
+.payroll-table tbody tr:hover { background: #f8fafc; }
+
+.payroll-table td { padding: 18px 24px; }
+
+.td-name {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: capitalize;
+}
+
+.emp-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+}
+
+.td-dept { color: #475569; font-weight: 600; font-size: 0.9rem; }
+.td-desg { color: #334155; font-weight: 600; font-size: 0.9rem; }
+.td-center { text-align: center; }
+
+.amount-tag {
+    font-weight: 800;
+    color: #059669;
+    font-size: 0.95rem;
+    background: rgba(16,185,129,0.08);
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(16,185,129,0.15);
+}
+
+.amount-empty {
+    color: #cbd5e1;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.badge-generated {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    background: #ecfdf5;
+    color: #059669;
+    font-weight: 700;
+    font-size: 0.78rem;
+    border-radius: 20px;
+    border: 1px solid rgba(16,185,129,0.2);
+}
+
+.btn-generate {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: rgba(99,102,241,0.08);
+    color: #4f46e5;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border: 1px solid rgba(99,102,241,0.15);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.btn-generate:hover {
+    background: #4f46e5;
+    color: #fff;
+    border-color: #4f46e5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99,102,241,0.25);
+}
+
+.td-empty {
+    text-align: center;
+    padding: 60px 24px !important;
+    color: #94a3b8;
+}
+
+.td-empty i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.td-empty p {
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* ─── Modal ─── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.5);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s, visibility 0.25s;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-panel {
+    width: 100%;
+    max-width: 520px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    overflow: hidden;
+}
+
+.modal-overlay.open .modal-panel {
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 28px;
+    border-bottom: 1px solid #f1f5f9;
+    position: relative;
+}
+
+.modal-header-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.modal-header p {
+    margin: 2px 0 0;
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.month-highlight {
+    font-weight: 700;
+    color: #6366f1;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-close:hover { background: #fee2e2; color: #ef4444; border-color: #fecaca; }
+
+.modal-form {
+    padding: 24px 28px 28px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+}
+
+.form-group label i {
+    margin-right: 4px;
+    color: #6366f1;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+    transition: all 0.2s;
+    font-family: inherit;
+    background: #f8fafc;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    background: #fff;
+}
+
+.modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-cancel {
+    padding: 12px;
+    background: #fff;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.btn-cancel:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+.btn-submit {
+    padding: 12px;
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .payroll-header { flex-direction: column; align-items: flex-start; }
+    .stats-row { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .th-action { width: auto; }
+    .payroll-table { font-size: 0.85rem; }
+    .payroll-table th, .payroll-table td { padding: 12px 14px; }
+}
+</style>
+{% endblock %}

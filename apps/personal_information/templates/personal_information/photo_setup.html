@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<div class="photo-setup-wrapper" style="padding: 24px; font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
+    
+    <!-- 🎛️ TOP APP ACTION BAR -->
+    <div class="setup-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="background: rgba(114, 187, 18, 0.1); color: #0e3da1; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+            <div>
+                <h1 style="font-size: 24px; font-weight: 700; color: #1e3a8a; margin: 0 0 2px 0; letter-spacing: -0.02em;">Profile Photo Setup</h1>
+                <p style="color: #64748b; font-size: 13px; margin: 0; font-weight: 500;">Upload a clear official photo of yourself for your corporate identity profile card</p>
+            </div>
+        </div>
+        <a href="{% url 'personal_info_dashboard' %}" class="btn-back" style="padding: 8px 16px; background: #ffffff; border: 1px solid #cbd5e1; color: #475569; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background 0.2s;">
+            <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 🧱 CORE SIDE-BY-SIDE EDITOR WORKSPACE LAYOUT -->
+    <!-- ========================================================================= -->
+    <form id="photoUploadForm" method="POST" action="{% url 'api_upload_photo_later' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="workspace-grid" style="display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start;">
+            
+            <!-- 📁 COLUMN A: THE CIRCULAR DROP-ZONE AREA CARD -->
+            <div class="workspace-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 380px; box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02); transition: all 0.3s ease;">
+                
+                <!-- Hidden physical input element hook -->
+                <input type="file" id="fileInputSelector" name="profile_photo" accept=".jpg,.jpeg,.png" required style="display: none;" onchange="handleFilePreview(this)">
+                
+                <!-- Circular interactive frame bounds -->
+                <div class="circular-dropzone" id="dropzoneContainer" onclick="document.getElementById('fileInputSelector').click()" style="width: 180px; height: 180px; border: 2px dashed #cbd5e1; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer; background: #f8fafc; overflow: hidden; position: relative; transition: all 0.2s ease-in-out;">
+                    <div id="dropzoneContents" style="text-align: center; padding: 10px;">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.75rem; color: #94a3b8; margin-bottom: 4px;"></i>
+                        <h4 style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 2px;">Upload Photo</h4>
+                        <span style="font-size: 11px; color: #64748b; font-weight: 500;">Click to select</span>
+                    </div>
+                    <!-- Target layer where the live user canvas headshot renders -->
+                    <img id="imageLivePreview" src="" alt="Live Preview" style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 10;">
+                </div>
+
+                <!-- 🎛️ GRAPHICAL MANIPULATION UTILITIES CONTROLS BAR -->
+                <div class="utilities-bar" style="display: flex; gap: 16px; margin-top: 24px; background: #f1f5f9; padding: 8px 16px; border-radius: 30px;">
+                    <button type="button" class="util-btn" title="Zoom In" onclick="adjustImageTransform('zoom-in')" style="background: none; border: none; font-size: 1rem; color: #475569; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                    <button type="button" class="util-btn" title="Zoom Out" onclick="adjustImageTransform('zoom-out')" style="background: none; border: none; font-size: 1rem; color: #475569; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                    <button type="button" class="util-btn" title="Rotate" onclick="adjustImageTransform('rotate')" style="background: none; border: none; font-size: 1rem; color: #475569; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-rotate"></i></button>
+                    <button type="button" class="util-btn" title="Reset Layout" onclick="adjustImageTransform('reset')" style="background: none; border: none; font-size: 1rem; color: #ef4444; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </div>
+
+            <!-- 📋 COLUMN B: COMPLIANCE CHECKLISTS & ACTION CONTROLLER -->
+            <div class="controls-stack" style="display: flex; flex-direction: column; gap: 20px;">
+                
+                <!-- Photo Guidelines Verification Panel -->
+                <div class="guidelines-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
+                    <h3 style="font-size: 13px; font-weight: 700; color: #1e3a8a; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-info"></i> Photo Guidelines</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 11.5px; color: #475569; line-height: 1.4;">
+                        <li style="display: flex; gap: 8px; align-items: start;"><i class="fa-solid fa-circle-check" style="color:#0e3da1; margin-top:3px;"></i> <span>The uploaded photo will be displayed directly on your active public corporate profile pass.</span></li>
+                        <li style="display: flex; gap: 8px; align-items: start;"><i class="fa-solid fa-circle-check" style="color:#0e3da1; margin-top:3px;"></i> <span>Ensure your entire face is centered and clearly visible under standard lighting bounds.</span></li>
+                        <li style="display: flex; gap: 8px; align-items: start;"><i class="fa-solid fa-triangle-exclamation" style="color:#f5a623; margin-top:3px;"></i> <span>Do not use heavily filtered images, copyrighted content, or offensive background canvas layers.</span></li>
+                    </ul>
+                </div>
+
+                <!-- Mandatory Legal Compliance Declarations -->
+                <div class="compliance-box" style="display: flex; flex-direction: column; gap: 10px; padding: 0 4px;">
+                    <label style="display: flex; gap: 8px; align-items: start; font-size: 12px; color: #344054; font-weight: 500; cursor: pointer;">
+                        <input type="checkbox" required style="margin-top: 3px; accent-color: #0e3da1;">
+                        <span>I confirm that this photo is my own and matches my genuine legal identity credentials.</span>
+                    </label>
+                    <label style="display: flex; gap: 8px; align-items: start; font-size: 12px; color: #344054; font-weight: 500; cursor: pointer;">
+                        <input type="checkbox" required style="margin-top: 3px; accent-color: #0e3da1;">
+                        <span>I agree to the corporate terms and image data retention policies.</span>
+                    </label>
+                </div>
+
+                <!-- Submission Dispatch Core Button Layout -->
+                <button type="submit" id="savePhotoBtn" style="width: 100%; padding: 12px 20px; background-color: #193fbe; border: none; color: #ffffff; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(114, 187, 18, 0.2); transition: all 0.2s;">
+                    <i class="fa-solid fa-floppy-disk"></i> SAVE PROFILE PHOTO
+                </button>
+            </div>
+
+        </div>
+    </form>
+    <div style="margin-top: 24px; display: flex; justify-content: flex-end; width: 100%; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+        <a href="{% url 'family_details' %}" class="btn-secondary" style="padding: 12px 24px; background-color: #f8fafc; border: 1px solid #cbd5e1; color: #475569; border-radius: 8px; font-size: 13.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            <i class="fas fa-arrow-right"></i> Next: Family Details 
+        </a>
+    </div>
+</div>
+
+
+
+<!-- ========================================================================= -->
+<!-- 🛠️ INTERACTIVE PREVIEW & ROTATE MANIPULATION ENGINE SCRIPT -->
+<!-- ========================================================================= -->
+<script>
+    let currentScaleValue = 1.0;
+    let currentRotationDegrees = 0;
+    const previewImageElement = document.getElementById('imageLivePreview');
+    const dropzoneBox = document.getElementById('dropzoneContainer');
+
+    /**
+     * Captures file upload stream choices and paints them onto the live view frame
+     */
+    function handleFilePreview(fileInput) {
+        const targetedAsset = fileInput.files[0];
+        if (targetedAsset) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(eventEvent) {
+                previewImageElement.src = eventEvent.target.result;
+                previewImageElement.style.display = 'block';
+                document.getElementById('dropzoneContents').style.opacity = '0';
+                dropzoneBox.style.borderColor = '#72BB12';
+                resetTransformParameters();
+            }
+            fileReader.readAsDataURL(targetedAsset);
+        }
+    }
+
+    /**
+     * Manages scaling tracking zoom values and rotations matrices
+     */
+        function adjustImageTransform(operationCommand) {
+        if (previewImageElement.style.display === 'none') return;
+
+        if (operationCommand === 'zoom-in') {
+            currentScaleValue += 0.08;
+        } else if (operationCommand === 'zoom-out') {
+            if (currentScaleValue > 0.5) currentScaleValue -= 0.08;
+        } else if (operationCommand === 'rotate') {
+            currentRotationDegrees += 90;
+        } else if (operationCommand === 'reset') {
+            // Wipes data values cleanly to structural starting frames default states
+            document.getElementById('fileInputSelector').value = '';
+            previewImageElement.src = '';
+            previewImageElement.style.display = 'none';
+            document.getElementById('dropzoneContents').style.opacity = '1';
+            dropzoneBox.style.borderColor = '#cbd5e1';
+            resetTransformParameters();
+            return;
+        }
+        applyCSSMatrixStyles();
+    }
+
+    function resetTransformParameters() {
+        currentScaleValue = 1.0;
+        currentRotationDegrees = 0;
+        applyCSSMatrixStyles();
+    }
+
+    function applyCSSMatrixStyles() {
+        previewImageElement.style.transform = `scale(${currentScaleValue}) rotate(${currentRotationDegrees}deg)`;
+    }
+
+    // =========================================================================
+    // 🎛️ INTERACTIVE DRAG & DROP EVENT LISTENERS MATRIX
+    // =========================================================================
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropzoneBox.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropzoneBox.style.background = '#f0fdf4';
+            dropzoneBox.style.borderColor = '#72BB12';
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropzoneBox.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropzoneBox.style.background = '#f8fafc';
+            if (previewImageElement.style.display === 'none') {
+                dropzoneBox.style.borderColor = '#cbd5e1';
+            }
+        }, false);
+    });
+
+    dropzoneBox.addEventListener('drop', (e) => {
+        const transferFiles = e.dataTransfer.files;
+        if (transferFiles.length > 0 && transferFiles[0].type.match('image.*')) {
+            document.getElementById('fileInputSelector').files = transferFiles;
+            handleFilePreview(document.getElementById('fileInputSelector'));
+        }
+    }, false);
+</script>
+
+<style>
+    /* Premium Interactive Lift Hovers Rules */
+    .workspace-card:hover {
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 16px -6px rgba(15, 23, 42, 0.02) !important;
+        border-color: #cbd5e1 !important;
+    }
+    .util-btn:hover {
+        color:#0e3da1 !important;
+        transform: scale(1.1);
+        transition: transform 0.15s ease;
+    }
+    #savePhotoBtn:hover {
+        background-color: #0e3da1 !important;
+        box-shadow: 0 6px 16px rgba(114, 187, 18, 0.3) !important;
+    }
+    /* 🎯 CLEAN DESIGN HOVER SCHEME FOR YOUR UPLOAD CIRCLE */
+.circular-dropzone:hover {
+    border-color: #0e3da1 !important;       /* Shifts the dashed line border to your dark green */
+}
+
+/* Transitions the inner icon to change color dynamically too! */
+.circular-dropzone:hover .fa-cloud-arrow-up,
+.circular-dropzone:hover h4 {
+    color: #0e3da1 !important;
+}
+.h1 {
+  font-family: "Poppins", sans-serif;
+}
+
+</style>
+{% endblock %}
+

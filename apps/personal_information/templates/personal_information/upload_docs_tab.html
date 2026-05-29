@@ -1,0 +1,620 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="doc-upload-workspace">
+
+    <!-- ══════════ HEADER ══════════ -->
+    <div class="workspace-header">
+        <div class="header-icon-box"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+        <div>
+            <h1>Document Verification Workspace</h1>
+            <p>Upload, edit, and manage your verified corporate identification and educational records.</p>
+        </div>
+    </div>
+
+    <!-- ══════════ COMPLETION PROGRESS ══════════ -->
+    <div class="progress-strip">
+        <div class="progress-info">
+            <span class="progress-label"><i class="fa-solid fa-chart-pie"></i> Upload Completion</span>
+            <span class="progress-value" id="progressText">0 / 5 documents</span>
+        </div>
+        <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- ══════════ IDENTITY DOCUMENTS ══════════ -->
+    <div class="section-group">
+        <div class="section-label"><i class="fa-solid fa-id-card"></i> Identity Documents</div>
+
+        <div class="cards-grid">
+
+            <!-- PAN Card -->
+            <div class="upload-card {% if employee.pan_card_doc %}is-uploaded{% endif %}" onclick="triggerHiddenInput('panInput')">
+                <div class="card-top-row">
+                    <div class="card-icon" style="--accent: #3b82f6; --accent-bg: rgba(59,130,246,0.1);">
+                        <i class="fa-solid fa-address-card"></i>
+                    </div>
+                    {% if employee.pan_card_doc %}
+                    <span class="status-pill success"><i class="fa-solid fa-circle-check"></i> Uploaded</span>
+                    {% else %}
+                    <span class="status-pill pending"><i class="fa-solid fa-clock"></i> Pending</span>
+                    {% endif %}
+                </div>
+                <h4>PAN Card</h4>
+                <p class="card-hint" id="panLabel">
+                    {% if employee.pan_card_doc %}Click to replace your PAN card{% else %}Click or drag to upload{% endif %}
+                </p>
+                <div class="card-footer">
+                    <span><i class="fa-solid fa-file-arrow-up"></i> PDF, JPG, PNG</span>
+                    <span>Max 10 MB</span>
+                </div>
+                <form id="panForm" method="POST" action="{% url 'upload_verification_doc' %}" enctype="multipart/form-data" onclick="event.stopPropagation();">
+                    {% csrf_token %}
+                    <input type="file" id="panInput" name="pan_card_doc" accept=".pdf,.jpg,.jpeg,.png" onchange="autoSubmitForm('panForm', 'panLabel', this)">
+                </form>
+            </div>
+
+            <!-- Aadhar Card -->
+            <div class="upload-card {% if employee.aadhar_card_doc %}is-uploaded{% endif %}" onclick="triggerHiddenInput('aadharInput')">
+                <div class="card-top-row">
+                    <div class="card-icon" style="--accent: #8b5cf6; --accent-bg: rgba(139,92,246,0.1);">
+                        <i class="fa-solid fa-id-card-clip"></i>
+                    </div>
+                    {% if employee.aadhar_card_doc %}
+                    <span class="status-pill success"><i class="fa-solid fa-circle-check"></i> Uploaded</span>
+                    {% else %}
+                    <span class="status-pill pending"><i class="fa-solid fa-clock"></i> Pending</span>
+                    {% endif %}
+                </div>
+                <h4>Aadhar Card</h4>
+                <p class="card-hint" id="aadharLabel">
+                    {% if employee.aadhar_card_doc %}Click to replace your Aadhar card{% else %}Click or drag to upload{% endif %}
+                </p>
+                <div class="card-footer">
+                    <span><i class="fa-solid fa-file-arrow-up"></i> PDF, JPG, PNG</span>
+                    <span>Max 10 MB</span>
+                </div>
+                <form id="aadharForm" method="POST" action="{% url 'upload_verification_doc' %}" enctype="multipart/form-data" onclick="event.stopPropagation();">
+                    {% csrf_token %}
+                    <input type="file" id="aadharInput" name="aadhar_card_doc" accept=".pdf,.jpg,.jpeg,.png" onchange="autoSubmitForm('aadharForm', 'aadharLabel', this)">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════ PASSPORT SECTION ══════════ -->
+    <div class="section-group">
+        <div class="section-label"><i class="fa-solid fa-passport"></i> Passport Registration</div>
+
+        <div class="passport-card {% if employee.passport_doc %}is-uploaded{% endif %}">
+            <div class="card-top-row">
+                <div class="card-icon" style="--accent: #ec4899; --accent-bg: rgba(236,72,153,0.1);">
+                    <i class="fa-solid fa-passport"></i>
+                </div>
+                {% if employee.passport_doc %}
+                <span class="status-pill success"><i class="fa-solid fa-circle-check"></i> Uploaded</span>
+                {% else %}
+                <span class="status-pill pending"><i class="fa-solid fa-clock"></i> Pending</span>
+                {% endif %}
+            </div>
+
+            <h4>International Passport</h4>
+
+            <form method="POST" action="{% url 'upload_verification_doc' %}" enctype="multipart/form-data" class="passport-form">
+                {% csrf_token %}
+
+                <div class="passport-fields">
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-hashtag"></i> Passport Number</label>
+                        <input type="text" name="passport_number" value="{{ employee.personal_details.hr_compliance.passport_number|default:'' }}" placeholder="e.g. Z1234567">
+                    </div>
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-calendar"></i> Expiry Date</label>
+                        <input type="date" name="passport_expiry_date" value="{{ employee.personal_details.hr_compliance.passport_expiry|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="file-dropzone" onclick="document.getElementById('passportRawFileInput').click()">
+                    <div class="dropzone-inner">
+                        <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <div class="dropzone-text" id="passportDisplayLabel">
+                            {% if employee.passport_doc %}Click to change passport scan copy{% else %}Click to select passport scan (PDF / Image){% endif %}
+                        </div>
+                        <span class="dropzone-meta">Supports PDF, JPG, PNG up to 10 MB</span>
+                    </div>
+                    <input type="file" id="passportRawFileInput" name="passport_doc" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="document.getElementById('passportDisplayLabel').innerHTML = '<i class=\'fa-solid fa-file-pdf\' style=\'color:#ef4444;\'></i> Staged: ' + this.files[0].name">
+                </div>
+
+                <button type="submit" class="btn-commit">
+                    <i class="fa-solid fa-floppy-disk"></i> Commit Passport Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ══════════ ACADEMIC DOCUMENTS ══════════ -->
+    <div class="section-group">
+        <div class="section-label"><i class="fa-solid fa-graduation-cap"></i> Educational Documents</div>
+
+        <div class="cards-grid">
+
+            <!-- 10th Marksheet -->
+            <div class="upload-card {% if employee.tenth_marksheet_doc %}is-uploaded{% endif %}" onclick="triggerHiddenInput('tenthInput')">
+                <div class="card-top-row">
+                    <div class="card-icon" style="--accent: #f59e0b; --accent-bg: rgba(245,158,11,0.1);">
+                        <i class="fa-solid fa-file-invoice"></i>
+                    </div>
+                    {% if employee.tenth_marksheet_doc %}
+                    <span class="status-pill success"><i class="fa-solid fa-circle-check"></i> Uploaded</span>
+                    {% else %}
+                    <span class="status-pill pending"><i class="fa-solid fa-clock"></i> Pending</span>
+                    {% endif %}
+                </div>
+                <h4>10th Marksheet</h4>
+                <p class="card-hint" id="tenthLabel">
+                    {% if employee.tenth_marksheet_doc %}Click to replace your 10th marksheet{% else %}Click or drag to upload{% endif %}
+                </p>
+                <div class="card-footer">
+                    <span><i class="fa-solid fa-file-arrow-up"></i> PDF, JPG, PNG</span>
+                    <span>Max 10 MB</span>
+                </div>
+                <form id="tenthForm" method="POST" action="{% url 'upload_verification_doc' %}" enctype="multipart/form-data" onclick="event.stopPropagation();">
+                    {% csrf_token %}
+                    <input type="file" id="tenthInput" name="tenth_marksheet_doc" accept=".pdf,.jpg,.jpeg,.png" onchange="autoSubmitForm('tenthForm', 'tenthLabel', this)">
+                </form>
+            </div>
+
+            <!-- 12th Marksheet -->
+            <div class="upload-card {% if employee.twelfth_marksheet_doc %}is-uploaded{% endif %}" onclick="triggerHiddenInput('twelfthInput')">
+                <div class="card-top-row">
+                    <div class="card-icon" style="--accent: #10b981; --accent-bg: rgba(16,185,129,0.1);">
+                        <i class="fa-solid fa-file-invoice"></i>
+                    </div>
+                    {% if employee.twelfth_marksheet_doc %}
+                    <span class="status-pill success"><i class="fa-solid fa-circle-check"></i> Uploaded</span>
+                    {% else %}
+                    <span class="status-pill pending"><i class="fa-solid fa-clock"></i> Pending</span>
+                    {% endif %}
+                </div>
+                <h4>12th Marksheet</h4>
+                <p class="card-hint" id="twelfthLabel">
+                    {% if employee.twelfth_marksheet_doc %}Click to replace your 12th marksheet{% else %}Click or drag to upload{% endif %}
+                </p>
+                <div class="card-footer">
+                    <span><i class="fa-solid fa-file-arrow-up"></i> PDF, JPG, PNG</span>
+                    <span>Max 10 MB</span>
+                </div>
+                <form id="twelfthForm" method="POST" action="{% url 'upload_verification_doc' %}" enctype="multipart/form-data" onclick="event.stopPropagation();">
+                    {% csrf_token %}
+                    <input type="file" id="twelfthInput" name="twelfth_marksheet_doc" accept=".pdf,.jpg,.jpeg,.png" onchange="autoSubmitForm('twelfthForm', 'twelfthLabel', this)">
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ══════════ SCRIPTS ══════════ -->
+<script>
+function triggerHiddenInput(inputIdToken) {
+    document.getElementById(inputIdToken).click();
+}
+
+function autoSubmitForm(formIdToken, labelIdToken, inputSelector) {
+    if (inputSelector.files.length > 0) {
+        const uploadedFilename = inputSelector.files[0].name;
+        document.getElementById(labelIdToken).innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:#6366f1;"></i> Uploading ${uploadedFilename}...`;
+        setTimeout(() => {
+            document.getElementById(formIdToken).submit();
+        }, 400);
+    }
+}
+
+// Compute progress bar on load
+document.addEventListener('DOMContentLoaded', function() {
+    const total = 5;
+    let uploaded = 0;
+    document.querySelectorAll('.upload-card.is-uploaded, .passport-card.is-uploaded').forEach(() => uploaded++);
+    const pct = Math.round((uploaded / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = uploaded + ' / ' + total + ' documents';
+});
+</script>
+
+<!-- ══════════ STYLES ══════════ -->
+<style>
+/* ─── Workspace ─── */
+.doc-upload-workspace {
+    padding: clamp(16px, 3vw, 32px);
+    font-family: 'Inter', 'Poppins', system-ui, sans-serif;
+    background: #f8fafc;
+    min-height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: #0f172a;
+}
+
+/* ─── Header ─── */
+.workspace-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 32px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+}
+
+.header-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+}
+
+.workspace-header h1 {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+}
+
+.workspace-header p {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* ─── Progress Strip ─── */
+.progress-strip {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.progress-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #475569;
+}
+
+.progress-label i {
+    color: #6366f1;
+    margin-right: 6px;
+}
+
+.progress-value {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.progress-bar-track {
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+    border-radius: 99px;
+    transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ─── Section Group ─── */
+.section-group {
+    margin-bottom: 32px;
+}
+
+.section-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #4f46e5;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-label i {
+    font-size: 0.85rem;
+}
+
+/* ─── Cards Grid ─── */
+.cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ─── Upload Card ─── */
+.upload-card {
+    background: #fff;
+    border: 2px dashed #e2e8f0;
+    border-radius: 20px;
+    padding: 28px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.upload-card:hover {
+    border-color: #6366f1;
+    border-style: solid;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -6px rgba(99,102,241,0.1);
+}
+
+.upload-card.is-uploaded {
+    border-color: #d1fae5;
+    border-style: solid;
+    background: linear-gradient(180deg, #f0fdf4 0%, #fff 40%);
+}
+
+.upload-card.is-uploaded:hover {
+    border-color: #10b981;
+}
+
+.upload-card form { display: none; }
+
+.card-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: transform 0.25s;
+}
+
+.upload-card:hover .card-icon {
+    transform: scale(1.1);
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.status-pill.success {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid rgba(16,185,129,0.2);
+}
+
+.status-pill.pending {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid rgba(245,158,11,0.2);
+}
+
+.upload-card h4, .passport-card h4 {
+    margin: 0 0 6px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.card-hint {
+    margin: 0 0 16px;
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid #f1f5f9;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.card-footer i { margin-right: 4px; }
+
+/* ─── Passport Card ─── */
+.passport-card {
+    background: #fff;
+    border: 2px dashed #e2e8f0;
+    border-radius: 20px;
+    padding: 28px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.passport-card:hover {
+    border-color: #6366f1;
+    border-style: solid;
+    box-shadow: 0 8px 20px -4px rgba(99,102,241,0.08);
+}
+
+.passport-card.is-uploaded {
+    border-color: #d1fae5;
+    border-style: solid;
+    background: linear-gradient(180deg, #f0fdf4 0%, #fff 40%);
+}
+
+.passport-card.is-uploaded:hover {
+    border-color: #10b981;
+}
+
+.passport-form {
+    margin: 0;
+}
+
+.passport-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+    margin-top: 8px;
+}
+
+.field-group label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+}
+
+.field-group label i {
+    margin-right: 4px;
+    color: #6366f1;
+}
+
+.field-group input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+    background: #f8fafc;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.field-group input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    background: #fff;
+}
+
+/* ─── Dropzone ─── */
+.file-dropzone {
+    background: #f8fafc;
+    border: 2px dashed #e2e8f0;
+    border-radius: 14px;
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.25s;
+}
+
+.file-dropzone:hover {
+    border-color: #6366f1;
+    background: #f5f3ff;
+}
+
+.dropzone-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropzone-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(99,102,241,0.1);
+    color: #6366f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+    transition: transform 0.25s;
+}
+
+.file-dropzone:hover .dropzone-icon { transform: scale(1.1); }
+
+.dropzone-text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.dropzone-meta {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* ─── Submit Button ─── */
+.btn-commit {
+    width: 100%;
+    padding: 13px 24px;
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.25);
+}
+
+.btn-commit:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(99,102,241,0.35);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    .passport-fields { grid-template-columns: 1fr; }
+    .workspace-header { flex-direction: column; align-items: flex-start; }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="verification-wrapper" style="padding: 24px; font-family: 'Poppins', sans-serif; background-color: #f8fafc;">
+    
+    <!-- Header -->
+    <div style="margin-bottom: 24px;">
+        <h1 style="font-size: 24px; font-weight: 700; color: #1e3a8a; margin: 0; display: inline-flex; align-items: center; gap: 8px;"><i class="fa-solid fa-file-shield" style="color:#1d4ed8;"></i> Document Verification</h1>
+        <p style="color: #64748b; font-size: 13px; margin: 4px 0 0 0;">Upload your educational and identity documents for verification.</p>
+    </div>
+
+    <!-- SECTION 1: IDENTITY DOCUMENTS -->
+    <div style="margin-bottom: 32px;">
+        <h3 style="font-size: 12px; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 16px;"><i class="fa-solid fa-id-card"></i> Identity Documents</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            
+            <!-- PAN CARD CARD -->
+            <div class="doc-upload-box" style="background:#fff; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 24px; text-align: center; transition: all 0.2s;">
+                <h4 style="margin: 0 0 12px 0; font-size: 14px; text-align: left; color:#334155;"><i class="fa-solid fa-address-card" style="color:#1d4ed8;"></i> PAN Card</h4>
+                {% if employee.pan_card_doc %}
+                    <div style="margin-bottom:12px; font-size:12px; color:#16a34a; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Uploaded</div>
+                    <a href="{% url 'preview_verification_doc' doc_type='pan' %}" target="_blank" style="padding: 6px 12px; background:#f1f5f9; border-radius:6px; font-size:12px; font-weight:700; color:#1e3a8a; text-decoration:none;"><i class="fa-solid fa-eye"></i> View Document</a>
+                {% endif %}
+                <form method="POST" action="{% url 'upload_verification_doc' %}" enctype="multipart/form-data" style="margin-top: 12px;">
+                    {% csrf_token %}
+                    <input type="file" name="pan_card_doc" required style="font-size:11px; width:100%; margin-bottom:8px;">
+                    <button type="submit" style="background:#1d4ed8; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">Upload PAN</button>
+                </form>
+            </div>
+
+            <!-- AADHAR CARD CARD -->
+            <div class="doc-upload-box" style="background:#fff; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 24px; text-align: center; transition: all 0.2s;">
+                <h4 style="margin: 0 0 12px 0; font-size: 14px; text-align: left; color:#334155;"><i class="fa-solid fa-id-card-clip" style="color:#1d4ed8;"></i> Aadhar Card</h4>
+                {% if employee.aadhar_card_doc %}
+                    <div style="margin-bottom:12px; font-size:12px; color:#16a34a; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Uploaded</div>
+                    <a href="{% url 'preview_verification_doc' doc_type='aadhar' %}" target="_blank" style="padding: 6px 12px; background:#f1f5f9; border-radius:6px; font-size:12px; font-weight:700; color:#1e3a8a; text-decoration:none;"><i class="fa-solid fa-eye"></i> View Document</a>
+                {% endif %}
+                <form method="POST" action="{% url 'upload_verification_doc' %}" enctype="multipart/form-data" style="margin-top: 12px;">
+                    {% csrf_token %}
+                    <input type="file" name="aadhar_card_doc" required style="font-size:11px; width:100%; margin-bottom:8px;">
+                    <button type="submit" style="background:#1d4ed8; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">Upload Aadhar</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECTION 2: EDUCATIONAL DOCUMENTS -->
+    <div>
+        <h3 style="font-size: 12px; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 16px;"><i class="fa-solid fa-graduation-cap"></i> Educational Documents</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            
+            <!-- 10TH MARKSHEET CARD -->
+            <div class="doc-upload-box" style="background:#fff; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 24px; text-align: center; transition: all 0.2s;">
+                <h4 style="margin: 0 0 12px 0; font-size: 14px; text-align: left; color:#334155;"><i class="fa-solid fa-file-invoice" style="color:#1d4ed8;"></i> 10th Marksheet</h4>
+                {% if employee.tenth_marksheet_doc %}
+                    <div style="margin-bottom:12px; font-size:12px; color:#16a34a; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Uploaded</div>
+                    <a href="{% url 'preview_verification_doc' doc_type='10th' %}" target="_blank" style="padding: 6px 12px; background:#f1f5f9; border-radius:6px; font-size:12px; font-weight:700; color:#1e3a8a; text-decoration:none;"><i class="fa-solid fa-eye"></i> View Document</a>
+                {% endif %}
+                <form method="POST" action="{% url 'upload_verification_doc' %}" enctype="multipart/form-data" style="margin-top: 12px;">
+                    {% csrf_token %}
+                    <input type="file" name="tenth_marksheet_doc" required style="font-size:11px; width:100%; margin-bottom:8px;">
+                    <button type="submit" style="background:#1d4ed8; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">Upload 10th</button>
+                </form>
+            </div>
+
+            <!-- 12TH MARKSHEET CARD -->
+            <div class="doc-upload-box" style="background:#fff; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 24px; text-align: center; transition: all 0.2s;">
+                <h4 style="margin: 0 0 12px 0; font-size: 14px; text-align: left; color:#334155;"><i class="fa-solid fa-file-invoice" style="color:#1d4ed8;"></i> 12th Marksheet</h4>
+                {% if employee.twelfth_marksheet_doc %}
+                    <div style="margin-bottom:12px; font-size:12px; color:#16a34a; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Uploaded</div>
+                    <a href="{% url 'preview_verification_doc' doc_type='12th' %}" target="_blank" style="padding: 6px 12px; background:#f1f5f9; border-radius:6px; font-size:12px; font-weight:700; color:#1e3a8a; text-decoration:none;"><i class="fa-solid fa-eye"></i> View Document</a>
+                {% endif %}
+                <form method="POST" action="{% url 'upload_verification_doc' %}" enctype="multipart/form-data" style="margin-top: 12px;">
+                    {% csrf_token %}
+                    <input type="file" name="twelfth_marksheet_doc" required style="font-size:11px; width:100%; margin-bottom:8px;">
+                    <button type="submit" style="background:#1d4ed8; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">Upload 12th</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .doc-upload-box:hover {
+        border-color: #1d4ed8 !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+</style>
+{% endblock %}

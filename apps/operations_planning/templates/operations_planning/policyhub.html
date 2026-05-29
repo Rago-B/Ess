@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Light Theme Workspace Wrapper Layout Box Container -->
+<div class="page-container wide" style="padding: 32px; font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
+    
+    <!-- Dashboard Top Header Row Panel -->
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
+        <div>
+            <h1 style="font-size: 32px; font-weight: 700; color: #1e40af; margin: 0 0 6px 0; letter-spacing: -0.02em;">Policy Hub</h1>
+            <p style="color: #64748b; font-size: 14px; margin: 0; font-weight: 500;">Central repository for company policies and documentation</p>
+        </div>
+        {% if request.user.role == 'hr' or request.user.role == 'admin' %}
+        <button class="btn btn-primary" style="padding: 10px 18px; font-weight: 600; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;" onclick="document.getElementById('policyModal').style.display='flex'">
+            <i class="fa-solid fa-plus"></i> Add Policy
+        </button>
+        {% endif %}
+    </div>
+
+    <!-- Reconstructed React Category-Breakdown Stats Row Matrix Grid -->
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 30px;">
+        <!-- Card 1: Cumulative Total -->
+        <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            <div class="stat-icon" style="background: #e0f2fe; color: #0369a1; width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                <i class="fa-solid fa-file-shield"></i>
+            </div>
+            <div>
+                <h3 style="margin: 0; font-size: 20px; font-weight: 700; color: #0f172a;">{{ total_count }}</h3>
+                <p style="margin: 0; color: #64748b; font-size: 12px; font-weight: 500;">Total Policies</p>
+            </div>
+        </div>
+        <!-- Loop Cards: Dynamic category breakdown metrics -->
+        {% for cat in category_stats %}
+        <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            <div class="stat-icon" style="background: #f1f5f9; color: #64748b; width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                <i class="fa-solid {{ cat.icon }}"></i>
+            </div>
+            <div>
+                <h3 style="margin: 0; font-size: 20px; font-weight: 700; color: #0f172a;">{{ cat.count }}</h3>
+                <p style="margin: 0; color: #64748b; font-size: 12px; font-weight: 500;">{{ cat.name }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Main Solid White Table Presentation Box -->
+    <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div class="table-container" style="overflow-x: auto;">
+            <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #f1f5f9; background: #f8fafc;">
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px;">Title</th>
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px;">Category</th>
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px;">Version</th>
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px;">Effective Date</th>
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px; width: 12%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in policies %}
+                    <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.15s ease;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
+                        <td style="padding: 16px;">
+                            <div style="font-weight: 600; color: #0f172a;">{{ p.policy_name }}</div>
+                            <div style="font-size: 12px; color: #64748b; margin-top: 2px;">{{ p.document_path|default:"No description details available." }}</div>
+                        </td>
+                        <td style="padding: 16px;">
+                            <span class="status-badge" style="padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f5f9; color: #475569;">
+                                {{ p.category }}
+                            </span>
+                        </td>
+                        <td style="padding: 16px; color: #334155;">v{{ p.version }}</td>
+                        <td style="padding: 16px; color: #475569; font-weight: 500;">{{ p.effective_date|date:"m/d/Y" }}</td>
+                        <td style="padding: 16px;">
+                            <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 12px; font-weight: 600; background: #ffffff; border: 1px solid #d0d5dd; border-radius: 6px; color: #344054; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-download"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 40px; color: #64748b; font-size: 14px;">No policies found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Reconstructed Modal Dialog Layer Frame Component matching React Form elements -->
+<div id="policyModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000;">
+    <div class="modal-content" style="width: 100%; max-width: 500px; padding: 28px; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; color: #0f172a; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+        
+        <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 1.25rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-file-shield" style="color: #475569;"></i> Add New Policy
+        </h2>
+        
+        <form method="POST" action="{% url 'policy_hub' %}" id="policyForm" style="display: flex; flex-direction: column; gap: 15px;">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; color: #344054;">Policy Title</label>
+                <input type="text" name="title" required class="form-control" style="padding: 10px; border: 1px solid #d0d5dd; border-radius: 8px; width: 100%; font-size: 14px; color: #0f172a;">
+            </div>
+
+            <div class="form-group">
+                <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; color: #344054;">Description</label>
+                <textarea name="description" rows="3" class="form-control" style="padding: 10px; border: 1px solid #d0d5dd; border-radius: 8px; width: 100%; font-size: 14px; resize: none; color: #0f172a;"></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; color: #344054;">Category</label>
+                    <select name="category" class="form-control" style="padding: 10px; background: #ffffff; border: 1px solid #d0d5dd; border-radius: 8px; width: 100%; font-size: 14px; color: #0f172a;">
+                        {% for cat in categories %}
+                            <option value="{{ cat }}">{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; color: #344054;">Version</label>
+                    <input type="text" name="version" value="1.0" class="form-control" style="padding: 10px; border: 1px solid #d0d5dd; border-radius: 8px; width: 100%; font-size: 14px; color: #0f172a;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; color: #344054;">Effective Date</label>
+                <input type="date" name="effective_date" value="{{ current_date }}" required class="form-control" style="padding: 10px; border: 1px solid #d0d5dd; border-radius: 8px; width: 100%; font-size: 14px; color: #0f172a;">
+            </div>
+
+            <!-- Modal Action Buttons Footer -->
+            <div class="modal-footer-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+                <button type="button" class="btn btn-secondary" style="padding: 10px 16px; background: #ffffff; color: #344054; border: 1px solid #d0d5dd; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: center;" onclick="document.getElementById('policyModal').style.display='none'">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="padding: 10px 16px; background: #2563eb; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: center;">Save Policy</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Voxlom Innovative Solutions</title>
+    <!-- Core Icon and Professional Font Vector Assets CDN -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --brand-primary: #000000; /* Your exact vibrant green color */
+            --brand-hover: #5ea10e;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            overflow: hidden;
+            position: relative;
+            perspective: 1000px; /* Enforces 3D canvas viewport space constraints */
+            
+            /* Dynamic linear background moving blend loop canvas */
+            background: linear-gradient(-45deg, #f8fafc, #f1f5f9, #ecfdf5, #f0fdf4);
+            background-size: 400% 400%;
+            animation: ambientGradient 15s ease infinite;
+        }
+
+        @keyframes ambientGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 🌌 Ambient glowing layout background orbs */
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 1;
+            mix-blend-mode: multiply;
+            opacity: 0.45;
+            animation: driftOrb 20s infinite alternate ease-in-out;
+            pointer-events: none;
+        }
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: rgba(114, 187, 18, 0.14);
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: rgba(30, 58, 138, 0.04);
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        @keyframes driftOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, -60px) scale(1.1); }
+            100% { transform: translate(-20px, 30px) scale(0.95); }
+        }
+
+        /* 🫧 Dynamic Script-Generated Bubble Physics Styling */
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            border-radius: 50%;
+            animation: riseUp linear forwards;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        @keyframes riseUp {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-115vh) translateX(60px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 🏎️ UI Elements Entrance Timings Styles */
+        @keyframes revealUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Interactive 3D Card Platform Container Sheet */
+        .presentation-card {
+            width: 100%;
+            max-width: 1100px;
+            text-align: center;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        .brand-icon-wrapper {
+            font-size: 3.5rem;
+            color: var(--brand-primary);
+            margin-bottom: 12px;
+            animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+        }
+
+        .main-heading {
+            font-size: clamp(32px, 5vw, 64px); /* Fluid text scaling properties filling display canvas */
+            font-weight: 900;
+            color: var(--text-main);
+            letter-spacing: -0.035em;
+            line-height: 1.1;
+            margin-bottom: 10px;
+            min-height: 75px; /* Reserves uniform spacing blocks to prevent content jumps when typing */
+             background: linear-gradient(to right, #bddd2f, #21d439); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+        }
+
+        /* Highlights target text matching your company color metrics */
+       /* Inside the <style> block of your welcome_board.html file */
+
+/* Ensure your primary highlighted word class locks to solid black */
+/* Inside the <style> block of your welcome_board.html file */
+
+/* 1. Attached the colorShift keyframe loop with a smooth linear transition timing buffer */
+.text-primary {
+    display: inline-block;
+    animation: colorShift 7.0s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
+}
+
+/* ------------> voxlom text animations */
+@keyframes colorShift {
+  
+    40% {
+        color: var(--brand-primary); /* Holds the green proudly while typing finishes */
+        -webkit-text-fill-color: var(--brand-primary);
+    }
+    100% {
+        color: #1a1919; /* Smoothly transitions and permanently locks into Premium Slate Black */
+        -webkit-text-fill-color: #0f172a;
+    }
+}
+
+
+        .sub-heading {
+            font-size: clamp(18px, 2.2vw, 26px);
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: -0.015em;
+            line-height: 1.4;
+            margin-bottom: 45px;
+            animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both; /* Delayed until typewriter completes */
+        }
+
+        .action-form {
+            width: 100%;
+            max-width: 340px;
+            animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+        }
+
+        .btn-enter {
+            width: 100%;
+            padding: 16px 32px;
+            background-color: var(--brand-primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px -5px rgba(114, 187, 18, 0.35);
+            transition: background-color 1.5s, transform 0.9s, box-shadow 0.2s;
+        }
+
+        .btn-enter:hover {
+            background-color: var(--brand-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -4px rgba(114, 187, 18, 0.45);
+        }
+
+        .btn-enter:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hidden drifting background structures layers -->
+<div id="bubble-container" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; z-index: 2; pointer-events: none;"></div>
+<div class="ambient-orb orb-1"></div>
+<div class="ambient-orb orb-2"></div>
+
+<!-- Interactive Perspective Layout Content Wrap -->
+<div class="presentation-card">
+    
+    <!-- Top Branded Icon Vector Block -->
+    <div class="brand-icon-wrapper">
+        <i class="fa-solid fa-compass-drafting"></i>
+    </div>
+
+    <!-- Typewriter Managed Fluid Header Title -->
+    <h1 id="typewriter-heading" class="main-heading">&nbsp;</h1>
+    <p class="sub-heading">Your journey starts here.</p>
+
+    <!-- Secure Token-Signed Action Form Entry Button -->
+    <form method="POST" action="{% url 'candidate_form' %}" class="action-form">
+        {% csrf_token %}
+        <button type="submit" class="btn-enter">
+            Enter Your Personal Information <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // --- 1. Bubble Generation Automation Engine ---
+        const bubbleContainer = document.getElementById('bubble-container');
+        const colors = ['rgba(114, 187, 18, 0.12)', 'rgba(15, 23, 42, 0.04)', 'rgba(114, 187, 18, 0.18)'];
+        
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            
+            const size = Math.random() * 100 + 20 + 'px';
+            bubble.style.width = size;
+            bubble.style.height = size;
+            bubble.style.left = Math.random() * 100 + 'vw';
+            bubble.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            const duration = Math.random() * 8 + 12 + 's';
+            bubble.style.animationDuration = duration;
+            
+            if (bubbleContainer) {
+                bubbleContainer.appendChild(bubble);
+            }
+            
+            // Wipe element from memory immediately when animation finishes
+            setTimeout(() => {
+                bubble.remove();
+            }, parseFloat(duration) * 1000);
+        }
+
+        // Generate an initial pool to fill screen rows instantly
+        for(let i = 0; i < 12; i++) {
+            setTimeout(createBubble, Math.random() * 2500);
+        }
+        
+        // Continuous background generation interval
+        setInterval(createBubble, 2200);
+
+
+        // --- 2. Auto-Highlighting Typewriter Text Processor ---
+        const heading = document.getElementById('typewriter-heading');
+        const text = "Welcome to Voxlom Innovative Solutions";
+        let index = 0;
+
+        function typeWriter() {
+            if (heading && index < text.length) {
+                const currentText = text.substring(0, index + 1);
+                
+                // Inspect character array tracks to dynamically color "Voxlom"
+                if (currentText.includes("Voxlom")) {
+                    const beforeVoxlom = text.substring(0, text.indexOf("Voxlom"));
+                    const voxlomPart = text.substring(text.indexOf("Voxlom"), Math.min(index + 1, text.indexOf("Voxlom") + 6));
+                    const afterVoxlom = index + 1 > text.indexOf("Voxlom") + 6 ? text.substring(text.indexOf("Voxlom") + 6, index + 1) : "";
+                    
+                    heading.innerHTML = `${beforeVoxlom}<span class="text-primary">${voxlomPart}</span>${afterVoxlom}`;
+                } else {
+                    heading.innerText = currentText;
+                }
+                
+                index++;
+                setTimeout(typeWriter, 100); // Slick text progression frame speeds
+            }
+        }
+        
+        // Fire typewriter engine after soft initialization delay
+        setTimeout(typeWriter, 600);
+
+
+        // --- 3. 3D Mouse Parallax Tilt Interactions Logic ---
+        const card = document.querySelector('.presentation-card');
+        
+        if (card) {
+            document.addEventListener('mousemove', (e) => {
+                // Calculate cursor axis coordinate vectors relative to center viewport boundaries
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 95;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 95;
+                
+                // Map transformations strings smoothly onto target element properties matrix
+                card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            });
+
+            // Snap elements back into alignment if pointer exits screen limits
+            document.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+            });
+        }
+    });
+</script>

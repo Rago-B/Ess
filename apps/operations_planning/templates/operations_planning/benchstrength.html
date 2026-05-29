@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .card {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 2. Apply a premium corporate hover interaction layout matrix */
+    .card:hover {
+        background-color: #f8fafc !important; /* Elegant light slate tint */
+        transform: translateY(-2px);           /* Smooth upward floating lift */
+        box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 
+                    0 4px 6px -4px rgba(15, 23, 42, 0.08); /* Sophisticated deep shadow elevation */
+        border-color: #5396e7 !important;      /* Softens the border edge line nicely */
+    }
+</style>
+<!-- Light Theme Workspace Wrapper Layout Box Container -->
+<div class="page-container wide" style="padding: 32px; font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
+    
+    <!-- Title Area Header Component -->
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
+        <div>
+            <h1 style="font-size: 32px; font-weight: 700; color: #1e40af; margin: 0 0 6px 0; letter-spacing: -0.02em;">Bench Concept</h1>
+            <p style="color: #64748b; font-size: 14px; margin: 0; font-weight: 500;">Monitor unallocated resources and talent optimization</p>
+        </div>
+    </div>
+
+    <!-- Main Solid White Table Presentation Box Card Container -->
+    <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div class="table-container" style="overflow-x: auto;">
+            <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #f1f5f9; background: #f8fafc;">
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Employee</th>
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Bench Since</th>
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Skills</th>
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Reason</th>
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Status</th>
+                        <th style="padding: 14px 16px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; width: 15%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   <!-- Inside apps/operations_planning/templates/operations_planning/benchstrength.html -->
+
+{% for b in bench_list %}
+<tr style="border-bottom: 1px solid #f1f5f9;">
+    
+    <!-- 1. FIX EMPLOYEE COLUMN: Use b.emp_name and b.email from your dictionary -->
+    <td style="padding: 16px;">
+        <div style="font-weight: 600; color: #0f172a;">{{ b.emp_name }}</div>
+        <div style="font-size: 12px; color: #64748b; margin-top: 2px;">{{ b.email|default:"N/A" }}</div>
+    </td>
+    
+    <!-- 2. FIX BENCH SINCE COLUMN: Use b.bench_start from your dictionary -->
+    <td style="padding: 16px; color: #334155; font-weight: 500;">
+        {{ b.bench_start|date:"m/d/Y" }}
+    </td>
+    
+    <!-- 3. BONUS SKILLS FIX: Replaces raw string with your calculated comma array loop list elements -->
+    <td style="padding: 16px; color: #475569; font-weight: 500;">
+        {% for skill in b.skills %}
+            <span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0; font-size: 11px; color: #334155; margin-right: 4px; display: inline-block;">
+                {{ skill }}
+            </span>
+        
+        {% endfor %}
+    </td>
+    
+    <!-- 4. EXPERIENCE COLUMN: Check out your live experience calculations -->
+    <td style="padding: 16px; color: #334155;">
+        {{ b.designation }} ({{ b.experience }})
+    </td>
+    
+    <td style="padding: 16px;">
+        <span class="status-badge" style="padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; display: inline-block; background-color: #fef3c7; color: #d97706;">
+            Unallocated
+        </span>
+    </td>
+    
+    <td style="padding: 16px;">
+        <a href="{% url 'remove_from_bench' b.bench_id %}" 
+           class="btn btn-primary" 
+           style="padding: 6px 14px; font-size: 12px; font-weight: 600; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block;"
+           onclick="return confirm('Are you sure you want to allocate this employee?');">
+            Assign Project
+        </a>
+    </td>
+</tr>
+{% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

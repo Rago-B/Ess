@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Visitor Management Dashboard{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'visitor_management/css/style.css' %}">
+    <style>
+
+        
+
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="visitor-management-system">
+    
+    <div class="welcome-hero">
+        <h1 class="heading">Visitor Management</h1>
+    </div>
+
+    <div class="visitor-stats-grid">
+        <!-- Card 1 -->
+        <div class="stat-card">
+            <div class="icon-wrap" style="color: #fcfcfc; background: #000000;"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-info-block">
+                <span class="stat-label-text">Today's Visitors</span>
+                <p class="stat-number-value">1,820</p>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="stat-card">
+            <div class="icon-wrap" style="color: #ffffff; background: #000000;"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="stat-info-block">
+                <span class="stat-label-text">Active On-Site</span>
+                <p class="stat-number-value">356</p>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="stat-card">
+            <div class="icon-wrap" style="color: #ffffff; background: #000000;"><i class="fa-solid fa-right-from-bracket"></i></div>
+            <div class="stat-info-block">
+                <span class="stat-label-text">Checked Out</span>
+                <p class="stat-number-value">1,464</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DATA GRID MONITOR PANEL MODULE -->
+    <div class="grid-layout" style="grid-template-columns: 1fr; margin-top: 30px;">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-list-check" style="margin-right: 8px; color: var(--primary);"></i> Active Visitor Entry Registry Logs</h3>
+                <span style="color: var(--primary); font-size: 13px; font-weight: 700; cursor: pointer;">Filter Database</span>
+            </div>
+            
+            <div class="table-container" style="width: 100%; overflow-x: auto;">
+                <table class="visitor-log-table">
+                    <thead>
+                        <tr>
+                            <th>Guest Reference ID</th>
+                            <th>Visitor Name</th>
+                            <th>Purpose / Department</th>
+                            <th>Check-In Time</th>
+                            <th>Host Employee</th>
+                            <th>Status Badge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 700;">#V-9082</td>
+                            <td style="font-weight: 600;">Alex Mercer</td>
+                            <td>IT System Procurement Audit</td>
+                            <td>10:14 AM</td>
+                            <td>Sarah Jenkins</td>
+                            <td><span class="status-badge-ui inside">Active On-Site</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 700;">#V-9081</td>
+                            <td style="font-weight: 600;">Elena Rostova</td>
+                            <td>HR Talent Interview</td>
+                            <td>09:45 AM</td>
+                            <td>David Miller</td>
+                            <td><span class="status-badge-ui inside">Active On-Site</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 700;">#V-9079</td>
+                            <td style="font-weight: 600;">Marcus Vance</td>
+                            <td>Vendor Supply Delivery</td>
+                            <td>08:30 AM</td>
+                            <td>James Croft</td>
+                            <td><span class="status-badge-ui out">Checked Out</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

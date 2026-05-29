@@ -1,0 +1,2422 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox | Voxlom EMS Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-hover: #1765cc;
+            --bg-body: #f6f8fc;
+            --sidebar-bg: #f6f8fc;
+            --border: #e0e0e0;
+            --text-main: #1f1f1f;
+            --text-sub: #444746;
+            --transition: cubic-bezier(0.4, 0, 0.2, 1);
+            --mail-font-size: 14px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+           font-family: 'Inter', sans-serif;
+background-color: var(--bg-body);
+height: 100vh;
+overflow: hidden;
+color: var(--text-main);
+
+animation: pageFadeIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+will-change: opacity, transform;
+        }
+
+   @keyframes pageFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px) scale(0.99);
+        filter: blur(6px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+        .app-shell {
+            display: flex;
+            height: 100vh;
+            opacity: 0;
+            animation: contentFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+        }
+
+        @keyframes contentFadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Sidebar - Modern Gmail Style */
+        .sidebar {
+            width: 256px;
+            display: flex;
+            flex-direction: column;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding-left: 16px;
+            margin-bottom: 8px;
+        }
+
+        .btn-menu {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 200ms;
+            color: var(--text-sub);
+            font-size: 20px;
+        }
+
+        .btn-menu:hover {
+            background: #e1e3e1;
+        }
+
+        .compose-container {
+            padding: 8px 16px 16px 8px;
+        }
+
+        .compose-btn {
+            background-color: #c2e7ff;
+            /* Gmail's distinct light blue */
+            color: #001d35;
+            height: 56px;
+            min-width: 140px;
+            padding: 0 24px;
+            border-radius: 16px;
+            /* Material 3 style */
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s var(--transition);
+            box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+        }
+
+        .compose-btn:hover {
+            box-shadow: 0 2px 3px 0 rgba(60, 64, 67, 0.3), 0 6px 10px 4px rgba(60, 64, 67, 0.15);
+            background-color: #b3d7ef;
+        }
+
+        .compose-btn i {
+            font-size: 20px;
+            color: #001d35;
+        }
+
+
+        .nav-items {
+            margin-top: 10px;
+        }
+
+        .nav-item {
+            height: 32px;
+            margin: 1px 0;
+            padding: 0 12px 0 24px;
+            border-radius: 0 16px 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-sub);
+            transition: background 200ms;
+        }
+
+        .nav-item.active {
+            background: #d3e3fd;
+            color: #001d35;
+            font-weight: 700;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: #e1e3e1;
+        }
+
+
+        /* Main Area */
+        .main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            margin: 8px 8px 8px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            max-width: 720px;
+            background: #eaf1fb;
+            border-radius: 28px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 12px;
+            transition: background 200ms, box-shadow 200ms;
+        }
+
+        .search-box:focus-within {
+            background: #fff;
+            box-shadow: 0 1px 1px 0 rgba(65, 69, 73, 0.3), 0 1px 3px 1px rgba(65, 69, 73, 0.15);
+        }
+
+        .search-filter-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #5f6368;
+            transition: background 0.2s;
+        }
+
+        .search-filter-icon:hover {
+            background: rgba(60, 64, 67, 0.08);
+        }
+
+        .search-filter-dropdown {
+            display: none;
+            position: absolute;
+            top: 56px;
+            left: 0;
+            width: 100%;
+            max-width: 720px;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .search-filter-dropdown.show {
+            display: block;
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .filter-row label {
+            width: 100px;
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        .filter-row input {
+            flex-grow: 1;
+            border: none;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 4px 0;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filter-row input:focus {
+            border-bottom: 2px solid #1a73e8;
+        }
+
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-search-adv {
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .search-box i {
+            color: var(--text-sub);
+        }
+
+        .header-tools {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-sub);
+        }
+
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .tool-icon:hover {
+            background: #f1f3f4;
+        }
+
+        .toolbar {
+            height: 48px;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-sub);
+            font-size: 14px;
+        }
+
+        /* Circular icon buttons in the toolbar (refresh, 3-dot) */
+        .toolbar-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #444746;
+            font-size: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.18s ease;
+            flex-shrink: 0;
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(32, 33, 36, 0.08);
+        }
+
+        .toolbar-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(32, 33, 36, 0.15) 0%, transparent 70%);
+            opacity: 0;
+            transform: scale(0);
+            transition: transform 0.28s ease, opacity 0.28s ease;
+        }
+
+        .toolbar-btn:active::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .toolbar-btn .fa-redo {
+            transition: transform 0.35s ease;
+        }
+
+        .toolbar-btn:hover .fa-redo {
+            transform: rotate(180deg);
+        }
+
+        /* Email Rows */
+        .email-list {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .email-row {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            height: 40px;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+            transition: box-shadow 150ms;
+            font-size: var(--mail-font-size);
+        }
+
+        .email-row:hover {
+            box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3);
+            z-index: 10;
+        }
+
+        /* Keep unpinned icon clean until hover; pinned stays visible */
+        .pin-cell {
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .email-row:hover .pin-cell,
+        .email-row[data-pinned="true"] .pin-cell {
+            opacity: 1;
+        }
+
+        .pin-icon {
+            transition: color 0.15s ease, transform 0.15s ease;
+        }
+
+        .pin-icon-unpinned {
+            color: #8a9096 !important;
+        }
+
+        .email-row:hover .pin-icon-unpinned {
+            color: #5f6368 !important;
+            transform: scale(1.06);
+        }
+
+        .email-row.unread {
+            font-weight: 700;
+            background: #fff;
+        }
+
+        .row-checkbox-icon {
+            color: #8a9096;
+            transition: color 0.15s ease, transform 0.15s ease;
+        }
+
+        .row-checkbox-icon.selected {
+            color: #1a73e8;
+            transform: scale(1.08);
+        }
+
+        .c-from {
+            width: 200px;
+            padding-right: 32px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .c-main {
+            flex-grow: 1;
+            display: flex;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .c-sub {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .c-snip {
+            color: var(--text-sub);
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .c-date {
+            width: 100px;
+            text-align: right;
+            color: var(--text-sub);
+            font-size: calc(var(--mail-font-size) - 2px);
+        }
+
+        /* Modals */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: #fff;
+            width: 80%;
+            height: 85%;
+            margin: 40px auto;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+            animation: slideUp 300ms cubic-bezier(0, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .m-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .m-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex-grow: 1;
+            line-height: 1.6;
+        }
+
+        /* Compose */
+        #compose-window {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            right: 30px;
+            width: 540px;
+            background: #fff;
+            box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14);
+            border-radius: 12px 12px 0 0;
+            z-index: 2000;
+        }
+
+        .comp-head {
+            background: #f2f6fc;
+            padding: 12px 16px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .comp-body {
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comp-body input {
+            border: none;
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+            outline: none;
+            font-size: var(--mail-font-size);
+        }
+
+        .comp-body textarea {
+            border: none;
+            padding: 16px 0;
+            outline: none;
+            resize: none;
+            min-height: 300px;
+            font-family: inherit;
+            font-size: var(--mail-font-size);
+        }
+
+        .comp-foot {
+            padding: 12px 16px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-send-main {
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .hover-red:hover {
+            color: #ef4444;
+            transform: scale(1.2);
+            transition: all 0.2s;
+        }
+
+        .hover-orange:hover {
+            color: #f59e0b;
+            transform: scale(1.2);
+            transition: all 0.2s;
+        }
+
+        /* Dropdown Styles */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            border-radius: 8px;
+            padding: 8px 0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-top: 5px;
+        }
+
+        .dropdown-content a {
+            color: #444;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .dropdown-content i {
+            width: 16px;
+            color: #5f6368;
+        }
+
+        .show {
+            display: block;
+        }
+
+        /* Context Menu */
+        .context-menu {
+            display: none;
+            position: fixed;
+            background: #fff;
+            min-width: 180px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            z-index: 5000;
+            padding: 6px 0;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            animation: contextIn 0.1s ease-out;
+        }
+
+        @keyframes contextIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .context-menu-item {
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13.5px;
+            color: #202124;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .context-menu-item:hover {
+            background: #f1f3f4;
+        }
+
+        .context-menu-item i {
+            width: 16px;
+            color: #5f6368;
+            font-size: 14px;
+        }
+
+        .context-menu-sep {
+            height: 1px;
+            background: #eee;
+            margin: 6px 0;
+        }
+
+        /* ── Gmail-style Select-All Widget ── */
+        .select-all-widget {
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .select-all-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.18s ease;
+            color: #444746;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .select-all-btn:hover {
+            background: rgba(32, 33, 36, 0.08);
+        }
+
+        .select-all-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(32, 33, 36, 0.15) 0%, transparent 70%);
+            opacity: 0;
+            transform: scale(0);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .select-all-btn:active::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .select-caret-btn {
+            width: 20px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #5f6368;
+            font-size: 10px;
+            border-radius: 4px;
+            transition: background 0.18s ease, color 0.18s ease;
+            margin-left: 1px;
+        }
+
+        .select-caret-btn:hover {
+            background: rgba(32, 33, 36, 0.08);
+            color: #202124;
+        }
+
+        /* Filter dropdown (under checkbox caret) */
+        .select-dropdown {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: calc(100% + 4px);
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            min-width: 160px;
+            padding: 6px 0;
+            z-index: 1100;
+            animation: dropIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes dropIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .select-dropdown.show {
+            display: block;
+        }
+
+        /* Profile Card Styles */
+        .profile-card {
+            padding: 20px 0 0 0;
+            text-align: center;
+            min-width: 320px;
+            background: #fff;
+            border-radius: 20px;
+        }
+
+        .profile-header-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 0 20px 20px 20px;
+        }
+
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            background: #1a73e8;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .profile-name-card {
+            font-size: 18px;
+            font-weight: 500;
+            color: #202124;
+            line-height: 24px;
+        }
+
+        .profile-email-card {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 12px;
+        }
+
+        .profile-manage-btn {
+            padding: 10px 24px;
+            border: 1px solid #dadce0;
+            border-radius: 100px;
+            background: #fff;
+            color: #3c4043;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .profile-manage-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .profile-footer-card {
+            padding: 12px 20px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            border-top: 1px solid #e0e0e0;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .profile-logout-btn-card {
+            padding: 10px 24px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            background: #fff;
+            color: #3c4043;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-logout-btn-card:hover {
+            background: #f1f3f4;
+        }
+
+        .select-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            font-size: 13.5px;
+            color: #202124;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+
+        .select-dropdown a:hover {
+            background: #f1f3f4;
+        }
+
+        .select-dropdown a i {
+            width: 14px;
+            font-size: 13px;
+            color: #5f6368;
+        }
+
+        /* ── Settings Panel ── */
+        .settings-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 3000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .settings-overlay.open {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .settings-panel {
+            width: 680px;
+            max-width: 95vw;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.18);
+            animation: slideInRight 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .sp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .sp-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #202124;
+            margin: 0;
+        }
+
+        .sp-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #5f6368;
+            transition: background 0.15s;
+        }
+
+        .sp-close:hover {
+            background: #f1f3f4;
+        }
+
+        .sp-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            padding: 0 16px;
+            flex-shrink: 0;
+            overflow-x: auto;
+        }
+
+        .sp-tab {
+            padding: 14px 16px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #5f6368;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            transition: color 0.15s, border-color 0.15s;
+        }
+
+        .sp-tab:hover {
+            color: #1a73e8;
+        }
+
+        .sp-tab.active {
+            color: #1a73e8;
+            border-bottom-color: #1a73e8;
+        }
+
+        .sp-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .sp-pane {
+            display: none;
+            padding: 8px 0 24px;
+        }
+
+        .sp-pane.active {
+            display: block;
+        }
+
+        .sp-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #5f6368;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 20px 24px 8px;
+        }
+
+        .sp-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            border-bottom: 1px solid #f1f3f4;
+            gap: 16px;
+        }
+
+        .sp-row:last-child {
+            border-bottom: none;
+        }
+
+        .sp-row-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sp-row-info strong {
+            display: block;
+            font-size: 14px;
+            color: #202124;
+            font-weight: 500;
+        }
+
+        .sp-row-info span {
+            display: block;
+            font-size: 12px;
+            color: #5f6368;
+            margin-top: 2px;
+        }
+
+        /* Toggle switch */
+        .sp-toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .sp-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .sp-slider {
+            position: absolute;
+            inset: 0;
+            background: #bdc1c6;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .sp-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .sp-toggle input:checked+.sp-slider {
+            background: #1a73e8;
+        }
+
+        .sp-toggle input:checked+.sp-slider::before {
+            transform: translateX(20px);
+        }
+
+        /* Select */
+        .sp-select {
+            appearance: none;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 8px 32px 8px 12px;
+            font-size: 13px;
+            color: #202124;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235f6368'/%3E%3C/svg%3E") no-repeat right 10px center;
+            cursor: pointer;
+            outline: none;
+            min-width: 140px;
+            transition: border-color 0.15s;
+            flex-shrink: 0;
+        }
+
+        .sp-select:focus {
+            border-color: #1a73e8;
+        }
+
+        /* Density cards */
+        .density-cards {
+            display: flex;
+            gap: 12px;
+            padding: 12px 24px 4px;
+        }
+
+        .density-card {
+            flex: 1;
+            border: 2px solid #dadce0;
+            border-radius: 10px;
+            padding: 14px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .density-card:hover {
+            border-color: #1a73e8;
+            background: #f0f6ff;
+        }
+
+        .density-card.selected {
+            border-color: #1a73e8;
+            background: #e8f0fe;
+        }
+
+        .density-card i {
+            font-size: 20px;
+            color: #5f6368;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .density-card span {
+            font-size: 12px;
+            font-weight: 500;
+            color: #202124;
+        }
+
+        /* Theme swatches */
+        .theme-swatches {
+            display: flex;
+            gap: 12px;
+            padding: 12px 24px 4px;
+            flex-wrap: wrap;
+        }
+
+        .theme-swatch {
+            width: 64px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.15s;
+            flex-shrink: 0;
+        }
+
+        .theme-swatch.selected {
+            border-color: #1a73e8;
+        }
+
+        .theme-swatch .swatch-top {
+            height: 36px;
+        }
+
+        .theme-swatch .swatch-bot {
+            height: 18px;
+            background: #f1f3f4;
+        }
+
+        .theme-swatch span {
+            font-size: 11px;
+            color: #5f6368;
+            display: block;
+            text-align: center;
+            padding: 4px 0;
+        }
+
+        .sp-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-shrink: 0;
+            background: #fff;
+        }
+
+        .sp-btn {
+            padding: 9px 22px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background 0.15s, box-shadow 0.15s;
+        }
+
+        .sp-btn-cancel {
+            background: transparent;
+            color: #1a73e8;
+        }
+
+        .sp-btn-cancel:hover {
+            background: #e8f0fe;
+        }
+
+        .sp-btn-save {
+            background: #1a73e8;
+            color: #fff;
+        }
+
+        .sp-btn-save:hover {
+            background: #1765cc;
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.35);
+        }
+
+        /* Ensure original light theme */
+        :root {
+            --primary: #1a73e8;
+            --primary-hover: #1765cc;
+            --bg-body: #f6f8fc;
+            --sidebar-bg: #f6f8fc;
+            --border: #e0e0e0;
+            --text-main: #1f1f1f;
+            --text-sub: #444746;
+        }
+
+        /* Final override: revert dark palette */
+        :root {
+            --primary: #1a73e8;
+            --primary-hover: #1765cc;
+            --bg-body: #f6f8fc;
+            --sidebar-bg: #f6f8fc;
+            --border: #e0e0e0;
+            --text-main: #1f1f1f;
+            --text-sub: #444746;
+        }
+
+        body {
+            background-color: #f6f8fc;
+            color: #1f1f1f;
+        }
+
+        .main {
+            background: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            background: #f6f8fc;
+        }
+
+        .email-row {
+            background: #fff;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .search-box {
+            background: #eaf1fb;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+
+                <div style="margin-left: 12px; font-size: 22px; color: var(--text-sub);">Inbox</div>
+            </div>
+            <div style="padding: 16px;">
+                <button class="compose-btn" id="btn-compose" onclick="openCompose()">
+                    <i class="fas fa-pencil-alt"></i> <span>Compose</span>
+                </button>
+            </div>
+            <nav class="nav-items">
+                <a href="?folder=INBOX" class="nav-item {% if requested_folder == 'INBOX' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="fas fa-inbox"></i> <span>Inbox</span>
+                </a>
+                <a href="?folder=Starred" class="nav-item {% if requested_folder == 'Starred' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="far fa-star"></i> <span>Starred</span>
+                </a>
+                <a href="?folder=Snoozed" class="nav-item {% if requested_folder == 'Snoozed' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="far fa-clock"></i> <span>Snoozed</span>
+                </a>
+                <a href="?folder=Pinned" class="nav-item {% if requested_folder == 'Pinned' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="fas fa-bookmark"></i> <span>Pinned</span>
+                </a>
+                <a href="?folder=Sent" class="nav-item {% if requested_folder == 'Sent' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="fas fa-paper-plane"></i> <span>Sent</span>
+                </a>
+                <a href="?folder=Archive" class="nav-item {% if requested_folder == 'Archive' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="fas fa-box-archive"></i> <span>Archive</span>
+                </a>
+                <a href="?folder=Drafts" class="nav-item {% if requested_folder == 'Drafts' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="far fa-file"></i> <span>Drafts</span>
+                </a>
+                <a href="?folder=Spam" class="nav-item {% if requested_folder == 'Spam' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="fas fa-exclamation-triangle"></i> <span>Spam</span>
+                </a>
+                <a href="?folder=Bin" class="nav-item {% if requested_folder == 'Bin' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="fas fa-trash-alt"></i> <span>Bin</span>
+                </a>
+                <a href="{% url 'company_policy' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'company_policy' %}active{% endif %}"
+                    style="text-decoration: none;">
+                    <i class="fas fa-shield-alt"></i> <span>Company Policy</span>
+                </a>
+
+                <div style="margin-top: auto; padding-top: 20px;">
+                    <a href="{% url 'logout' %}" class="nav-item" style="text-decoration: none; color: #ef4444;">
+                        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="header">
+                <div class="search-box" style="position: relative;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="main-search-input" placeholder="Search mail">
+                    <div class="search-filter-icon" onclick="toggleSearchFilter(event)" title="Show search options">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <!-- Advanced Search Dropdown -->
+                    <div id="search-filter-dropdown" class="search-filter-dropdown" onclick="event.stopPropagation()">
+                        <div class="filter-row">
+                            <label>From</label>
+                            <input type="text" id="f-from" placeholder="Sender name or email">
+                        </div>
+                        <div class="filter-row">
+                            <label>To</label>
+                            <input type="text" id="f-to" placeholder="Recipient">
+                        </div>
+                        <div class="filter-row">
+                            <label>Subject</label>
+                            <input type="text" id="f-subject" placeholder="Subject keywords">
+                        </div>
+                        <div class="filter-row">
+                            <label>Has words</label>
+                            <input type="text" id="f-words" placeholder="Words in content">
+                        </div>
+                        <div class="filter-actions">
+                            <button class="btn-search-adv" onclick="applyAdvancedSearch()">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-tools">
+                    <div class="tool-icon"><i class="far fa-question-circle"></i></div>
+                    <div class="tool-icon" onclick="openSettings(event)" title="Settings"><i class="fas fa-cog"></i>
+                    </div>
+                    <div style="position: relative; display: inline-block;">
+                        <div onclick="toggleProfileMenu(event)"
+                            style="background: #1a73e8; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; cursor: pointer;"
+                            title="Google Account: {{ display_name }} ({{ email_user }})">
+                            {{ display_name|slice:":1" }}
+                        </div>
+                        <div id="profile-dropdown" class="dropdown-content"
+                            style="right: 0; left: auto; min-width: 320px; padding: 0; border: none; background: transparent; margin-top: 10px;">
+                            <div class="profile-card">
+                                <div class="profile-header-card">
+                                    <div class="profile-avatar-large">
+                                        {{ display_name|slice:":1" }}
+                                    </div>
+                                    <div class="profile-name-card">{{ display_name }}</div>
+                                    <div class="profile-email-card">{{ email_user }}</div>
+                                    <a href="https://myaccount.google.com/" target="_blank"
+                                        class="profile-manage-btn">Manage your Google Account</a>
+                                </div>
+                                <div class="profile-footer-card">
+                                    <a href="{% url 'logout' %}" class="profile-logout-btn-card">
+                                        <i class="fas fa-sign-out-alt"></i> Sign out
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="toolbar">
+                <!-- Gmail-style select-all widget -->
+                <div class="select-all-widget" id="select-all-widget">
+                    <div class="select-all-btn" id="select-all-icon" onclick="toggleSelectAll()" title="Select All">
+                        <i class="far fa-square" id="select-all-icon-inner"></i>
+                    </div>
+                    <div class="select-caret-btn" id="select-caret" onclick="toggleSelectDropdown(event)"
+                        title="More options">
+                        <i class="fas fa-caret-down"></i>
+                    </div>
+                    <div class="select-dropdown" id="select-dropdown">
+                        <a onclick="applyFilter('all')"><i class="far fa-check-square"></i> All</a>
+                        <a onclick="applyFilter('none')"><i class="far fa-square"></i> None</a>
+                        <a onclick="applyFilter('read')"><i class="fas fa-envelope-open"></i> Read</a>
+                        <a onclick="applyFilter('unread')"><i class="fas fa-envelope"></i> Unread</a>
+                        <a onclick="applyFilter('starred')"><i class="fas fa-star" style="color:#f4b400;"></i>
+                            Starred</a>
+                        <a onclick="applyFilter('unstarred')"><i class="far fa-star"></i> Unstarred</a>
+                    </div>
+                </div>
+                <div class="toolbar-btn" onclick="location.reload()" title="Refresh">
+                    <i class="fas fa-redo"></i>
+                </div>
+                <div style="position: relative; display: inline-block;">
+                    <div class="toolbar-btn" onclick="toggleMenu(event)" title="More">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </div>
+                    <div id="more-dropdown" class="dropdown-content">
+                        <a href="#" onclick="markAllRead(event)"><i class="fas fa-check-double"></i> Mark all as
+                            read</a>
+                        <a href="#" onclick="openSettings(event)"><i class="fas fa-cog"></i> Settings</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="email-list">
+                {% if emails %}
+                {% for email in emails %}
+                <div class="email-row" data-uid="{{ email.uid }}" data-subject="{{ email.subject|escapejs }}"
+                    data-from="{{ email.from|escapejs }}" data-snippet="{{ email.snippet|escapejs }}"
+                    data-folder="{{ email.folder|default:current_folder|escapejs }}"
+                    data-pinned="{% if email.is_pinned %}true{% else %}false{% endif %}"
+                    onclick="viewEmail('{{ email.uid }}', '{{ email.subject|escapejs }}', '{{ email.from|escapejs }}', '{{ email.date }}')">
+                    <div style="width: 40px; display: flex; justify-content: center;">
+                        <i class="far fa-square row-checkbox-icon"></i>
+                    </div>
+                    <div style="width: 40px; display: flex; justify-content: center;"
+                        onclick="event.stopPropagation(); toggleStar('{{ email.uid }}', this)">
+                        <i class="{% if email.is_starred %}fas{% else %}far{% endif %} fa-star star-icon"
+                            style="color: {% if email.is_starred %}#f4b400{% else %}#dadce0{% endif %};"></i>
+                    </div>
+                    <div class="pin-cell" style="width: 40px; display: flex; justify-content: center;"
+                        onclick="event.stopPropagation(); togglePin('{{ email.uid }}', this.closest('.email-row'))">
+                        <i class="{% if email.is_pinned %}fas{% else %}far pin-icon-unpinned{% endif %} fa-bookmark pin-icon"
+                            style="color: {% if email.is_pinned %}#1a73e8{% else %}#8a9096{% endif %};"></i>
+                    </div>
+                    <div class="c-from">{{ email.from }}</div>
+                    <div class="c-main">
+                        <span class="c-sub">{{ email.subject }}</span>
+                        <span class="c-snip">- {{ email.snippet }}</span>
+                    </div>
+                    <div class="c-date">{{ email.date }}</div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div style="padding: 100px; text-align: center; color: var(--text-sub);">No messages.</div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="email-modal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="m-header">
+                <h2 id="m-subject"></h2>
+                <div class="btn-menu" onclick="closeModal(null)"><i class="fas fa-times"></i></div>
+            </div>
+            <div class="m-body" id="m-body"></div>
+        </div>
+    </div>
+
+    <!-- Compose Modal -->
+    <div id="compose-modal" class="modal-overlay" onclick="closeCompose(event)">
+        <div class="modal-card" style="max-width: 600px;" onclick="event.stopPropagation()">
+            <div class="m-header">
+                <h2>New Message</h2>
+                <div class="btn-menu" onclick="closeCompose(null)"><i class="fas fa-times"></i></div>
+            </div>
+            <div class="m-body" style="padding: 20px;">
+                <form id="compose-form">
+                    {% csrf_token %}
+                    <div class="field-wrapper" style="margin-bottom: 12px;">
+                        <input type="email" id="c-to" placeholder="To" required
+                            style="width: 100%; padding: 10px; border: none; border-bottom: 1px solid #eee;">
+                    </div>
+                    <div class="field-wrapper" style="margin-bottom: 12px;">
+                        <input type="text" id="c-subject" placeholder="Subject" required
+                            style="width: 100%; padding: 10px; border: none; border-bottom: 1px solid #eee;">
+                    </div>
+                    <div class="field-wrapper">
+                        <textarea id="c-message" placeholder="Message" required
+                            style="width: 100%; height: 250px; padding: 10px; border: none; resize: none;"></textarea>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; padding-top: 15px;">
+                        <button type="button" class="btn-send-main" onclick="sendEmail()">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal-overlay" onclick="closeAbout(event)">
+        <div class="modal-card" style="max-width: 450px;" onclick="event.stopPropagation()">
+            <div class="m-header" style="background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white;">
+                <h2>System Information</h2>
+                <div class="btn-menu" onclick="closeAbout(null)" style="color: white;"><i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="m-body" style="padding: 30px;">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div
+                        style="background: #e8f0fe; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: #1a73e8; font-size: 24px;">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 style="margin: 0; color: #202124; font-size: 18px;">Voxlom EMS Pro</h3>
+                    <p style="margin: 5px 0 0; color: #5f6368; font-size: 13px;">Secure Inbox v1.5.0</p>
+                </div>
+
+                <div
+                    style="background: #f8f9fa; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div
+                            style="width: 36px; height: 36px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; color: #4caf50; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <p
+                                style="margin: 0; color: #5f6368; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Connection</p>
+                            <p style="margin: 0; font-weight: 500; font-size: 13px; color: #202124;">Active • GoDaddy
+                                IMAP</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div
+                            style="width: 36px; height: 36px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; color: #1a73e8; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <p
+                                style="margin: 0; color: #5f6368; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Account</p>
+                            <p
+                                style="margin: 0; font-weight: 500; font-size: 13px; color: #202124; overflow: hidden; text-overflow: ellipsis;">
+                                {{ email_user }}</p>
+                        </div>
+                    </div>
+                    <!-- New Diagnostic Section -->
+                    <div style="padding-top: 10px; border-top: 1px solid #eee;">
+                        <p
+                            style="margin: 0; color: #5f6368; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                            Detected Server Folders</p>
+                        <div
+                            style="font-size: 12px; color: #1a73e8; background: white; padding: 10px; border-radius: 6px; border: 1px dashed #1a73e8; max-height: 80px; overflow-y: auto; line-height: 1.6;">
+                            {% for f in all_folders %}{{ f }}{% if not forloop.last %}, {% endif %}{% empty %}None
+                            found{% endfor %}
+                        </div>
+                        <div style="margin-top: 8px;"><span style="font-weight: 600; font-size: 12px;">2FA
+                                Verified</span></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #70757a;">Version:</span>
+                        <span style="font-weight: 600;">v1.5.0-PRO</span>
+                    </div>
+                </div>
+
+                <button class="btn-send-main" onclick="closeAbout(null)" style="margin-top: 25px; width: 100%;">Close
+                    Panel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="compose-window">
+        <div class="comp-head">
+            <span>New Message</span>
+            <i class="fas fa-times" onclick="closeCompose()" style="cursor: pointer;"></i>
+        </div>
+        <div class="comp-body">
+            <input type="email" id="c-to" placeholder="Recipients">
+            <input type="text" id="c-subject" placeholder="Subject">
+            <textarea id="c-message" placeholder="Message"></textarea>
+        </div>
+        <div class="comp-foot">
+            <button class="btn-send-main" id="btn-send" onclick="sendEmail()">Send</button>
+            <div class="tool-icon"><i class="far fa-trash-alt"></i></div>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settings-overlay" class="settings-overlay" onclick="handleSettingsOverlayClick(event)">
+        <div class="settings-panel" onclick="event.stopPropagation()">
+            <div class="sp-header">
+                <h2><i class="fas fa-cog" style="color:#1a73e8;margin-right:10px;"></i>Settings</h2>
+                <div class="sp-close" onclick="closeSettings()"><i class="fas fa-times"></i></div>
+            </div>
+            <div class="sp-tabs">
+
+                <div class="sp-tab active" onclick="switchTab('appearance')">Appearance</div>
+                <div class="sp-tab" onclick="switchTab('notifications')">Notifications</div>
+            </div>
+            <div class="sp-body">
+
+                <!-- GENERAL TAB -->
+
+                <!-- INBOX TAB -->
+
+
+                <!-- APPEARANCE TAB -->
+                <div class="sp-pane active" id="sp-appearance">
+                    <div class="sp-section-title">Display density</div>
+                    <div class="density-cards">
+                        <div class="density-card selected" id="density-default" onclick="setDensity('default')">
+                            <i class="fas fa-bars"></i><span>Default</span>
+                        </div>
+                        <div class="density-card" id="density-comfortable" onclick="setDensity('comfortable')">
+                            <i class="fas fa-grip-lines"></i><span>Comfortable</span>
+                        </div>
+                        <div class="density-card" id="density-compact" onclick="setDensity('compact')">
+                            <i class="fas fa-align-justify"></i><span>Compact</span>
+                        </div>
+                    </div>
+                    <div class="sp-section-title" style="margin-top:8px;">Theme</div>
+                    <div class="theme-swatches">
+                        <div class="theme-swatch selected" id="theme-light" onclick="setTheme('light')">
+                            <div class="swatch-top" style="background:#fff;border:1px solid #eee;"></div>
+                            <div class="swatch-bot"></div>
+                            <span>Light</span>
+                        </div>
+                        <div class="theme-swatch" id="theme-dark" onclick="setTheme('dark')">
+                            <div class="swatch-top" style="background:#202124;"></div>
+                            <div class="swatch-bot" style="background:#3c3f42;"></div>
+                            <span>Dark</span>
+                        </div>
+                        <div class="theme-swatch" id="theme-blue" onclick="setTheme('blue')">
+                            <div class="swatch-top" style="background:linear-gradient(135deg,#1a73e8,#0d47a1);"></div>
+                            <div class="swatch-bot" style="background:#e8f0fe;"></div>
+                            <span>Ocean</span>
+                        </div>
+                        <div class="theme-swatch" id="theme-forest" onclick="setTheme('forest')">
+                            <div class="swatch-top" style="background:linear-gradient(135deg,#34a853,#1e7e34);"></div>
+                            <div class="swatch-bot" style="background:#e6f4ea;"></div>
+                            <span>Forest</span>
+                        </div>
+                    </div>
+                    <div class="sp-section-title" style="margin-top:8px;">Font size</div>
+                    <div class="sp-row">
+                        <div class="sp-row-info"><strong>Default text size</strong><span>For reading and
+                                composing</span></div>
+                        <select class="sp-select" id="s-font-size">
+                            <option>Small</option>
+                            <option selected>Normal</option>
+                            <option>Large</option>
+                            <option>Largest</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- NOTIFICATIONS TAB -->
+                <div class="sp-pane" id="sp-notifications">
+                    <div class="sp-section-title">Email notifications</div>
+                    <div class="sp-row">
+                        <div class="sp-row-info">
+                            <strong>Desktop notifications</strong>
+                            <span>Show alerts on new mail</span>
+                        </div>
+                        <label class="sp-toggle"><input type="checkbox" id="s-desktop-notif"
+                                onchange="requestNotifPermission(this)"><span class="sp-slider"></span></label>
+                    </div>
+                    <div class="sp-row">
+                        <div class="sp-row-info">
+                            <strong>Notify for</strong>
+                            <span>Which emails trigger a notification</span>
+                        </div>
+                        <select class="sp-select" id="s-notif-for">
+                            <option>All mail</option>
+                            <option selected>Important mail only</option>
+                            <option>No mail</option>
+                        </select>
+                    </div>
+                    <div class="sp-row">
+                        <div class="sp-row-info">
+                            <strong>Sound</strong>
+                            <span>Play a sound on new messages</span>
+                        </div>
+                        <label class="sp-toggle"><input type="checkbox" id="s-sound" checked><span
+                                class="sp-slider"></span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="sp-footer">
+                <button class="sp-btn sp-btn-cancel" onclick="closeSettings()">Cancel</button>
+                <button class="sp-btn sp-btn-save" onclick="saveSettings()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none;">
+        <div
+            style="background: #323232; color: white; padding: 12px 24px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; font-size: 14px;">
+            <i class="fas fa-check-circle" style="color: #4caf50;"></i>
+            <span id="toast-message">Draft saved</span>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu">
+        <div class="context-menu-item" onclick="handleContextAction('reply')"><i class="fas fa-reply"></i> Reply</div>
+        <div class="context-menu-item" onclick="handleContextAction('forward')"><i class="fas fa-share"></i> Forward
+        </div>
+        <div class="context-menu-sep"></div>
+        <div class="context-menu-item" onclick="handleContextAction('star')"><i class="far fa-star"></i> Star</div>
+        <div class="context-menu-item" id="cm-pin" onclick="handleContextAction('pin')"><i class="fas fa-bookmark"></i>
+            Pin</div>
+        <div class="context-menu-item" id="cm-unpin" style="display: none;" onclick="handleContextAction('unpin')"><i
+                class="fas fa-bookmark"></i> Unpin</div>
+        <div class="context-menu-item" id="cm-snooze" onclick="handleContextAction('snooze')"><i
+                class="far fa-clock"></i> Snooze</div>
+        <div class="context-menu-item" id="cm-unsnooze" style="display: none;"
+            onclick="handleContextAction('unsnooze')"><i class="fas fa-history"></i> Unsnooze</div>
+        <div class="context-menu-sep"></div>
+        <div class="context-menu-item" onclick="handleContextAction('spam')"><i class="fas fa-exclamation-triangle"></i>
+            Mark as spam</div>
+        <div class="context-menu-item" onclick="handleContextAction('archive')"><i class="fas fa-box-archive"></i>
+            Archive</div>
+        <div class="context-menu-item" onclick="handleContextAction('delete')"><i class="far fa-trash-alt"></i> Delete
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+        let contextTargetUid = null;
+        let contextTargetElement = null;
+
+        // Initialize Context Menu for email rows
+        document.addEventListener('contextmenu', (e) => {
+            const row = e.target.closest('.email-row');
+            if (row) {
+                e.preventDefault();
+                contextTargetUid = row.getAttribute('data-uid');
+                contextTargetElement = row;
+
+                const menu = document.getElementById('context-menu');
+
+                // Show/Hide Snooze vs Unsnooze
+                if ('{{ requested_folder }}' === 'Snoozed') {
+                    document.getElementById('cm-snooze').style.display = 'none';
+                    document.getElementById('cm-unsnooze').style.display = 'flex';
+                } else {
+                    document.getElementById('cm-snooze').style.display = 'flex';
+                    document.getElementById('cm-unsnooze').style.display = 'none';
+                }
+                const isPinned = row.getAttribute('data-pinned') === 'true';
+                document.getElementById('cm-pin').style.display = isPinned ? 'none' : 'flex';
+                document.getElementById('cm-unpin').style.display = isPinned ? 'flex' : 'none';
+
+                menu.style.display = 'block';
+
+                // Position logic (ensure it doesn't go off-screen)
+                let x = e.clientX;
+                let y = e.clientY;
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                if (x + 200 > winW) x = winW - 200;
+                if (y + 250 > winH) y = winH - 250;
+
+                menu.style.left = x + 'px';
+                menu.style.top = y + 'px';
+            } else {
+                document.getElementById('context-menu').style.display = 'none';
+            }
+        });
+
+        // Close context menu on any click
+        document.addEventListener('click', () => {
+            document.getElementById('context-menu').style.display = 'none';
+        });
+
+        async function handleContextAction(action) {
+            if (!contextTargetUid) return;
+
+            if (action === 'reply') {
+                openCompose();
+                // We could pre-fill "To" here if we had it stored
+            } else if (action === 'forward') {
+                openCompose();
+            } else if (action === 'star') {
+                toggleStar(contextTargetUid, contextTargetElement);
+            } else if (action === 'pin') {
+                togglePin(contextTargetUid, contextTargetElement, true);
+            } else if (action === 'unpin') {
+                togglePin(contextTargetUid, contextTargetElement, false);
+            } else if (action === 'snooze') {
+                const sub = contextTargetElement.getAttribute('data-subject');
+                const from = contextTargetElement.getAttribute('data-from');
+                snoozeEmail(contextTargetUid, sub, from);
+            } else if (action === 'unsnooze') {
+                unsnoozeEmail(contextTargetUid);
+            } else if (action === 'spam') {
+                moveEmail(contextTargetUid, 'Spam', contextTargetElement);
+            } else if (action === 'archive') {
+                moveEmail(contextTargetUid, 'Archive', contextTargetElement);
+            } else if (action === 'delete') {
+                const target = '{{ requested_folder }}' === 'Bin' ? 'delete' : 'Bin';
+                if (target === 'delete') deleteEmail(contextTargetUid, contextTargetElement);
+                else moveEmail(contextTargetUid, 'Bin', contextTargetElement);
+            }
+        }
+
+        async function togglePin(uid, element, forcePin = null) {
+            const row = element && element.classList.contains('email-row') ? element : element.closest('.email-row');
+            if (!row) return;
+            const pin = row.querySelector('.pin-icon');
+            const currentlyPinned = row.getAttribute('data-pinned') === 'true';
+            const shouldPin = forcePin === null ? !currentlyPinned : forcePin;
+
+            if (shouldPin) {
+                pin.classList.replace('far', 'fas');
+                pin.style.color = '#1a73e8';
+                pin.classList.remove('pin-icon-unpinned');
+                row.setAttribute('data-pinned', 'true');
+            } else {
+                pin.classList.replace('fas', 'far');
+                pin.style.color = '#8a9096';
+                pin.classList.add('pin-icon-unpinned');
+                row.setAttribute('data-pinned', 'false');
+            }
+
+            const formData = new FormData();
+            formData.append('uid', uid);
+            formData.append('folder', row.getAttribute('data-folder') || '{{ current_folder }}');
+            formData.append('subject', row.getAttribute('data-subject') || '');
+            formData.append('sender', row.getAttribute('data-from') || '');
+            formData.append('snippet', row.getAttribute('data-snippet') || '');
+            formData.append('is_pinned', shouldPin);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            try {
+                const res = await fetch('{% url "toggle_pin_ajax" %}', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.status !== 'success') {
+                    throw new Error(data.message || 'Failed');
+                }
+                if (!shouldPin && '{{ requested_folder }}' === 'Pinned') {
+                    row.remove();
+                }
+                showToast(data.message || (shouldPin ? 'Email pinned' : 'Email unpinned'));
+            } catch (err) {
+                // Revert optimistic update
+                if (currentlyPinned) {
+                    pin.classList.replace('far', 'fas');
+                    pin.style.color = '#1a73e8';
+                    pin.classList.remove('pin-icon-unpinned');
+                    row.setAttribute('data-pinned', 'true');
+                } else {
+                    pin.classList.replace('fas', 'far');
+                    pin.style.color = '#8a9096';
+                    pin.classList.add('pin-icon-unpinned');
+                    row.setAttribute('data-pinned', 'false');
+                }
+                showToast('Failed to update pin');
+            }
+        }
+
+        async function toggleStar(uid, element) {
+            const star = element.querySelector('.star-icon') || element.querySelector('i');
+            const isStarred = star.classList.contains('fas');
+
+            // UI Update first (instant)
+            if (isStarred) {
+                star.classList.replace('fas', 'far');
+                star.style.color = '#dadce0';
+            } else {
+                star.classList.replace('far', 'fas');
+                star.style.color = '#f4b400';
+            }
+
+            const formData = new FormData();
+            formData.append('uid', uid);
+            formData.append('folder', '{{ current_folder }}');
+            formData.append('is_starred', !isStarred);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            try {
+                await fetch('{% url "toggle_star_ajax" %}', { method: 'POST', body: formData });
+            } catch (err) {
+                console.error("Failed to toggle star", err);
+            }
+        }
+
+        async function snoozeEmail(uid, subject, sender) {
+            const days = prompt("Snooze for how many days?", "1");
+            if (!days) return;
+
+            const formData = new FormData();
+            formData.append('uid', uid);
+            formData.append('subject', subject);
+            formData.append('sender', sender);
+            formData.append('days', days);
+            formData.append('folder', '{{ current_folder }}');
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            showToast("Snoozing email...");
+            try {
+                const res = await fetch('{% url "snooze_email_ajax" %}', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    showToast(data.message);
+                    location.reload();
+                } else {
+                    showToast("Error: " + data.message);
+                }
+            } catch (err) {
+                showToast("Failed to snooze email");
+            }
+        }
+        function openCompose() { document.getElementById('compose-window').style.display = 'block'; }
+        function closeCompose() { document.getElementById('compose-window').style.display = 'none'; }
+
+        async function unsnoozeEmail(uid) {
+            const formData = new FormData();
+            formData.append('uid', uid);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            showToast("Unsnoozing...");
+            try {
+                const res = await fetch('{% url "unsnooze_email_ajax" %}', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    showToast(data.message);
+                    location.reload();
+                } else { showToast("Error: " + data.message); }
+            } catch (err) { showToast("Failed to unsnooze"); }
+        }
+
+        async function viewEmail(uid, subject, from, date) {
+            const modal = document.getElementById('email-modal');
+            const bodyContainer = document.getElementById('m-body');
+            document.getElementById('m-subject').innerText = subject;
+            bodyContainer.innerHTML = `<div style="text-align: center; padding: 60px;"><i class="fas fa-circle-notch fa-spin" style="font-size: 32px; color: #1a73e8;"></i></div>`;
+            modal.style.display = 'block';
+
+            try {
+                const response = await fetch(`/fetch-email-content/?uid=${uid}`);
+                const data = await response.json();
+                if (data.status === 'success') {
+                    if (data.html) {
+                        bodyContainer.innerHTML = `<iframe srcdoc="${data.html.replace(/"/g, '&quot;')}" style="width: 100%; height: 500px; border: none;"></iframe>`;
+                    } else {
+                        bodyContainer.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit;">${data.body}</pre>`;
+                    }
+                } else { bodyContainer.innerHTML = `Error: ${data.message}`; }
+            } catch (err) { bodyContainer.innerHTML = `Failed to load.`; }
+        }
+
+        function closeModal(e) { if (!e || e.target.classList.contains('modal-overlay')) document.getElementById('email-modal').style.display = 'none'; }
+
+        function openCompose() {
+            document.getElementById('compose-modal').style.display = 'flex';
+        }
+        function showToast(msg) {
+            const toast = document.getElementById('toast-container');
+            document.getElementById('toast-message').innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        async function closeCompose(e) {
+            if (e === null || e.target.id === 'compose-modal') {
+                const to = document.getElementById('c-to').value;
+                const subject = document.getElementById('c-subject').value;
+                const message = document.getElementById('c-message').value;
+
+                if (subject || message) {
+                    showToast("Saving draft...");
+                    const formData = new FormData();
+                    formData.append('to', to);
+                    formData.append('subject', subject);
+                    formData.append('message', message);
+                    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                    try {
+                        await fetch('{% url "save_draft_ajax" %}', { method: 'POST', body: formData });
+                        showToast("Draft saved to server");
+                    } catch (err) {
+                        showToast("Failed to sync draft");
+                    }
+                }
+                document.getElementById('compose-modal').style.display = 'none';
+            }
+        }
+        async function sendEmail() {
+            const to = document.getElementById('c-to').value;
+            const subject = document.getElementById('c-subject').value;
+            const message = document.getElementById('c-message').value;
+            const btn = document.querySelector('.btn-send-main');
+
+            if (!to || !subject || !message) { alert("All fields are required."); return; }
+
+            btn.disabled = true;
+            btn.innerText = "Sending...";
+
+            const formData = new FormData();
+            formData.append('to', to);
+            formData.append('subject', subject);
+            formData.append('message', message);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            try {
+                const response = await fetch('{% url "send_email_ajax" %}', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert("Email sent!");
+                    closeCompose(null);
+                    document.getElementById('compose-form').reset();
+                } else { alert("Error: " + data.message); }
+            } catch (err) { alert("Failed to send."); }
+            finally { btn.disabled = false; btn.innerText = "Send"; }
+        }
+        async function moveEmail(uid, target, element) {
+            const confirmMap = {
+                Bin: "Move this email to Bin?",
+                Spam: "Report this email as Spam?",
+                Archive: "Archive this email?"
+            };
+            const confirmMsg = confirmMap[target] || "Move this email?";
+            if (!confirm(confirmMsg)) return;
+
+            showToast(`${target === 'Bin' ? 'Moving' : 'Reporting'}...`);
+            try {
+                const response = await fetch(`/move-email-ajax/?uid=${uid}&target=${target}&folder={{ current_folder }}`);
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showToast(data.message);
+                    element.closest('.email-row').remove();
+                } else {
+                    alert("Error: " + data.message);
+                }
+            } catch (err) {
+                showToast("Failed to move email");
+            }
+        }
+
+        async function deleteEmail(uid, element) {
+            if (!confirm("Delete this email permanently?")) return;
+            showToast("Deleting...");
+            try {
+                const response = await fetch(`/delete-email-ajax/?uid=${uid}&folder={{ current_folder }}`);
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showToast(data.message);
+                    element.closest('.email-row').remove();
+                } else { alert("Error: " + data.message); }
+            } catch (err) { showToast("Failed to delete."); }
+        }
+
+        // Search Filtering Logic
+        document.getElementById('main-search-input').addEventListener('input', function (e) {
+            const term = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.email-row');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(term) ? 'flex' : 'none';
+            });
+        });
+
+        function toggleSearchFilter(e) {
+            e.stopPropagation();
+            document.getElementById('search-filter-dropdown').classList.toggle('show');
+        }
+
+        function applyAdvancedSearch() {
+            const from = document.getElementById('f-from').value.toLowerCase();
+            const sub = document.getElementById('f-subject').value.toLowerCase();
+            const words = document.getElementById('f-words').value.toLowerCase();
+
+            const rows = document.querySelectorAll('.email-row');
+            rows.forEach(row => {
+                const rowFrom = (row.getAttribute('data-from') || "").toLowerCase();
+                const rowSub = (row.getAttribute('data-subject') || "").toLowerCase();
+                const rowText = row.innerText.toLowerCase();
+
+                let match = true;
+                if (from && !rowFrom.includes(from)) match = false;
+                if (sub && !rowSub.includes(sub)) match = false;
+                if (words && !rowText.includes(words)) match = false;
+
+                row.style.display = match ? 'flex' : 'none';
+            });
+
+            document.getElementById('search-filter-dropdown').classList.remove('show');
+            showToast("Filters applied");
+        }
+
+        function toggleSelectAll() {
+            applyFilter('toggle');
+        }
+
+        function applyFilter(type) {
+            const innerIcon = document.getElementById('select-all-icon-inner');
+            const rowCheckboxes = document.querySelectorAll('.email-row .row-checkbox-icon');
+            const allRows = document.querySelectorAll('.email-row');
+
+            // Close dropdown
+            document.getElementById('select-dropdown').classList.remove('show');
+
+            if (type === 'toggle') {
+                const isChecked = innerIcon.classList.contains('fa-check-square');
+                type = isChecked ? 'none' : 'all';
+            }
+
+            // Reset all row visibility first
+            allRows.forEach(row => row.style.display = '');
+
+            if (type === 'all') {
+                innerIcon.classList.replace('fa-square', 'fa-check-square');
+                innerIcon.style.color = '#1a73e8';
+                rowCheckboxes.forEach(icon => {
+                    icon.classList.replace('fa-square', 'fa-check-square');
+                    icon.style.color = '#1a73e8';
+                    icon.classList.add('selected');
+                });
+            } else if (type === 'none') {
+                innerIcon.classList.replace('fa-check-square', 'fa-square');
+                innerIcon.style.color = '';
+                rowCheckboxes.forEach(icon => {
+                    icon.classList.replace('fa-check-square', 'fa-square');
+                    icon.style.color = '';
+                    icon.classList.remove('selected');
+                });
+            } else if (type === 'read') {
+                innerIcon.classList.replace('fa-check-square', 'fa-square');
+                innerIcon.style.color = '';
+                rowCheckboxes.forEach(icon => icon.classList.remove('selected'));
+                allRows.forEach(row => {
+                    const isUnread = row.querySelector('.c-sub') && row.querySelector('.c-sub').style.fontWeight === '700';
+                    if (isUnread) row.style.display = 'none';
+                });
+            } else if (type === 'unread') {
+                innerIcon.classList.replace('fa-check-square', 'fa-square');
+                innerIcon.style.color = '';
+                rowCheckboxes.forEach(icon => icon.classList.remove('selected'));
+                allRows.forEach(row => {
+                    const sub = row.querySelector('.c-sub');
+                    const isRead = !sub || sub.style.fontWeight !== '700';
+                    if (isRead) row.style.display = 'none';
+                });
+            } else if (type === 'starred') {
+                innerIcon.classList.replace('fa-check-square', 'fa-square');
+                innerIcon.style.color = '';
+                rowCheckboxes.forEach(icon => icon.classList.remove('selected'));
+                allRows.forEach(row => {
+                    const star = row.querySelector('.fa-star');
+                    const isStarred = star && star.style.color === 'rgb(244, 180, 0)';
+                    if (!isStarred) row.style.display = 'none';
+                });
+            } else if (type === 'unstarred') {
+                innerIcon.classList.replace('fa-check-square', 'fa-square');
+                innerIcon.style.color = '';
+                rowCheckboxes.forEach(icon => icon.classList.remove('selected'));
+                allRows.forEach(row => {
+                    const star = row.querySelector('.fa-star');
+                    const isStarred = star && star.style.color === 'rgb(244, 180, 0)';
+                    if (isStarred) row.style.display = 'none';
+                });
+            }
+        }
+
+        function toggleSelectDropdown(event) {
+            event.stopPropagation();
+            document.getElementById('select-dropdown').classList.toggle('show');
+        }
+
+        // Dropdown Menu Logic
+        function toggleMenu(event) {
+            event.stopPropagation();
+            document.getElementById("more-dropdown").classList.toggle("show");
+            document.getElementById("profile-dropdown").classList.remove("show");
+        }
+
+        function toggleProfileMenu(event) {
+            event.stopPropagation();
+            document.getElementById("profile-dropdown").classList.toggle("show");
+            document.getElementById("more-dropdown").classList.remove("show");
+        }
+
+        function markAllRead(event) {
+            event.preventDefault();
+            document.getElementById('more-dropdown').classList.remove('show');
+            document.querySelectorAll('.email-row').forEach(row => {
+                row.classList.remove('unread');
+                const sub = row.querySelector('.c-sub');
+                if (sub) sub.style.fontWeight = '';
+            });
+            showToast('All messages marked as read');
+        }
+
+        let initialSettings = {};
+
+        function openSettings(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Capture current state
+            const density = document.querySelector('.density-card.selected');
+            const theme = document.querySelector('.theme-swatch.selected');
+            const fontSize = document.getElementById('s-font-size');
+
+            initialSettings = {
+                density: density ? density.id.replace('density-', '') : 'default',
+                theme: theme ? theme.id.replace('theme-', '') : 'light',
+                fontSize: fontSize ? fontSize.value : 'Normal'
+            };
+
+            document.getElementById('more-dropdown').classList.remove('show');
+            document.getElementById('settings-overlay').classList.add('open');
+        }
+
+        function closeSettings() {
+            // Revert to initial state
+            if (initialSettings.density) setDensity(initialSettings.density);
+            if (initialSettings.theme) setTheme(initialSettings.theme);
+            if (initialSettings.fontSize) {
+                setTextSize(initialSettings.fontSize);
+                const fs = document.getElementById('s-font-size');
+                if (fs) fs.value = initialSettings.fontSize;
+            }
+
+            document.getElementById('settings-overlay').classList.remove('open');
+        }
+
+        function handleSettingsOverlayClick(e) {
+            if (e.target === document.getElementById('settings-overlay')) closeSettings();
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sp-pane').forEach(p => p.classList.remove('active'));
+
+            // Find the clicked tab or the one matching the name
+            const tabs = document.querySelectorAll('.sp-tab');
+            tabs.forEach(t => {
+                if (t.innerText.toLowerCase() === tab) t.classList.add('active');
+            });
+
+            const pane = document.getElementById('sp-' + tab);
+            if (pane) pane.classList.add('active');
+        }
+
+        function setDensity(mode) {
+            document.querySelectorAll('.density-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('density-' + mode).classList.add('selected');
+            const heights = { default: '40px', comfortable: '52px', compact: '28px' };
+            document.querySelectorAll('.email-row').forEach(r => r.style.height = heights[mode]);
+        }
+
+        function setTheme(theme) {
+            document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('selected'));
+            document.getElementById('theme-' + theme).classList.add('selected');
+            const themes = {
+                light: { '--bg-body': '#f6f8fc', '--sidebar-bg': '#f6f8fc', '--text-main': '#1f1f1f', '--border': '#e0e0e0' },
+                dark: { '--bg-body': '#202124', '--sidebar-bg': '#292a2d', '--text-main': '#e8eaed', '--border': '#3c4043' },
+                blue: { '--bg-body': '#e8f0fe', '--sidebar-bg': '#d2e3fc', '--text-main': '#1a1f36', '--border': '#c5d7f5' },
+                forest: { '--bg-body': '#e6f4ea', '--sidebar-bg': '#d4edda', '--text-main': '#1b3a25', '--border': '#b7dfc4' },
+            };
+            Object.entries(themes[theme]).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+        }
+
+        function requestNotifPermission(checkbox) {
+            if (checkbox.checked && Notification.permission !== 'granted') {
+                Notification.requestPermission().then(p => {
+                    if (p !== 'granted') { checkbox.checked = false; showToast('Notification permission denied'); }
+                    else showToast('Desktop notifications enabled');
+                });
+            }
+        }
+
+        function saveSettings() {
+            const formData = new FormData();
+            const perPage = document.getElementById('s-per-page');
+            if (perPage) formData.append('emails_per_page', perPage.value);
+
+            const inboxType = document.getElementById('s-inbox-type');
+            if (inboxType) formData.append('inbox_type', inboxType.value);
+
+            const density = document.querySelector('.density-card.selected');
+            if (density) formData.append('display_density', density.id.replace('density-', ''));
+
+            const theme = document.querySelector('.theme-swatch.selected');
+            if (theme) formData.append('theme', theme.id.replace('theme-', ''));
+
+            const fontSize = document.getElementById('s-font-size');
+            if (fontSize) formData.append('text_size', fontSize.value);
+
+            fetch("{% url 'save_settings_ajax' %}", {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Success! Update initialSettings to current state so closeSettings doesn't revert
+                        const density = document.querySelector('.density-card.selected');
+                        const theme = document.querySelector('.theme-swatch.selected');
+                        const fontSize = document.getElementById('s-font-size');
+                        initialSettings = {
+                            density: density ? density.id.replace('density-', '') : 'default',
+                            theme: theme ? theme.id.replace('theme-', '') : 'light',
+                            fontSize: fontSize ? fontSize.value : 'Normal'
+                        };
+
+                        document.getElementById('settings-overlay').classList.remove('open');
+                        showToast('Settings saved. Refreshing...');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showToast('Error: ' + data.message);
+                    }
+                })
+                .catch(err => showToast('Network error saving settings'));
+        }
+
+        // Initialize settings on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentDensity = '{{ user_settings.display_density|escapejs }}' || 'default';
+            const currentTheme = '{{ user_settings.theme|escapejs }}' || 'light';
+            const currentTextSize = '{{ user_settings.text_size|escapejs }}' || 'Normal';
+            setDensity(currentDensity);
+            setTheme(currentTheme);
+            setTextSize(currentTextSize);
+
+            const fontSizeDropdown = document.getElementById('s-font-size');
+            if (fontSizeDropdown) {
+                fontSizeDropdown.value = currentTextSize;
+                fontSizeDropdown.addEventListener('change', (e) => {
+                    setTextSize(e.target.value);
+                });
+            }
+        });
+
+        function setTextSize(size) {
+            let px = '14px';
+            if (size === 'Small') px = '12px';
+            else if (size === 'Normal') px = '14px';
+            else if (size === 'Large') px = '16px';
+            else if (size === 'Largest') px = '18px';
+            document.documentElement.style.setProperty('--mail-font-size', px);
+
+            // Also apply to email content inside modals if they exist
+            const emailBody = document.getElementById('m-body');
+            if (emailBody) emailBody.style.fontSize = px;
+        }
+
+        function showAbout() {
+            document.getElementById('about-modal').style.display = 'flex';
+        }
+
+        function closeAbout(e) {
+            if (e === null || e.target.id === 'about-modal') {
+                document.getElementById('about-modal').style.display = 'none';
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        // Use the wrapper div that contains BOTH the button AND the dropdown
+        const moreDotWrapper = document.querySelector('[title="More"]').parentElement;
+        const profileWrapper = document.getElementById('profile-dropdown').parentElement;
+        window.onclick = function (event) {
+            // Close more-dropdown when clicking outside its wrapper
+            if (!moreDotWrapper.contains(event.target)) {
+                document.getElementById('more-dropdown').classList.remove('show');
+            }
+            // Close profile-dropdown when clicking outside its wrapper
+            if (!profileWrapper.contains(event.target)) {
+                document.getElementById('profile-dropdown').classList.remove('show');
+            }
+            // Close select-dropdown
+            const selDrop = document.getElementById('select-dropdown');
+            if (selDrop && !document.getElementById('select-all-widget').contains(event.target)) {
+                selDrop.classList.remove('show');
+            }
+            // Close search filter dropdown
+            const searchFilterDrop = document.getElementById('search-filter-dropdown');
+            if (searchFilterDrop && !document.querySelector('.search-box').contains(event.target)) {
+                searchFilterDrop.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+
+</html>

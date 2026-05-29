@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .card {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 2. Apply a premium corporate hover interaction layout matrix */
+    .card:hover {
+        background-color: #f8fafc !important; /* Elegant light slate tint */
+        transform: translateY(-2px);           /* Smooth upward floating lift */
+        box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 
+                    0 4px 6px -4px rgba(15, 23, 42, 0.08); /* Sophisticated deep shadow elevation */
+        border-color: #5396e7 !important;      /* Softens the border edge line nicely */
+    }
+</style>
+<!-- Light Theme Workspace Wrapper Layout Box Container -->
+<div class="page-container wide" style="padding: 32px; font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
+    
+    <!-- Dashboard Top Header Layout Frame -->
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
+        <div>
+            <h1 style="font-size: 32px; font-weight: 700; color: #1e40af; margin: 0 0 6px 0; letter-spacing: -0.02em;">Cafeteria & Catering</h1>
+            <p style="color: #64748b; font-size: 14px; margin: 0; font-weight: 500;">Monitor food quality, hygiene standards, and employee feedback</p>
+        </div>
+        <div>
+            <a href="?filter={{ current_filter }}" class="btn btn-secondary" style="padding: 10px 16px; background: #ffffff; border: 1px solid #d0d5dd; border-radius: 8px; text-decoration: none; color: #344054; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);">
+                <i class="fa-solid fa-rotate"></i> Refresh
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Overview Cards Row Matrix Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        
+        <!-- Total Reported Card -->
+        <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="padding: 15px; border-radius: 12px; background: rgba(15, 98, 254, 0.1); color: #0f62fe; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px;">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div>
+                <div style="font-size: 0.9rem; color: #64748b; font-weight: 500;">Total Reported</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">{{ stats.total|default:"0" }}</div>
+            </div>
+        </div>
+
+        <!-- Pending Action Card -->
+        <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="padding: 15px; border-radius: 12px; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px;">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+                <div style="font-size: 0.9rem; color: #64748b; font-weight: 500;">Pending Action</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #ef4444;">{{ stats.pending|default:"0" }}</div>
+            </div>
+        </div>
+
+        <!-- Resolved Card -->
+        <div class="card" style="background: #ffffff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="padding: 15px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px;">
+                <i class="fa-solid fa-check-double"></i>
+            </div>
+            <div>
+                <div style="font-size: 0.9rem; color: #64748b; font-weight: 500;">Resolved</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">{{ stats.resolved|default:"0" }}</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Filter Navigation Tabs Matrix Row -->
+    <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;">
+        <a href="?filter=All" style="padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.15s; {% if current_filter == 'All' %} background: #2563eb; color: #ffffff; {% else %} background: #ffffff; color: #475569; border: 1px solid #d0d5dd; {% endif %}">All</a>
+        <a href="?filter=Pending" style="padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.15s; {% if current_filter == 'Pending' %} background: #2563eb; color: #ffffff; {% else %} background: #ffffff; color: #475569; border: 1px solid #d0d5dd; {% endif %}">Pending</a>
+        <a href="?filter=Addressed" style="padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.15s; {% if current_filter == 'Addressed' %} background: #2563eb; color: #ffffff; {% else %} background: #ffffff; color: #475569; border: 1px solid #d0d5dd; {% endif %}">Addressed</a>
+        <a href="?filter=Resolved" style="padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.15s; {% if current_filter == 'Resolved' %} background: #2563eb; color: #ffffff; {% else %} background: #ffffff; color: #475569; border: 1px solid #d0d5dd; {% endif %}">Resolved</a>
+    </div>
+
+    <!-- Main Data presentation Grid Sheet Box -->
+    <div class="card no-padding" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div class="table-container" style="overflow-x: auto;">
+            <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #f1f5f9; background: #f8fafc; color: #475569;">
+                        <th style="padding: 14px 16px; font-weight: 600;">Date</th>
+                        <th style="padding: 14px 16px; font-weight: 600;">Employee</th>
+                        <th style="padding: 14px 16px; font-weight: 600;">Category</th>
+                        <th style="padding: 14px 16px; font-weight: 600;">Description</th>
+                        <th style="padding: 14px 16px; font-weight: 600;">Status</th>
+                        <th style="padding: 14px 16px; text-align: right; width: 25%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in complaints %}
+                    <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.15s ease;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
+                        
+                        <!-- Date Display Stack -->
+                        <td style="padding: 16px;">
+                            <div style="font-weight: 600; color: #0f172a;">{{ c.date|date:"m/d/Y" }}</div>
+                            <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">{{ c.date|date:"h:i A" }}</div>
+                        </td>
+                        
+                        <!-- Profile Card Unit Wrapper layout -->
+                        <td style="padding: 16px;">
+                            <div style="display: flex; Axel-items: center; gap: 10px; align-items: center;">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: #2563eb; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">
+                                    {{ c.employee.first_name|slice:":1"|upper }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; color: #0f172a;">{{ c.employee.first_name }} {{ c.employee.last_name|default:'' }}</div>
+                                    <div style="font-size: 0.8rem; color: #64748b;">{{ c.employee.email }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        
+                        <!-- Complaint Category Label Block Tag -->
+                        <td style="padding: 16px;">
+                            <span style="padding: 4px 10px; border-radius: 6px; background: #f1f5f9; color: #475569; font-size: 0.8rem; font-weight: 600;">
+                                {{ c.complaint_type }}
+                            </span>
+                        </td>
+                        
+                        <!-- Detailed Multi-line description Frame element -->
+                        <td style="padding: 16px; max-width: 350px;">
+                            <div style="font-size: 0.95rem; line-height: 1.4; color: #334155;">{{ c.description|default:"No details provided." }}</div>
+                        </td>
+                        
+                        <!-- Replicated React Background-Hex color badge configurations switches -->
+                        <td style="padding: 16px;">
+                            <span class="status-badge" style="padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;
+                                {% if c.status == 'Resolved' %} background: #dcfce7; color: #166534;
+                                {% elif c.status == 'Addressed' %} background: #fffbeb; color: #d97706;
+                                {% else %} background: #fee2e2; color: #991b1b; {% endif %}">
+                                {{ c.status }}
+                            </span>
+                        </td>
+                        
+                        <!-- Actions Flex Button Container Group Layout -->
+                        <td style="padding: 16px; text-align: right;">
+                            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                
+                                <!-- Conditional Loop 1: Display Addressed Trigger button *only* when item is Pending -->
+                                {% if c.status == 'Pending' %}
+                                    <a href="{% url 'update_complaint_status' c.id 'Addressed' %}?filter={{ current_filter }}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; background: #ffffff; border: 1px solid #d0d5dd; color: #344054; border-radius: 6px; font-weight: 600; text-decoration: none; display: inline-block; box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05); transition: background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='#ffffff'">
+                                        Mark Addressed
+                                    </a>
+                                {% endif %}
+                                
+                                <!-- Conditional Loop 2: Display Resolve Trigger button *until* item reaches Resolved state status -->
+                                {% if c.status != 'Resolved' %}
+                                    <a href="{% url 'update_complaint_status' c.id 'Resolved' %}?filter={{ current_filter }}" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem; background: #2563eb; color: #ffffff; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; display: inline-block; box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05); transition: background 0.15s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">
+                                        Resolve
+                                    </a>
+                                {% endif %}
+
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #64748b; font-size: 14px; font-weight: 500;">
+                            No records found for the selected filter.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

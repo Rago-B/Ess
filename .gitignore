@@ -1,0 +1,28 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django database
+db.sqlite3
+
+# Media files
+
+
+# Static files
+
+
+# Virtual environment
+venv/
+env/
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+credentials/service_account.json

@@ -1,0 +1,1140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Policy | Voxlom EMS Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --ink: #0f1117;
+            --ink-2: #2e3240;
+            --ink-3: #5c6070;
+            --ink-4: #9198a8;
+            --rule: #e8eaef;
+            --rule-2: #f0f2f5;
+            --surface: #f6f7f9;
+            --white: #ffffff;
+            --accent: #0f6fff;
+            --accent-soft: #e8f0ff;
+            --red: #dc2626;
+            --red-soft: #fef2f2;
+            --violet: #7c3aed;
+            --violet-soft: #f5f3ff;
+            --amber: #b45309;
+            --amber-soft: #fffbeb;
+            --teal: #0d7377;
+            --teal-soft: #f0fafa;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-w: 268px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface);
+            color: var(--ink);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TOPBAR ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .topbar {
+            height: 58px;
+            background: var(--white);
+            border-bottom: 1px solid var(--rule);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            gap: 12px;
+            flex-shrink: 0;
+            z-index: 30;
+        }
+
+        .topbar-brand {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none;
+        }
+        .topbar-logo {
+            width: 30px; height: 30px;
+            background: var(--ink);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .topbar-logo i { color: #fff; font-size: 13px; }
+        .topbar-name { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
+
+        .topbar-sep { width: 1px; height: 16px; background: var(--rule); margin: 0 4px; }
+        .topbar-page { font-size: 13px; color: var(--ink-3); }
+
+        /* Search bar in topbar */
+        .topbar-search {
+            margin-left: auto;
+            position: relative;
+            width: 300px;
+        }
+        .topbar-search input {
+            width: 100%;
+            height: 36px;
+            border: 1px solid var(--rule);
+            border-radius: 10px;
+            background: var(--surface);
+            padding: 0 14px 0 38px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        .topbar-search input:focus {
+            border-color: var(--accent);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(15,111,255,0.08);
+        }
+        .topbar-search input::placeholder { color: var(--ink-4); }
+        .topbar-search .si { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-4); font-size: 13px; pointer-events: none; }
+
+        .topbar-dash {
+            margin-left: 16px;
+            background: var(--ink);
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+        .topbar-dash:hover { background: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(15,111,255,0.25); }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LAYOUT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .layout {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SIDEBAR ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        /* .sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: var(--white);
+            border-right: 1px solid var(--rule);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 28px 20px;
+            gap: 28px;
+            animation: sideIn 0.5s var(--ease) both;
+        } */
+
+        @keyframes sideIn {
+            from { opacity: 0; transform: translateX(-12px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 10px; }
+
+        .sidebar-section-title {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--ink-4);
+            margin-bottom: 12px;
+        }
+
+        /* Category filter pills */
+        .cat-list { display: flex; flex-direction: column; gap: 4px; }
+
+        .cat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s;
+            font-size: 13px;
+            color: var(--ink-2);
+            font-weight: 400;
+            user-select: none;
+            border: 1px solid transparent;
+        }
+        .cat-item:hover { background: var(--surface); }
+        .cat-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 500; border-color: rgba(15,111,255,0.12); }
+
+        .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .cat-count { margin-left: auto; font-size: 11px; color: var(--ink-4); background: var(--surface); padding: 2px 7px; border-radius: 20px; }
+        .cat-item.active .cat-count { background: rgba(15,111,255,0.12); color: var(--accent); }
+
+        /* Date filter */
+        .date-group { display: flex; flex-direction: column; gap: 10px; }
+        .date-row { display: flex; flex-direction: column; gap: 5px; }
+        .date-label { font-size: 11px; color: var(--ink-3); font-weight: 500; }
+        .date-input {
+            height: 34px;
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 0 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12.5px;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--surface);
+            width: 100%;
+        }
+        .date-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,111,255,0.08); background: var(--white); }
+
+        .filter-actions { display: flex; gap: 8px; margin-top: 4px; }
+        .btn-apply {
+            flex: 1;
+            height: 32px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            letter-spacing: 0.2px;
+        }
+        .btn-apply:hover { background: #0055d4; transform: translateY(-1px); }
+        .btn-reset {
+            height: 32px;
+            padding: 0 14px;
+            background: transparent;
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            color: var(--ink-3);
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-reset:hover { border-color: var(--ink-3); color: var(--ink); }
+
+        /* Status filter */
+        .status-list { display: flex; flex-direction: column; gap: 4px; }
+        .status-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 10px; border-radius: 8px; cursor: pointer;
+            font-size: 12.5px; color: var(--ink-2);
+            transition: background 0.18s;
+            user-select: none;
+        }
+        .status-item:hover { background: var(--surface); }
+        .status-item input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MAIN CONTENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .content::-webkit-scrollbar { width: 5px; }
+        .content::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 10px; }
+
+        /* ── Section Header ── */
+        .section-hd {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .section-hd-line { width: 3px; height: 18px; border-radius: 2px; background: var(--accent); }
+        .section-hd h2 { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: var(--ink); }
+        .section-hd .count { font-size: 12px; color: var(--ink-4); background: var(--surface); border: 1px solid var(--rule); padding: 3px 10px; border-radius: 20px; margin-left: 4px; }
+        .section-hd .view-all { margin-left: auto; font-size: 12.5px; color: var(--accent); text-decoration: none; font-weight: 500; transition: opacity 0.2s; }
+        .section-hd .view-all:hover { opacity: 0.75; }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ARTICLE CARDS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .article-card {
+            background: var(--white);
+            border: 1px solid var(--rule);
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: box-shadow 0.28s var(--ease), transform 0.28s var(--ease), border-color 0.28s;
+            opacity: 0;
+            transform: translateY(16px);
+            animation: cardIn 0.5s var(--ease) forwards;
+            display: flex;
+            flex-direction: column;
+        }
+        .article-card:hover {
+            box-shadow: 0 8px 28px rgba(0,0,0,0.07);
+            transform: translateY(-3px);
+            border-color: #d4d8e2;
+        }
+
+        @keyframes cardIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .article-thumb {
+            height: 130px;
+            position: relative;
+            overflow: hidden;
+        }
+        .article-thumb-bg {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px;
+            transition: transform 0.4s var(--ease);
+        }
+        .article-card:hover .article-thumb-bg { transform: scale(1.06); }
+
+        .article-cat-badge {
+            position: absolute; top: 10px; left: 10px;
+            font-size: 10px; font-weight: 700;
+            padding: 3px 9px; border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            backdrop-filter: blur(6px);
+        }
+
+        .article-body { padding: 16px 18px 14px; flex: 1; display: flex; flex-direction: column; }
+        .article-meta { font-size: 11px; color: var(--ink-4); margin-bottom: 7px; }
+        .article-title { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.4; margin-bottom: 7px; }
+        .article-desc { font-size: 12px; color: var(--ink-3); line-height: 1.6; flex: 1; }
+
+        .article-footer {
+            padding: 10px 18px;
+            border-top: 1px solid var(--rule-2);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .article-avatar {
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 700; color: white;
+            flex-shrink: 0;
+        }
+        .article-author { font-size: 11px; color: var(--ink-3); flex: 1; }
+        .article-stats { display: flex; align-items: center; gap: 10px; }
+        .article-stat { font-size: 11px; color: var(--ink-4); display: flex; align-items: center; gap: 4px; }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DOCUMENT CARDS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .doc-card {
+            background: var(--white);
+            border: 1px solid var(--rule);
+            border-radius: 14px;
+            padding: 20px;
+            cursor: pointer;
+            transition: box-shadow 0.28s var(--ease), transform 0.28s var(--ease), border-color 0.28s;
+            opacity: 0;
+            animation: cardIn 0.5s var(--ease) forwards;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .doc-card:hover {
+            box-shadow: 0 8px 28px rgba(0,0,0,0.07);
+            transform: translateY(-3px);
+            border-color: #d4d8e2;
+        }
+
+        .doc-icon-wrap {
+            width: 52px; height: 52px;
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--rule);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            transition: transform 0.3s var(--ease);
+        }
+        .doc-card:hover .doc-icon-wrap { transform: scale(1.08); }
+
+        .doc-meta { font-size: 11px; color: var(--ink-4); margin-bottom: 4px; }
+        .doc-title { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+
+        .doc-footer {
+            display: flex; align-items: center; gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--rule-2);
+            margin-top: auto;
+        }
+        .doc-avatar {
+            width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 9px; font-weight: 700; color: white; flex-shrink: 0;
+        }
+        .doc-author-name { font-size: 11px; color: var(--ink-3); flex: 1; }
+        .doc-reads { font-size: 11px; color: var(--ink-4); display: flex; align-items: center; gap: 4px; }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ EMPTY STATE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .empty-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            gap: 14px;
+            color: var(--ink-4);
+            text-align: center;
+        }
+        .empty-state.show { display: flex; }
+        .empty-state i { font-size: 32px; opacity: 0.4; }
+        .empty-state p { font-size: 14px; }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HIGHLIGHT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        mark { background: #fff3b0; padding: 0 2px; border-radius: 3px; }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MODAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(10,12,20,0.45);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s var(--ease);
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+        .modal {
+            background: var(--white);
+            border-radius: 20px;
+            width: 680px;
+            max-width: 95vw;
+            max-height: 82vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+            transform: scale(0.94) translateY(16px);
+            transition: transform 0.35s cubic-bezier(0.175,0.885,0.32,1.2), opacity 0.3s var(--ease);
+            opacity: 0;
+            overflow: hidden;
+        }
+        .modal-overlay.open .modal { transform: scale(1) translateY(0); opacity: 1; }
+
+        .modal-hero {
+            height: 180px;
+            position: relative;
+            display: flex; align-items: flex-end;
+            padding: 20px 28px;
+            flex-shrink: 0;
+        }
+        .modal-hero-bg { position: absolute; inset: 0; }
+
+        .modal-badge {
+            font-size: 10px; font-weight: 700;
+            padding: 4px 11px; border-radius: 7px;
+            letter-spacing: 0.6px; text-transform: uppercase;
+            position: absolute; top: 16px; left: 28px;
+            backdrop-filter: blur(6px);
+        }
+
+        .modal-close {
+            position: absolute; top: 14px; right: 18px;
+            width: 32px; height: 32px;
+            background: rgba(255,255,255,0.18);
+            border: none; border-radius: 50%;
+            color: white; font-size: 14px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, transform 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.32); transform: scale(1.08); }
+
+        .modal-title-area { position: relative; z-index: 2; }
+        .modal-date { font-size: 11px; color: rgba(255,255,255,0.65); margin-bottom: 5px; }
+        .modal-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 24px; font-weight: 400;
+            color: #fff; line-height: 1.2;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+
+        .modal-body {
+            flex: 1; overflow-y: auto;
+            padding: 28px 28px 24px;
+        }
+        .modal-body::-webkit-scrollbar { width: 4px; }
+        .modal-body::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 10px; }
+
+        .modal-author-row {
+            display: flex; align-items: center; gap: 10px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--rule);
+            margin-bottom: 20px;
+        }
+        .modal-avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
+        }
+        .modal-author-info { flex: 1; }
+        .modal-author-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+        .modal-author-role { font-size: 11px; color: var(--ink-4); }
+        .modal-stats { display: flex; gap: 16px; }
+        .modal-stat { font-size: 12px; color: var(--ink-3); display: flex; align-items: center; gap: 5px; }
+
+        .modal-section-label {
+            font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; color: var(--ink-4);
+            margin-bottom: 12px;
+        }
+
+        .modal-points { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+        .modal-points li {
+            display: flex; gap: 12px;
+            font-size: 13.5px; color: var(--ink-2); line-height: 1.6;
+            padding: 12px 14px;
+            background: var(--surface);
+            border: 1px solid var(--rule);
+            border-radius: 10px;
+            transition: background 0.18s, border-color 0.18s;
+        }
+        .modal-points li:hover { background: #f0f2f8; border-color: #d8dce8; }
+        .modal-points li i { margin-top: 3px; font-size: 13px; flex-shrink: 0; }
+
+        .modal-footer {
+            padding: 14px 28px;
+            border-top: 1px solid var(--rule);
+            display: flex; align-items: center; gap: 10px;
+            flex-shrink: 0;
+        }
+        .modal-btn {
+            padding: 9px 20px; border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px; font-weight: 500;
+            cursor: pointer; border: none;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+        .modal-btn-primary { background: var(--accent); color: white; }
+        .modal-btn-primary:hover { background: #0055d4; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(15,111,255,0.25); }
+        .modal-btn-ghost { background: var(--surface); color: var(--ink-2); border: 1px solid var(--rule); }
+        .modal-btn-ghost:hover { background: var(--rule); }
+        .modal-read-count { margin-left: auto; font-size: 12px; color: var(--ink-4); }
+    </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <a href="#" class="topbar-brand">
+        <div class="topbar-logo"><i class="fas fa-shield-halved"></i></div>
+        <span class="topbar-name">Voxlom EMS</span>
+    </a>
+    <div class="topbar-sep"></div>
+    <span class="topbar-page">Company Policy</span>
+
+    <div class="topbar-search">
+        <i class="fas fa-search si"></i>
+        <input type="text" id="searchInput" placeholder="Search policies and documents…" oninput="handleSearch(this.value)">
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="topbar-dash">
+        <i class="fas fa-th-large" style="margin-right:6px; font-size:11px;"></i>Dashboard
+    </a>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <!-- Categories -->
+        <div>
+            <div class="sidebar-section-title">Category</div>
+            <div class="cat-list">
+                <div class="cat-item active" data-cat="all" onclick="filterCat(this)">
+                    <span class="cat-dot" style="background:#0f6fff;"></span>
+                    All Policies
+                    <span class="cat-count" id="count-all">11</span>
+                </div>
+                <div class="cat-item" data-cat="hr" onclick="filterCat(this)">
+                    <span class="cat-dot" style="background:#dc2626;"></span>
+                    HR &amp; People
+                    <span class="cat-count" id="count-hr">3</span>
+                </div>
+                <div class="cat-item" data-cat="security" onclick="filterCat(this)">
+                    <span class="cat-dot" style="background:#7c3aed;"></span>
+                    Security
+                    <span class="cat-count" id="count-security">3</span>
+                </div>
+                <div class="cat-item" data-cat="dev" onclick="filterCat(this)">
+                    <span class="cat-dot" style="background:#0f6fff;"></span>
+                    Development
+                    <span class="cat-count" id="count-dev">2</span>
+                </div>
+                <div class="cat-item" data-cat="finance" onclick="filterCat(this)">
+                    <span class="cat-dot" style="background:#b45309;"></span>
+                    Finance
+                    <span class="cat-count" id="count-finance">2</span>
+                </div>
+                <div class="cat-item" data-cat="ops" onclick="filterCat(this)">
+                    <span class="cat-dot" style="background:#0d7377;"></span>
+                    Operations
+                    <span class="cat-count" id="count-ops">1</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div>
+            <div class="sidebar-section-title">Status</div>
+            <div class="status-list">
+                <label class="status-item"><input type="checkbox" checked onchange="applyFilters()"> Active</label>
+                <label class="status-item"><input type="checkbox" onchange="applyFilters()"> Under Review</label>
+                <label class="status-item"><input type="checkbox" onchange="applyFilters()"> Archived</label>
+            </div>
+        </div>
+
+        <!-- Date Range -->
+        <div>
+            <div class="sidebar-section-title">Due Date</div>
+            <div class="date-group">
+                <div class="date-row">
+                    <span class="date-label">From</span>
+                    <input type="date" class="date-input" id="dateFrom">
+                </div>
+                <div class="date-row">
+                    <span class="date-label">To</span>
+                    <input type="date" class="date-input" id="dateTo">
+                </div>
+                <div class="filter-actions">
+                    <button class="btn-apply" onclick="applyFilters()">Apply</button>
+                    <button class="btn-reset" onclick="resetFilters()">Reset</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content" id="mainContent">
+
+        <!-- Articles Section -->
+        <div id="articlesSection">
+            <div class="section-hd">
+                <div class="section-hd-line"></div>
+                <h2>All Policy Articles</h2>
+                <span class="count" id="articlesCount">6 articles</span>
+                <a href="#" class="view-all">View all <i class="fas fa-arrow-right" style="font-size:10px;"></i></a>
+            </div>
+
+            <div class="articles-grid" id="articlesGrid">
+
+                <div class="article-card" data-cat="hr" data-title="Attendance and Punctuality" style="animation-delay:0.05s;cursor:pointer;" onclick="openModal('Attendance and Punctuality')">
+                    <div class="article-thumb">
+<div class="article-thumb-bg" style="background:#f0f0f0;">
+    <img src="https://images.unsplash.com/photo-1775475049873-7ebfb0361d82?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cHVuY3R1YWxpdHl8ZW58MHx8MHx8fDA%3D" style="width:100%; height:100%; object-fit:cover;">
+</div>                        <span class="article-cat-badge" style="background:rgba(220,38,38,0.12); color:#dc2626;">HR</span>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">HR · 05/01/2025</div>
+                        <div class="article-title">Attendance and Punctuality</div>
+                        <div class="article-desc">Regulations regarding employee attendance, shift management, and punctuality expectations.</div>
+                    </div>
+                    <div class="article-footer">
+                        <div class="article-avatar" style="background:#dc2626;">LW</div>
+                        <span class="article-author">Linda Wren</span>
+                        <div class="article-stats">
+                            <span class="article-stat"><i class="fas fa-share-nodes"></i> Share</span>
+                            <span class="article-stat"><i class="fas fa-book-open"></i> 1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="article-card" data-cat="hr" data-title="Employee Handbook Updates" style="animation-delay:0.10s;cursor:pointer;" onclick="openModal('Employee Handbook Updates')">
+                    <div class="article-thumb">
+<div class="article-thumb-bg" style="background:#f0f0f0;">
+    <img src="https://images.unsplash.com/photo-1587116987928-21e47bd76cd2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZW1wbG95ZWUlMjBoYW5kYm9va3xlbnwwfHwwfHx8MA%3D%3D" style="width:100%; height:100%; object-fit:cover;">
+</div>                        <span class="article-cat-badge" style="background:rgba(124,58,237,0.12); color:#7c3aed;">HR</span>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">HR · Sales · Paris · 05/12/2025</div>
+                        <div class="article-title">Employee Handbook Updates</div>
+                        <div class="article-desc">Important updates regarding the employee handbook for Q2 — review before sprint kickoff.</div>
+                    </div>
+                    <div class="article-footer">
+                        <div class="article-avatar" style="background:#7c3aed;">LW</div>
+                        <span class="article-author">Linda Wren</span>
+                        <div class="article-stats">
+                            <span class="article-stat"><i class="fas fa-book-open"></i> 1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="article-card" data-cat="ops" data-title="Important Regulations for Traveling" style="animation-delay:0.15s;cursor:pointer;" onclick="openModal('Important Regulations for Traveling')">
+                    <div class="article-thumb">
+<div class="article-thumb-bg" style="background:#f0f0f0;">
+    <img src="https://images.unsplash.com/photo-1522199873717-bc67b1a5e32b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dHJhdmVsbGluZyUyMHBvbGljeXxlbnwwfHwwfHx8MA%3D%3D" style="width:100%; height:100%; object-fit:cover;">
+</div>                          <span class="article-cat-badge" style="background:rgba(13,115,119,0.12); color:#0d7377;">Operations</span>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">HR · Paris · 05/08/2025</div>
+                        <div class="article-title">Important Regulations for Traveling</div>
+                        <div class="article-desc">Guidelines to keep in mind when traveling out of office or to client locations.</div>
+                    </div>
+                    <div class="article-footer">
+                        <div class="article-avatar" style="background:#0d7377;">LW</div>
+                        <span class="article-author">Linda Wren</span>
+                        <div class="article-stats">
+                            <span class="article-stat"><i class="fas fa-book-open"></i> 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="article-card" data-cat="dev" data-title="Development and UI/UX Standards" style="animation-delay:0.20s;cursor:pointer;" onclick="openModal('Development & UI/UX Standards')">
+                    <div class="article-thumb">
+<div class="article-thumb-bg" style="background:#f0f0f0;">
+    <img src="https://images.unsplash.com/photo-1618788372246-79faff0c3742?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHVpJTIwdXh8ZW58MHx8MHx8fDA%3D" style="width:100%; height:100%; object-fit:cover;">
+</div>                         <span class="article-cat-badge" style="background:rgba(15,111,255,0.12); color:#0f6fff;">Dev</span>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">Development · 04/20/2025</div>
+                        <div class="article-title">Development &amp; UI/UX Standards</div>
+                        <div class="article-desc">Mandatory coding standards, font usage, and dark/light mode requirements for all Voxlom applications.</div>
+                    </div>
+                    <div class="article-footer">
+                        <div class="article-avatar" style="background:#0f6fff;">AK</div>
+                        <span class="article-author">Arjun Kumar</span>
+                        <div class="article-stats">
+                            <span class="article-stat"><i class="fas fa-book-open"></i> 5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="article-card" data-cat="security" data-title="Data Security and Privacy Policy" style="animation-delay:0.25s;cursor:pointer;" onclick="openModal('Data Security & Privacy Policy')">
+                    <div class="article-thumb">
+                        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#fef2f2,#fce7e7);">🛡️</div>
+                        <span class="article-cat-badge" style="background:rgba(220,38,38,0.12); color:#dc2626;">Security</span>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">Security · 04/15/2025</div>
+                        <div class="article-title">Data Security &amp; Privacy Policy</div>
+                        <div class="article-desc">Critical guidelines on credential handling, MFA, VPN usage, and encryption standards for all teams.</div>
+                    </div>
+                    <div class="article-footer">
+                        <div class="article-avatar" style="background:#dc2626;">SM</div>
+                        <span class="article-author">Sruthi Menon</span>
+                        <div class="article-stats">
+                            <span class="article-stat"><i class="fas fa-book-open"></i> 9</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="article-card" data-cat="hr" data-title="Professional Conduct and Ethics" style="animation-delay:0.30s;cursor:pointer;" onclick="openModal('Professional Conduct & Ethics')">
+                    <div class="article-thumb">
+                        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#fffbeb,#fef3c7);">🤝</div>
+                        <span class="article-cat-badge" style="background:rgba(180,83,9,0.12); color:#b45309;">Culture</span>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">HR · 03/30/2025</div>
+                        <div class="article-title">Professional Conduct &amp; Ethics</div>
+                        <div class="article-desc">Voxlom's culture charter — radical candor, mutual respect, and the motto every team member should live by.</div>
+                    </div>
+                    <div class="article-footer">
+                        <div class="article-avatar" style="background:#b45309;">RV</div>
+                        <span class="article-author">Rajan Verma</span>
+                        <div class="article-stats">
+                            <span class="article-stat"><i class="fas fa-book-open"></i> 3</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="empty-state" id="articlesEmpty">
+                <i class="fas fa-file-circle-question"></i>
+                <p>No articles match your filters.</p>
+            </div>
+        </div>
+
+        <!-- Documents Section -->
+        <div id="documentsSection">
+            <div class="section-hd">
+                <div class="section-hd-line" style="background:#7c3aed;"></div>
+                <h2>All Policy Documents</h2>
+                <span class="count" id="docsCount">5 documents</span>
+                <a href="#" class="view-all">View all <i class="fas fa-arrow-right" style="font-size:10px;"></i></a>
+            </div>
+
+                {% for doc in documents %}
+                <div class="doc-card" data-cat="{{ doc.category|lower }}" data-title="{{ doc.title }}">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="doc-icon-wrap">📄</div>
+                        <div>
+                            <div class="doc-meta">{{ doc.category }} · {{ doc.uploaded_at|date:"m/d/Y" }}</div>
+                            <div class="doc-title">{{ doc.title }}</div>
+                        </div>
+                    </div>
+                    <div class="doc-footer" style="padding-top:12px; margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
+                        {% if doc.uploaded_by %}
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="doc-avatar" style="background:#0f6fff;">{{ doc.uploaded_by.username|slice:":2"|upper }}</div>
+                            <span class="doc-author-name">{{ doc.uploaded_by.get_full_name|default:doc.uploaded_by.username }}</span>
+                        </div>
+                        {% else %}
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="doc-avatar" style="background:#5c6070;">AD</div>
+                            <span class="doc-author-name">Admin</span>
+                        </div>
+                        {% endif %}
+                        
+                        <a href="{% if doc.pdf_file %}{{ doc.pdf_file.url }}{% else %}#{% endif %}" target="_blank" style="background:var(--accent); color:white; border-radius:6px; padding:6px 12px; font-size:11px; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:6px; transition: background 0.2s;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            <div class="empty-state" id="docsEmpty">
+                <i class="fas fa-folder-open"></i>
+                <p>No documents match your filters.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL OVERLAY -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal" id="modal">
+        <div class="modal-hero" id="modalHero">
+            <div class="modal-hero-bg" id="modalHeroBg"></div>
+            <span class="modal-badge" id="modalBadge"></span>
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+            <div class="modal-title-area">
+                <div class="modal-date" id="modalDate"></div>
+                <div class="modal-title" id="modalTitle"></div>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div class="modal-author-row">
+                <div class="modal-avatar" id="modalAvatar"></div>
+                <div class="modal-author-info">
+                    <div class="modal-author-name" id="modalAuthor"></div>
+                    <div class="modal-author-role" id="modalRole"></div>
+                </div>
+                <div class="modal-stats">
+                    <span class="modal-stat"><i class="fas fa-book-open"></i> <span id="modalReads"></span> readings</span>
+                    <span class="modal-stat"><i class="fas fa-calendar"></i> <span id="modalUpdated"></span></span>
+                </div>
+            </div>
+
+            <div class="modal-section-label">Policy Points</div>
+            <ul class="modal-points" id="modalPoints"></ul>
+
+            <div class="modal-section-label" id="modalNoteLabel" style="display:none;">Note</div>
+            <p style="font-size:13px; color:var(--ink-3); line-height:1.7;" id="modalNote"></p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-primary"><i class="fas fa-download" style="margin-right:6px;font-size:11px;"></i>Download</button>
+            <button class="modal-btn modal-btn-ghost" onclick="closeModal()">Close</button>
+            <span class="modal-read-count"><i class="fas fa-eye" style="margin-right:4px;"></i><span id="modalFooterReads"></span> people have read this</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentCat = 'all';
+    let searchQuery = '';
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ POLICY DATA ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const policyData = {
+        "Attendance and Punctuality": {
+            cat: "HR", date: "HR · 05/01/2025", bg: "linear-gradient(135deg,#b91c1c,#dc2626)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "HR" },
+            avatar: { bg: "#dc2626", initials: "LW" }, author: "Linda Wren", role: "HR Manager", reads: 1, updated: "May 2025",
+            points: [
+                { icon: "fas fa-clock", color: "#dc2626", text: "All employees must report to work on or before their scheduled shift time." },
+                { icon: "fas fa-calendar-xmark", color: "#dc2626", text: "Unplanned absences must be communicated to the team lead at least 1 hour before shift start." },
+                { icon: "fas fa-stopwatch", color: "#dc2626", text: "Habitual tardiness (3+ instances/month) will be escalated to HR for review." },
+                { icon: "fas fa-file-signature", color: "#dc2626", text: "Leave requests must be submitted via the EMS portal with at least 2 days' notice." },
+            ],
+            note: "Exceptions apply for medical emergencies with valid documentation submitted within 48 hours."
+        },
+        "Employee Handbook Updates": {
+            cat: "HR", date: "HR · Sales · Paris · 05/12/2025", bg: "linear-gradient(135deg,#5b21b6,#7c3aed)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "HR" },
+            avatar: { bg: "#7c3aed", initials: "LW" }, author: "Linda Wren", role: "HR Manager", reads: 1, updated: "May 2025",
+            points: [
+                { icon: "fas fa-book", color: "#7c3aed", text: "The employee handbook has been updated to reflect new hybrid work policies effective Q2 2025." },
+                { icon: "fas fa-pen-to-square", color: "#7c3aed", text: "All employees must acknowledge the updated handbook via the EMS portal within 7 business days." },
+                { icon: "fas fa-rotate", color: "#7c3aed", text: "Key changes include revised leave encashment rules and updated code-of-conduct clauses." },
+                { icon: "fas fa-circle-info", color: "#7c3aed", text: "Physical copies are available at the HR desk for those who prefer offline review." },
+            ],
+            note: "Contact hr@voxlom.com for queries regarding any handbook section."
+        },
+        "Important Regulations for Traveling": {
+            cat: "Operations", date: "HR · Paris · 05/08/2025", bg: "linear-gradient(135deg,#0d7377,#14b8a6)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "Operations" },
+            avatar: { bg: "#0d7377", initials: "LW" }, author: "Linda Wren", role: "Operations Lead", reads: 0, updated: "May 2025",
+            points: [
+                { icon: "fas fa-plane-departure", color: "#0d7377", text: "All business travel must be pre-approved by the department head and logged in the EMS travel module." },
+                { icon: "fas fa-receipt", color: "#0d7377", text: "Expense claims must be submitted within 5 business days of returning with original receipts." },
+                { icon: "fas fa-hotel", color: "#0d7377", text: "Accommodation must be booked through approved company vendors to qualify for reimbursement." },
+                { icon: "fas fa-shield-halved", color: "#0d7377", text: "Employees traveling internationally must brief the security team 48 hours before departure." },
+            ],
+            note: "Daily allowance limits vary by destination — refer to the Travel Policy Appendix in the EMS portal."
+        },
+        "Development & UI/UX Standards": {
+            cat: "Development", date: "Development · 04/20/2025", bg: "linear-gradient(135deg,#1d4ed8,#0f6fff)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "Development" },
+            avatar: { bg: "#0f6fff", initials: "AK" }, author: "Arjun Kumar", role: "Tech Lead", reads: 5, updated: "Apr 2025",
+            points: [
+                { icon: "fas fa-font", color: "#0f6fff", text: "All applications must exclusively use Poppins for body text and headers — no exceptions." },
+                { icon: "fas fa-circle-half-stroke", color: "#0f6fff", text: "Every component must support both Dark and Light modes with CSS variable-based theming." },
+                { icon: "fas fa-code", color: "#0f6fff", text: "Django backend code must strictly follow PEP 8 and include module-level docstrings." },
+                { icon: "fas fa-mobile-screen", color: "#0f6fff", text: "All UI must be fully responsive and cross-browser tested before any pull request is merged." },
+            ],
+            note: "Design reviews are mandatory for any new module UI before staging deployment."
+        },
+        "Data Security & Privacy Policy": {
+            cat: "Security", date: "Security · 04/15/2025", bg: "linear-gradient(135deg,#991b1b,#dc2626)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "Critical" },
+            avatar: { bg: "#dc2626", initials: "SM" }, author: "Sruthi Menon", role: "Security Officer", reads: 9, updated: "Apr 2025",
+            points: [
+                { icon: "fas fa-lock", color: "#dc2626", text: "Never share credentials or commit .env files to any repository — public or private." },
+                { icon: "fas fa-user-shield", color: "#dc2626", text: "MFA is mandatory on all access points including admin panels, staging, and production." },
+                { icon: "fas fa-network-wired", color: "#dc2626", text: "Company VPN must be active when accessing any staging or production environment remotely." },
+                { icon: "fas fa-database", color: "#dc2626", text: "All client data must be encrypted at rest and in transit. No plaintext storage of sensitive fields." },
+            ],
+            note: "Any suspected breach must be reported immediately to security@voxlom.com — do not attempt to resolve alone."
+        },
+        "Professional Conduct & Ethics": {
+            cat: "Culture", date: "HR · 03/30/2025", bg: "linear-gradient(135deg,#92400e,#b45309)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "Culture" },
+            avatar: { bg: "#b45309", initials: "RV" }, author: "Rajan Verma", role: "Culture & People", reads: 3, updated: "Mar 2025",
+            points: [
+                { icon: "fas fa-brain", color: "#b45309", text: 'Live the Voxlom motto: "Learning never ends — Innovation never stops." Every day.' },
+                { icon: "fas fa-comments", color: "#b45309", text: "Practice radical candor — give honest feedback with empathy, especially in sprints and code reviews." },
+                { icon: "fas fa-id-badge", color: "#b45309", text: "Maintain full professionalism during Talent Fusion programs, student mentoring, and client interactions." },
+                { icon: "fas fa-handshake", color: "#b45309", text: "Interpersonal conflicts must be escalated through official HR channels — not public team threads." },
+            ],
+            note: "Voxlom is a zero-tolerance workplace for discrimination, harassment, or intimidation of any form."
+        },
+        "Recruitment Policy": {
+            cat: "HR", date: "HR · 05/22/2025", bg: "linear-gradient(135deg,#b91c1c,#dc2626)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "HR" },
+            avatar: { bg: "#dc2626", initials: "LW" }, author: "Linda Wren", role: "HR Manager", reads: 1, updated: "May 2025",
+            points: [
+                { icon: "fas fa-user-plus", color: "#dc2626", text: "All open positions must be posted internally for at least 5 business days before external hiring." },
+                { icon: "fas fa-file-alt", color: "#dc2626", text: "Interview panels must include at least one technical lead and one HR representative." },
+                { icon: "fas fa-handshake", color: "#dc2626", text: "Offer letters must be issued through the EMS portal and approved by the department head." },
+                { icon: "fas fa-user-check", color: "#dc2626", text: "Background verification is mandatory for all new hires before the first day of onboarding." },
+            ],
+            note: "Referral bonuses apply only after the referred employee completes 90 days of employment."
+        },
+        "Internet and Email Policy": {
+            cat: "Security", date: "Company · HR · IT · 04/29/2025", bg: "linear-gradient(135deg,#5b21b6,#7c3aed)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "Security" },
+            avatar: { bg: "#7c3aed", initials: "LW" }, author: "Linda Wren", role: "HR Manager", reads: 0, updated: "Apr 2025",
+            points: [
+                { icon: "fas fa-envelope-open-text", color: "#7c3aed", text: "Company email accounts must not be used for personal subscriptions or non-work communication." },
+                { icon: "fas fa-ban", color: "#7c3aed", text: "Accessing social media on company networks during work hours is restricted to a 15-min break allowance." },
+                { icon: "fas fa-shield-virus", color: "#7c3aed", text: "Never click unverified links or download attachments from unknown senders — report to IT immediately." },
+                { icon: "fas fa-server", color: "#7c3aed", text: "All external data transfers must go through the IT-approved secure file sharing platform." },
+            ],
+            note: "Violations of internet and email policy may result in access revocation and disciplinary action."
+        },
+        "Data Security": {
+            cat: "Security", date: "Finance · HR · Company · 04/08/2025", bg: "linear-gradient(135deg,#0d7377,#0f6fff)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "Critical" },
+            avatar: { bg: "#0d7377", initials: "LW" }, author: "Linda Wren", role: "Operations Lead", reads: 0, updated: "Apr 2025",
+            points: [
+                { icon: "fas fa-key", color: "#0d7377", text: "All passwords must be at least 14 characters with a mix of uppercase, numbers, and special characters." },
+                { icon: "fas fa-rotate", color: "#0d7377", text: "Passwords must be rotated every 90 days — reuse of last 5 passwords is prohibited." },
+                { icon: "fas fa-cloud-arrow-up", color: "#0d7377", text: "Critical data backups must run daily and be verified monthly by the IT team." },
+                { icon: "fas fa-triangle-exclamation", color: "#0d7377", text: "Any data breach or suspected intrusion must be reported to the CISO within 1 hour of discovery." },
+            ],
+            note: "Quarterly security audits are mandatory for all departments handling sensitive client data."
+        },
+        "Voxlom Dev Standards SOP": {
+            cat: "Development", date: "Development · 03/15/2025", bg: "linear-gradient(135deg,#1d4ed8,#0f6fff)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "Dev" },
+            avatar: { bg: "#0f6fff", initials: "AK" }, author: "Arjun Kumar", role: "Tech Lead", reads: 4, updated: "Mar 2025",
+            points: [
+                { icon: "fas fa-code-branch", color: "#0f6fff", text: "All feature branches must follow the naming convention: feature/JIRA-ID-short-description." },
+                { icon: "fas fa-vial", color: "#0f6fff", text: "Unit test coverage must be at least 80% for all new modules before merging to main." },
+                { icon: "fas fa-magnifying-glass-code", color: "#0f6fff", text: "Code reviews require at least 2 approvals — one from a senior dev, one from the module owner." },
+                { icon: "fas fa-rocket", color: "#0f6fff", text: "Production deployments are only permitted on Tuesdays and Thursdays between 2–4 PM IST." },
+            ],
+            note: "All SOPs are versioned in Confluence — always refer to the latest revision before implementation."
+        },
+        "Asset Management Guidelines": {
+            cat: "Finance", date: "Finance · Operations · 02/28/2025", bg: "linear-gradient(135deg,#92400e,#b45309)",
+            badge: { bg: "rgba(255,255,255,0.18)", color: "#fff", label: "Asset" },
+            avatar: { bg: "#b45309", initials: "RV" }, author: "Rajan Verma", role: "Finance Lead", reads: 2, updated: "Feb 2025",
+            points: [
+                { icon: "fas fa-laptop", color: "#b45309", text: "All company assets must be returned in pristine, working condition upon tenure completion." },
+                { icon: "fas fa-helmet-safety", color: "#b45309", text: "Branded helmets and bags represent the Sapto delivery identity — maintain them with care." },
+                { icon: "fas fa-triangle-exclamation", color: "#b45309", text: "Hardware damage must be reported to the team lead within 24 hours — no exceptions." },
+                { icon: "fas fa-barcode", color: "#b45309", text: "Asset serial numbers must be logged in the EMS inventory system upon receipt and return." },
+            ],
+            note: "Unreturned or damaged assets will be deducted from the final settlement as per the asset valuation policy."
+        },
+    };
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ OPEN MODAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    function openModal(title) {
+        const d = policyData[title];
+        if (!d) return;
+
+        document.getElementById('modalHeroBg').style.background = d.bg;
+        document.getElementById('modalBadge').textContent = d.badge.label;
+        document.getElementById('modalBadge').style.background = d.badge.bg;
+        document.getElementById('modalBadge').style.color = d.badge.color;
+        document.getElementById('modalDate').textContent = d.date;
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalAvatar').textContent = d.avatar.initials;
+        document.getElementById('modalAvatar').style.background = d.avatar.bg;
+        document.getElementById('modalAuthor').textContent = d.author;
+        document.getElementById('modalRole').textContent = d.role;
+        document.getElementById('modalReads').textContent = d.reads;
+        document.getElementById('modalUpdated').textContent = d.updated;
+        document.getElementById('modalFooterReads').textContent = d.reads;
+
+        // Points
+        const ul = document.getElementById('modalPoints');
+        ul.innerHTML = d.points.map(p =>
+            `<li><i class="${p.icon}" style="color:${p.color};"></i>${p.text}</li>`
+        ).join('');
+
+        // Note
+        if (d.note) {
+            document.getElementById('modalNoteLabel').style.display = '';
+            document.getElementById('modalNote').textContent = d.note;
+        } else {
+            document.getElementById('modalNoteLabel').style.display = 'none';
+            document.getElementById('modalNote').textContent = '';
+        }
+
+        document.getElementById('modalOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function closeModalOutside(e) {
+        if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+
+    // ── Category Filter ──
+    function filterCat(el) {
+        document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        currentCat = el.dataset.cat;
+        applyFilters();
+    }
+
+    // ── Search ──
+    function handleSearch(val) {
+        searchQuery = val.toLowerCase().trim();
+        applyFilters();
+    }
+
+    // ── Apply All Filters ──
+    function applyFilters() {
+        filterCards('.article-card', 'articlesGrid', 'articlesEmpty', 'articlesCount', 'articles');
+        filterCards('.doc-card', 'docsGrid', 'docsEmpty', 'docsCount', 'docs');
+    }
+
+    function filterCards(selector, gridId, emptyId, countId, type) {
+        const cards = document.querySelectorAll(`#${gridId} ${selector}`);
+        let visible = 0;
+
+        cards.forEach((card, i) => {
+            const catMatch = currentCat === 'all' || card.dataset.cat === currentCat;
+            const title = (card.dataset.title || '').toLowerCase();
+            const bodyText = card.innerText.toLowerCase();
+            const searchMatch = !searchQuery || bodyText.includes(searchQuery);
+            const show = catMatch && searchMatch;
+
+            if (show) {
+                card.style.display = '';
+                card.style.animationDelay = (i * 0.05) + 's';
+                card.style.animation = 'none';
+                void card.offsetWidth;
+                card.style.animation = '';
+                visible++;
+            } else {
+                card.style.display = 'none';
+            }
+
+            if (searchQuery && show) {
+                highlightText(card, searchQuery);
+            } else {
+                removeHighlight(card);
+            }
+        });
+
+        const label = type === 'articles' ? 'articles' : 'documents';
+        document.getElementById(countId).textContent = `${visible} ${label}`;
+        document.getElementById(emptyId).classList.toggle('show', visible === 0);
+    }
+
+    function highlightText(el, query) {
+        // Simple highlight on title elements
+        el.querySelectorAll('.article-title, .doc-title, .article-desc').forEach(node => {
+            const orig = node.dataset.orig || node.textContent;
+            node.dataset.orig = orig;
+            const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            node.innerHTML = orig.replace(re, '<mark>$1</mark>');
+        });
+    }
+
+    function removeHighlight(el) {
+        el.querySelectorAll('.article-title, .doc-title, .article-desc').forEach(node => {
+            if (node.dataset.orig) {
+                node.textContent = node.dataset.orig;
+                delete node.dataset.orig;
+            }
+        });
+    }
+
+    // ── Reset ──
+    function resetFilters() {
+        document.getElementById('dateFrom').value = '';
+        document.getElementById('dateTo').value = '';
+        document.getElementById('searchInput').value = '';
+        searchQuery = '';
+        currentCat = 'all';
+        document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
+        document.querySelector('[data-cat="all"]').classList.add('active');
+        document.querySelectorAll('.status-item input').forEach((cb, i) => cb.checked = i === 0);
+        applyFilters();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}View Visitors | Voxlom EMS{% endblock %}
+
+{% block extra_css %}
+<style>
+
+
+.table-row-item {
+
+    transition: bacground-color 0.3s ease;
+}
+.table-row-item:hover{
+
+        background-color: #f8f9fa 
+
+
+        
+    
+        
+    
+}
+/* 1. Base Table Row Hover */
+/* 1. Table Row Hover Setup */
+/* 1. Base Modal Overlay Setup */
+/* 1. Backdrop Overlay (Matches your dashboard layout tint) */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.2); /* Soft slate tint mask overlay */
+    backdrop-filter: blur(4px);        /* Clean blurred glass depth */
+    -webkit-backdrop-filter: blur(4px);
+    display: none; /* Controlled dynamically by your JS function toggle */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+/* 2. Main Content Profile Card Container */
+.modal-content {
+    background: #ffffff;
+    width: 90%;
+    max-width: 520px; /* Wider professional modal structure format */
+    border-radius: 24px; /* Matches your dashboard card boundary rounding */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    border: 1px solid #f1f5f9;
+    padding: 32px;
+    position: relative;
+    
+    /* Animation: Snappy, smooth slide up and scale entry physics curve */
+    animation: voxlomPopUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes voxlomPopUp {
+    0% { transform: scale(0.95) translateY(12px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* 3. Modal Header Element Setup */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 16px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a; /* Slate 900 bold copy text */
+    letter-spacing: -0.01em;
+}
+
+/* Minimal Circle Close Button (Upper Right Side) */
+.close-btn {
+    background: #f8fafc;
+    border: none;
+    font-size: 18px;
+    color: #64748b; /* Slate 500 */
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    transform: scale(1.05);
+}
+
+/* 4. Avatar Element Frame Configuration */
+.modal-body div[style*="text-align: center"] {
+    display: flex !important;
+    justify-content: center !important; /* Centers the circle horizontally */
+    align-items: center !important;
+    margin-left: 120px;
+    width: 100% !important;
+    padding: 0 !important;
+}
+
+#modalAvatar {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 50% !important; /* Restores the perfect circular crop mask */
+    object-fit: cover !important;  /* Prevents visitor photos from warping */
+    border: 2px solid var(--border) !important; /* Restores your original theme border */
+    background: #f1f5f9;
+    display: block;
+}
+/* 5. Converting Paragraph Elements to a 2-Column Grid Layout */
+.modal-body {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Splits fields cleanly into matching pairs */
+    gap: 20px;
+}
+
+/* Full-width overrides for sprawling data parameters (Email and Purpose rows) */
+.modal-body p:nth-child(2), /* Name */
+.modal-body p:nth-child(3), /* Email */
+.modal-body p:nth-child(7)  /* Purpose */ {
+    grid-column: span 2; /* Forces these fields to span across the whole layout width */
+}
+
+/* 6. Transforming Paragraph Structures into Premium Input-Style Read Boxes */
+.modal-body p {
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Stylizing the strong tag text label strings */
+.modal-body p strong {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8; /* Slate 400 clean form labels styling signature */
+    font-weight: 600;
+}
+
+/* Stylizing the variable data output spans (Matches your input backgrounds) */
+.modal-body p span {
+    background: #f8fafc; /* Matches input field canvas color in your screenshot image */
+    border: 1px solid #e2e8f0;
+    padding: 10px 14px;
+    border-radius: 10px; /* Smooth corners matching input boxes exactly */
+    font-size: 14px;
+    color: #334155; /* Slate 700 text values */
+    font-weight: 500;
+    min-height: 20px;
+    display: block;
+}
+.refresh-btn {
+  display: inline-block;
+  padding: 10px 18px;
+  background-color: #4CAF50; /* green */
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.refresh-btn:hover {
+  background-color: #45a049; /* darker green */
+}
+
+
+
+
+
+
+
+        
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="visitor-management-system">
+
+    <!-- TOP CONTROL TOOLBAR SECTION -->
+    <div class="table-toolbar-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 20px;">
+        <div class="date-selector-wrap" style="display: flex; align-items: center; gap: 12px; background: var(--sidebar-bg); padding: 10px 16px; border-radius: 12px; border: 1px solid var(--border);">
+            <i class="fa-solid fa-chevron-left" style="cursor: pointer; font-size: 13px; color: var(--text-sub);"></i>
+            <span style="font-weight: 700; font-size: 14px;"><i class="fa-solid fa-calendar-days" style="margin-right: 8px; color: var(--primary);"></i> 14 May 2026</span>
+            <i class="fa-solid fa-chevron-right" style="cursor: pointer; font-size: 13px; color: var(--text-sub);"></i>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="table-search-box" style="position: relative; width: 280px;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-sub); font-size: 14px;"></i>
+                <input type="text" placeholder="Quick search database..." style="width: 100%; height: 40px; border-radius: 10px; border: 1px solid var(--border); padding-left: 40px; padding-right: 14px; outline: none; font-family: inherit; font-size: 13px;">
+            </div>
+
+            {% if user.request.role == 'hr' or user.request.role == 'admin '%}
+          
+            <a href="{% url 'addvisitors'%}" class="btn-action-primary" style="background: #0ea5e9; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-user-plus"></i> Add Visitor
+            </a>
+            {% endif %}
+            <a href="{% url 'refreshform' %}" class="refresh-btn">Refresh form</a>
+        </div>
+    </div>
+
+    <!-- MAIN DATA TABLE SHEET GRID CARD -->
+    <div class="card" style="padding: 20px; overflow: hidden; width: 100%;">
+        <div class="table-scroll-container" style="width: 100%; overflow-x: auto;">
+            <table class="vizmo-style-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+        <tr style="border-bottom: 2px solid var(--border);">
+            <th style="width: 40px; padding: 14px 12px;"><input type="checkbox" style="cursor: pointer;"></th>
+            <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">ID</th>
+            <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">Visitor Name Info</th>
+            <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">Purpose</th>
+            <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">Check-In</th>
+            <th style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; padding: 14px 12px;">Check-Out</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for v in visitors %}
+        <tr class="table-row-item" onclick="OpenVisitorPopup(this)" style="cursor: pointer;" 
+            data-name="{{ v.name|escapejs }}" 
+            data-email="{{ v.email|escapejs }}" 
+            data-phone="{{ v.phone|escapejs }}" 
+            data-college="{{ v.college_name|default:'—'|escapejs }}" 
+            data-year="{{ v.passed_out_year|default:'—'|escapejs }}" 
+            data-purpose="{{ v.purpose|escapejs }}"
+            data-avatar="{% if v.profile_photo %}{{ v.profile_photo.url }}{% else %}https://dicebear.com{{ v.name|urlencode }}{% endif %}">                        
+            
+            <td style="padding: 16px 12px; border-bottom: 1px solid var(--border);"><input type="checkbox" style="cursor: pointer;"></td>
+            <td style="padding: 16px 12px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--primary);">#{{ v.id }}</td>
+            <td style="padding: 16px 12px; border-bottom: 1px solid var(--border);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="avatar-frame-badge" style="width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; color: #475569; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; overflow: hidden; text-transform: uppercase;">
+    {% if v.profile_photo %}
+        <!-- Show uploaded photo if it exists -->
+        <img src="{{ v.profile_photo.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+    {% else %}
+        <!-- Local fallback: Slice the first 2 letters of the user's name -->
+        {{ v.name|slice:":2" }}
+    {% endif %}
+</div>
+
+                    <span style="font-weight: 700; font-size: 14px;">{{ v.name }}</span>
+                </div>
+            </td>
+            <td style="padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500;">{{ v.purpose }}</td>
+            <td style="padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 13px;">{{ v.check_in|date:"h:i A" }}</td>
+            <td style="padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 13px;">
+                {% if v.check_out %}{{ v.check_out|date:"h:i A" }}{% else %}<span style="color: var(--primary); font-weight: 700;">On-Site</span>{% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-sub);">No records found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- pop up -->
+
+<div id="visitorModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Visitor Profile</h3>
+            <button id="closeModalBtn" onclick="closePopup()" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img id="modalAvatar" src="" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); background: #f1f5f9;">
+            </div>
+            <p><strong>Name:</strong> <span id="modalName"></span></p>
+            <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+            <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
+            <p><strong>College:</strong> <span id="modalCollege"></span></p>
+            <p><strong>Graduation Year:</strong> <span id="modalYear"></span></p>
+            <p><strong>Purpose of Visit:</strong> <span id="modalPurpose"></span></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    const compeletePopup = document.getElementById("visitorModal");
+
+    function OpenVisitorPopup(clickedRow){
+        console.log("success");
+        
+        if(window.event.target.type === 'checkbox'){
+            return;
+        }
+
+        const visitorName = clickedRow.getAttribute("data-name") || "—";
+        const visitorEmail = clickedRow.getAttribute("data-email") || "—";
+        const visitorPhone = clickedRow.getAttribute("data-phone") || "—";
+        const visitorPurpose = clickedRow.getAttribute("data-purpose") || "—";
+        const visitorAvatar = clickedRow.getAttribute("data-avatar");
+        const visitorCollege = clickedRow.getAttribute("data-college") || "—";
+        const visitorYear = clickedRow.getAttribute("data-year") || "—";
+
+        document.getElementById("modalName").textContent = visitorName;
+        document.getElementById("modalEmail").textContent = visitorEmail;
+        document.getElementById("modalPhone").textContent = visitorPhone;
+        document.getElementById("modalPurpose").textContent = visitorPurpose;
+        document.getElementById("modalCollege").textContent = visitorCollege;
+        document.getElementById("modalYear").textContent = visitorYear;
+
+        const modalAvatarImg = document.getElementById("modalAvatar");
+        
+        if (visitorAvatar && !visitorAvatar.includes("dicebear.com")) {
+            modalAvatarImg.src = visitorAvatar;
+            modalAvatarImg.style.display = "block";
+            
+            const textBadge = document.getElementById("modalAvatarText");
+            if(textBadge) textBadge.style.display = "none";
+        } else {
+            modalAvatarImg.style.display = "none";
+            
+            const textBadge = document.getElementById("modalAvatarText");
+            if(textBadge) {
+                textBadge.textContent = visitorName.slice(0, 2).toUpperCase();
+                textBadge.style.display = "flex";
+            }
+        }
+
+        compeletePopup.style.display = 'flex';
+    }
+
+    function closePopup() {
+        compeletePopup.style.display = 'none';
+    }
+</script>
+{% endblock %}

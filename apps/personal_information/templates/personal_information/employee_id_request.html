@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- 🪪 MASTER EMPLOYEE ID CARD WORKSPACE CONTAINER -->
+<div class="id-request-canvas" style="padding: 32px; font-family: 'Poppins', sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
+    
+    <!-- EXECUTIVE MODULE HEADER TITLE PANEL -->
+    <div style="margin-bottom: 28px; border-bottom: 1px solid #e2e8f0; padding-bottom: 18px;">
+        <h1 style="font-size: 24px; font-weight: 800; color: #1e3a8a; margin: 0; display: inline-flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-id-card" style="color: #72BB12;"></i> ID Card Request Portal
+        </h1>
+        <p style="color: #64748b; font-size: 13.5px; margin: 6px 0 0 0; font-weight: 500; letter-spacing: -0.01em;">
+            Verify your official corporate database metrics and lodge your digital ID card issuance request to HR services.
+        </p>
+    </div>
+
+    <!-- CENTRAL COMPLIANCE VERIFICATION SHEET -->
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);">
+        
+        <!-- Section Head Title & Dynamic Status Badge Row -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 24px;">
+            <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #0f172a;"><i class="fa-solid fa-user-check" style="color:#1e3a8a;"></i> Review Profile Vitals</h3>
+            
+            {% if request_status == "Not Requested" %}
+                <span style="padding: 5px 14px; font-size: 12px; font-weight: 700; border-radius: 20px; background-color: #f1f5f9; color: #475569;"><i class="fa-solid fa-circle-minus"></i> Not Initiated</span>
+            {% elif request_status == "Pending" %}
+                <span style="padding: 5px 14px; font-size: 12px; font-weight: 700; border-radius: 20px; background-color: #fef3c7; color: #d97706;"><i class="fa-solid fa-hourglass-half"></i> Pending HR Approval</span>
+            {% elif request_status == "Approved" %}
+                <span style="padding: 5px 14px; font-size: 12px; font-weight: 700; border-radius: 20px; background-color: #dcfce7; color: #15803d;"><i class="fa-solid fa-circle-check"></i> Sent to Printing Queue</span>
+            {% endif %}
+        </div>
+
+        <!-- 📊 TEXT DATA VERIFICATION LIST TABLE (Replaces the mockup graphic) -->
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+            <div>
+                <span style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; text-transform: uppercase; margin-bottom: 4px;">Full Name</span>
+                <span style="font-size: 14px; font-weight: 700; color: #0f172a;">{{ request.user.username }}</span>
+            </div>
+            <div>
+                <span style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; text-transform: uppercase; margin-bottom: 4px;">Department</span>
+                <span style="font-size: 14px; font-weight: 700; color: #1e3a8a;">{{ request.user.personal_details.identity_demographics.department|default:"none" }}</span>
+            </div>
+            <div>
+                <span style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; text-transform: uppercase; margin-bottom: 4px;">Designation</span>
+                <span style="font-size: 14px; font-weight: 700; color: #334155;">{{ request.user.personal_details.identity_demographics.designation|default:"Associate Engineer" }}</span>
+            </div>
+            <div>
+                <span style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; text-transform: uppercase; margin-bottom: 4px;">Blood Group</span>
+                <span style="font-size: 14px; font-weight: 700; color: #ef4444;"><i class="fa-solid fa-droplet"></i> {{ request.user.personal_details.identity_demographics.blood_group|default:"O+" }}</span>
+            </div>
+        </div>
+
+        <p style="font-size: 13.5px; color: #475569; line-height: 20px; margin-bottom: 24px;">
+            Please ensure that all the system parameters printed above are legally valid. If any fields are blank or incorrect, navigate to your primary profile view screens to update them before submitting this data to the HR services department.
+        </p>
+
+        {% if request_status == "Not Requested" %}
+            <!-- Entry Form Submission Actions -->
+            <!-- 🎯 FIXED: Added explicit absolute action routing path to eliminate the 404 Page Not Found error! -->
+<form method="POST" action="/personal-information/id-card-workspace/" style="margin: 0;">
+    {% csrf_token %}
+    
+    <div style="background-color: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+        <label style="display: flex; align-items: start; gap: 12px; cursor: pointer; font-size: 13px; font-weight: 600; color: #334155; user-select: none;">
+            <input type="checkbox" required style="width: 16px; height: 16px; margin-top: 2px; cursor: pointer; accent-color: #72BB12;">
+            <span>I hereby verify that my full name, core employee registration numbers, and medical blood parameters are completely correct and ready for corporate ID card printing processes.</span>
+        </label>
+    </div>
+
+    <button type="submit" style="padding: 12px 32px; background: #72BB12; color: white; border: none; border-radius: 6px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(114,187,18,0.2); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.01)'" onmouseout="this.style.transform='scale(1)'">
+        <i class="fa-solid fa-paper-plane"></i> Dispatch ID Card Request
+    </button>
+</form>
+
+        {% else %}
+            <!-- Locked State Informational Display Block -->
+            <div style="border: 1px dashed #cbd5e1; border-radius: 8px; padding: 24px; text-align: center; background-color: #fafafa;">
+                <i class="fa-solid fa-lock" style="font-size: 24px; color: #94a3b8; margin-bottom: 8px; display: block;"></i>
+                <span style="font-size: 13px; font-weight: 600; color: #64748b;">
+                    Your request has been successfully transmitted to the server. Making edits or submitting duplicate request forms is restricted while processing.
+                </span>
+            </div>
+        {% endif %}
+
+        <!-- Bottom Informational Guidelines Notice Bar Line -->
+        <div style="border-top: 1px solid #f1f5f9; padding-top: 14px; margin-top: 28px; display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #94a3b8; font-weight: 500;">
+            <i class="fa-solid fa-circle-info" style="color: #2563eb;"></i> Standard corporate identification badges processing and printing routines require up to 2 working business days.
+        </div>
+
+    </div>
+</div>
+{% endblock %}

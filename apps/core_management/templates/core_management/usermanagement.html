@@ -1,0 +1,684 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* User Management Styling */
+    .um-container {
+        padding: 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-title i {
+        color: var(--primary);
+        background: var(--primary-light);
+        padding: 10px;
+        border-radius: 12px;
+        font-size: 20px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, var(--primary), #2563eb);
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+    }
+
+    .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: none;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+    
+    .stat-card:nth-child(1) .stat-icon { background: #eff6ff; color: #1d4ed8; }
+    .stat-card:nth-child(2) .stat-icon { background: #e0f2fe; color: #0369a1; }
+    .stat-card:nth-child(3) .stat-icon { background: #fef9c3; color: #a16207; }
+    .stat-card:nth-child(4) .stat-icon { background: #dcfce7; color: #15803d; }
+    .stat-card:nth-child(5) .stat-icon { background: #f3e8ff; color: #7e22ce; }
+
+    .stat-val {
+        font-size: 26px;
+        font-weight: 800;
+        margin: 0;
+    }
+    
+    .stat-card:nth-child(1) .stat-val { color: #1d4ed8; }
+    .stat-card:nth-child(2) .stat-val { color: #0369a1; }
+    .stat-card:nth-child(3) .stat-val { color: #a16207; }
+    .stat-card:nth-child(4) .stat-val { color: #15803d; }
+    .stat-card:nth-child(5) .stat-val { color: #7e22ce; }
+
+    .stat-label {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+        margin: 2px 0 0 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Filters & Search */
+    .filter-panel {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        margin-bottom: 24px;
+        display: flex;
+        gap: 16px;
+    }
+
+    .search-wrapper {
+        flex: 1;
+        position: relative;
+    }
+
+    .search-wrapper i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 16px 12px 42px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #0f172a;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: #ffffff;
+        box-shadow: 0 0 0 4px var(--primary-light);
+    }
+
+    .role-select {
+        padding: 12px 16px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #0f172a;
+        background: #f8fafc;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        min-width: 180px;
+    }
+
+    .role-select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px var(--primary-light);
+    }
+
+    /* Main Card Wrapper */
+    .glass-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: none;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Table Styling */
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: 12px;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        text-align: left;
+    }
+
+    .data-table th {
+        background: #f8fafc;
+        padding: 16px 20px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .data-table td {
+        padding: 18px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #334155;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.2s ease;
+    }
+
+    .data-table tbody tr:hover td {
+        background: #f8fafc;
+    }
+
+    .data-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Badges */
+    .badge-role {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+    }
+
+    .badge-status {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+    }
+
+    /* Action Pills */
+    .action-pill {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .edit-pill {
+        background: #f8fafc;
+        color: #475569;
+    }
+    .edit-pill:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .remove-pill {
+        background: #fef2f2;
+        color: #ef4444;
+    }
+    .remove-pill:hover {
+        background: #ef4444;
+        color: #fff;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #94a3b8;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        color: #cbd5e1;
+        margin-bottom: 16px;
+        display: block;
+    }
+
+    /* Modals */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(4px);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 500px;
+        padding: 32px;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        animation: modalIn 0.3s ease-out;
+    }
+
+    @keyframes modalIn {
+        from { opacity: 0; transform: scale(0.95) translateY(10px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 24px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .modal-title i { color: var(--primary); }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #475569;
+    }
+
+    .form-control {
+        padding: 12px 16px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: #fff;
+        box-shadow: 0 0 0 4px var(--primary-light);
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .btn-secondary {
+        padding: 12px 20px;
+        background: #f8fafc;
+        color: #475569;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    @media (max-width: 1024px) {
+        .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+        .um-container { padding: 20px; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+        .filter-panel { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+        .stats-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="um-container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-users-gear"></i> User Management
+            </h1>
+            <p class="page-subtitle">
+                Manage system users, define roles, and oversee platform access permissions.
+            </p>
+        </div>
+        {% if request.user.role == 'hr' or request.user.role == 'admin' %}
+            <button onClick="openCreateModal()" class="btn-create">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Create User</span>
+            </button>
+        {% endif %}
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+            <div>
+                <h3 class="stat-val">{{ stats.total }}</h3>
+                <p class="stat-label">Total Users</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+                <h3 class="stat-val">{{ stats.admin }}</h3>
+                <p class="stat-label">Admins</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+                <h3 class="stat-val">{{ stats.hr }}</h3>
+                <p class="stat-label">HR</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-user-gear"></i></div>
+            <div>
+                <h3 class="stat-val">{{ stats.employee }}</h3>
+                <p class="stat-label">Employees</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-user-shield"></i></div>
+            <div>
+                <h3 class="stat-val">{{ stats.bgv_officer }}</h3>
+                <p class="stat-label">BGV Officers</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Panel -->
+    <div class="filter-panel">
+        <form method="GET" action="" id="filterForm" style="display: flex; gap: 16px; width: 100%; flex-wrap: wrap;">
+            <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="search" class="search-input" placeholder="Search by name or email..." value="{{ searchTerm }}" oninput="debounceFilterSubmit()">
+            </div>
+            <select name="role" class="role-select" onchange="document.getElementById('filterForm').submit();">
+                <option value="all" {% if roleFilter == 'all' %}selected{% endif %}>All Roles</option>
+                <option value="admin" {% if roleFilter == 'admin' %}selected{% endif %}>Administrator</option>
+                <option value="hr" {% if roleFilter == 'hr' %}selected{% endif %}>HR Manager</option>
+                <option value="employee" {% if roleFilter == 'employee' %}selected{% endif %}>Employee</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- Users Table -->
+    <div class="glass-card" style="padding: 12px;">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        {% if request.user.role == 'admin' or request.user.role == 'hr' or request.user.is_superuser %}
+                            <th style="text-align: center;">Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td style="color: #0f172a; font-weight: 700;">{{ user.fullName|default:"N/A" }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <span class="badge-role" style="
+                                {% if user.role == 'admin' %} background: #eff6ff; color: #1d4ed8;
+                                {% elif user.role == 'hr' %} background: #fef9c3; color: #a16207;
+                                {% elif user.role == 'bgv_officer' %} background: #f3e8ff; color: #7e22ce;
+                                {% else %} background: #f1f5f9; color: #475569; {% endif %}">
+                                {% if user.role == 'admin' %}Admin
+                                {% elif user.role == 'hr' %}HR
+                                {% elif user.role == 'bgv_officer' %}BGV Officer
+                                {% else %}Employee{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge-status" style="
+                                {% if user.role == 'admin' or user.role == 'hr' %} background: #dcfce7; color: #15803d;
+                                {% else %} background: #ffedd5; color: #c2410c; {% endif %}">
+                                {% if user.role == 'admin' or user.role == 'hr' %}Active{% else %}Pending{% endif %}
+                            </span>
+                        </td>
+                        {% if request.user.role == 'admin' or request.user.role == 'hr' or request.user.is_superuser %}
+                            <td style="text-align: center;">
+                                <div style="display: flex; gap: 8px; justify-content: center;">
+                                    <button onclick="handleEdit({ id: '{{ user.id }}', email: '{{ user.email|escapejs }}', fullName: '{{ user.fullName|escapejs }}', role: '{{ user.role }}' })" class="action-pill edit-pill">
+                                        <i class="fa-solid fa-pen"></i> Edit
+                                    </button>
+                                    {% if user.role != 'admin' %}
+                                        <button onclick="handleDelete({ id: '{{ user.id }}', email: '{{ user.email|escapejs }}', fullName: '{{ user.fullName|escapejs }}' })" class="action-pill remove-pill">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-users-slash"></i>
+                                <div style="font-size: 15px; font-weight: 600; color: #475569; margin-bottom: 4px;">No Users Found</div>
+                                <div>No users match your current search criteria.</div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Create / Edit User -->
+<div id="userFormModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 id="modalTitle" class="modal-title">
+             <i class="fa-solid fa-user-plus"></i> Create New User
+        </h2>
+        
+        <form method="POST" action="" id="userMutationForm">
+            {% csrf_token %}
+            <input type="hidden" id="form_selected_id" name="selected_id">
+            <input type="hidden" name="user_form_submit" value="1">
+            
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="fullName" id="form_fullName" required class="form-control" placeholder="e.g. John Doe">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" id="form_email" required class="form-control" placeholder="john@example.com">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Role</label>
+                <select name="role" id="form_role" class="form-control">
+                    <option value="employee">Employee</option>
+                    <option value="hr">HR</option>
+                    <option value="bgv_officer">BGV Officer</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Password <span id="passwordHelp" style="color: #64748b; font-weight: normal; font-size: 12px; display: none;">(leave blank to keep current)</span>
+                </label>
+                <input type="password" name="password" id="form_password" class="form-control" placeholder="Enter strong password">
+            </div>
+
+            <button type="submit" style="display: none;"></button>
+
+            <div class="modal-actions">
+                <button type="button" onClick="closeModal()" class="btn-secondary">Cancel</button>
+                <button type="submit" id="formSubmitBtn" class="btn-create" style="box-shadow: none;">Create User</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Delete Confirmation -->
+<div id="deleteConfirmModal" class="modal-overlay">
+    <div class="modal-content" style="text-align: center; max-width: 440px;">
+        <div style="color: #ef4444; font-size: 48px; margin-bottom: 16px;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0 0 12px 0;">Delete User</h3>
+        
+        <p style="color: #475569; font-size: 15px; line-height: 1.5; margin-bottom: 24px;">
+            Are you sure you want to delete <strong id="deleteTargetName" style="color: #0f172a;"></strong>?<br>
+            <span style="color: #ef4444; font-weight: 600; font-size: 13px;">This action cannot be undone.</span>
+        </p>
+
+        <form method="POST" action="" id="deleteConfirmationForm" style="display: flex; gap: 12px; justify-content: center;">
+            {% csrf_token %}
+            <button type="button" onClick="closeDeleteModal()" class="btn-secondary" style="flex: 1;">Cancel</button>
+            <button type="submit" class="btn-create" style="flex: 1; background: #ef4444; justify-content: center; box-shadow: none;">Delete</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    let debounceTimer;
+    function debounceFilterSubmit() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            document.getElementById('filterForm').submit();
+        }, 500);
+    }
+
+    function openCreateModal() {
+        document.getElementById('form_selected_id').value = '';
+        document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-plus"></i> Create New User';
+        document.getElementById('formSubmitBtn').innerText = 'Create User';
+        document.getElementById('form_fullName').value = '';
+        document.getElementById('form_email').value = '';
+        document.getElementById('form_email').disabled = false;
+        document.getElementById('form_password').value = '';
+        document.getElementById('form_password').required = true;
+        document.getElementById('form_password').placeholder = 'Enter strong password';
+        document.getElementById('passwordHelp').style.display = 'none';
+        document.getElementById('form_role').value = 'employee';
+        document.getElementById('userFormModal').style.display = 'flex';
+    }
+
+    function handleEdit(user) {
+        document.getElementById('form_selected_id').value = user.id;
+        document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Edit User';
+        document.getElementById('formSubmitBtn').innerText = 'Update User';
+        document.getElementById('form_fullName').value = user.fullName;
+        document.getElementById('form_email').value = user.email;
+        document.getElementById('form_email').disabled = true;
+        document.getElementById('form_password').value = '';
+        document.getElementById('form_password').required = false;
+        document.getElementById('form_password').placeholder = '••••••••';
+        document.getElementById('passwordHelp').style.display = 'inline';
+        document.getElementById('form_role').value = user.role;
+        document.getElementById('userFormModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('userFormModal').style.display = 'none';
+    }
+    
+    function closeUserFormModal() {
+        closeModal();
+    }
+
+    function handleDelete(user) {
+        document.getElementById('deleteTargetName').innerText = user.fullName || user.email;
+        document.getElementById('deleteConfirmationForm').action = "/admin/users/delete/" + user.id + "/";
+        document.getElementById('deleteConfirmModal').style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteConfirmModal').style.display = 'none';
+    }
+</script>
+{% endblock %}

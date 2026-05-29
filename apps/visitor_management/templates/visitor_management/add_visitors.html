@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    {{ block.super }}
+
+    
+    <link rel="stylesheet" href="{% static 'visitor_management/css/style.css' %}">
+    <style>
+        .top-nav {
+            width: 100%;
+            padding: 40px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="visitor-management-system" style="max-width: 800px; margin: 0 auto;">
+
+    <div class="welcome-hero animate-slide-up" style="margin-bottom: 32px;">
+        <h1 class="heading"><i class="fa-solid fa-user-plus" style="color: var(--primary); font-size: 28px; padding-right: 20px;"></i>Visitor Registration</h1>
+    </div>
+
+    
+    <div class="card animate-slide-up delay-100" style="padding: 40px; border-radius: 24px; background: var(--sidebar-bg); border: 1px solid var(--border); box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5); position: relative; overflow: hidden;">
+        <!-- Premium gradient decorative top bar -->
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #8b5cf6, #3b82f6);"></div>
+        
+        
+        <form method="POST" action="{% url 'addvisitors' %}" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 24px;">
+            {% csrf_token %}
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+<div class="form-group-wrapper animate-slide-up delay-200" style="display: flex; flex-direction: column; gap: 8px;">
+    <label class="form-input-label">Visitor Profile Photo</label>
+    <div style="position: relative;">
+        <i class="fa-solid fa-image form-field-icon"></i>
+        <input type="file" name="profile_photo" accept="image/*" class="form-theme-input" style="padding-left: 40px; padding-top: 10px;">
+    </div>
+</div>
+
+                <div class="form-group-wrapper animate-slide-up delay-300" style="display: flex; flex-direction: column; gap: 8px;">
+                    <label class="form-input-label">Visitor Full Name <span style="color: #ef4444;">*</span></label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-user form-field-icon"></i>
+                        <input type="text" name="name" required placeholder="e.g. Durgesh Patel" class="form-theme-input">
+                    </div>
+                </div>
+                <div class="form-group-wrapper animate-slide-up delay-400" style="display: flex; flex-direction: column; gap: 8px;">
+                    <label class="form-input-label">Contact Mobile Number <span style="color: #ef4444;">*</span></label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-phone form-field-icon"></i>
+                        <input type="tel" name="phone" required placeholder="e.g. 9876543210" class="form-theme-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group-wrapper animate-slide-up delay-500" style="display: flex; flex-direction: column; gap: 8px;">
+                <label class="form-input-label">Email Address <span style="color: #ef4444;">*</span></label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-envelope form-field-icon"></i>
+                    <input type="email" name="email" required placeholder="e.g. name@gmail.com" class="form-theme-input">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+                <div class="form-group-wrapper animate-slide-up delay-500" style="display: flex; flex-direction: column; gap: 8px;">
+                    <label class="form-input-label">Institution / College Name</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-building-columns form-field-icon"></i>
+                        <input type="text" name="college_name" placeholder="e.g. Xyz College Of Engineering" class="form-theme-input">
+                    </div>
+                </div>
+                <div class="form-group-wrapper animate-slide-up delay-500" style="display: flex; flex-direction: column; gap: 8px;">
+                    <label class="form-input-label">Passout Year</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-calendar-graduation form-field-icon"><i class="fa-solid fa-graduation-cap"></i></i>
+                        <input type="number" name="passed_out_year" placeholder="e.g. 2025" min="1990" max="2035" class="form-theme-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group-wrapper animate-slide-up delay-500" style="display: flex; flex-direction: column; gap: 8px;">
+                <label class="form-input-label">Purpose of Visit <span style="color: #ef4444;">*</span></label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-circle-question form-field-icon"></i>
+                    <input type="text" name="purpose" required placeholder="e.g. Interview, System Audit, Vendor Supply" class="form-theme-input">
+                </div>
+            </div>
+
+            
+            <div class="animate-slide-up delay-500" style="display: flex; justify-content: flex-end; gap: 14px; margin-top: 12px; border-top: 1px solid var(--border); padding-top: 24px;">
+                <a href="{% url 'viewvisitors' %}" class="btn-form-cancel" style="height: 44px; display: inline-flex; align-items: center; padding: 0 24px; border-radius: 10px; background: #334155; color: var(--text-main); font-weight: 700; text-decoration: none; font-size: 14px; transition: var(--transition);">Cancel</a>
+                <button type="submit" class="btn-form-submit" style="height: 44px; color: #fff; padding: 0 24px; border-radius: 10px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition);">
+                    <i class="fa-solid fa-circle-check"></i> Complete Update
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

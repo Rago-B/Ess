@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Onboarding - Personal Information Desk</title>
+    <!-- Core Icon and Professional Font Vector Assets CDN -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-canvas: #f8fafc;
+            --surface-card: #ffffff;
+            --brand-primary: #72BB12; /* Your exact lime green corporate hue */
+            --brand-hover: #5ea10e;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-line: #e2e8f0;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 680px;
+        }
+
+        /* ========================================================================= */
+        /* 🗺️ STEPPER PROGRESS INDICATOR DOTS STYLES */
+        /* ========================================================================= */
+        .stepper-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin-bottom: 32px;
+            padding: 0 10px;
+        }
+
+        .stepper-line {
+            position: absolute;
+            top: 18px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--border-line);
+            z-index: 1;
+        }
+
+        .stepper-progress-bar {
+            position: absolute;
+            top: 18px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--brand-primary);
+            z-index: 2;
+            transition: width 0.3s ease;
+        }
+
+        .step-dot {
+            width: 38px;
+            height: 38px;
+            background-color: var(--surface-card);
+            border: 2px solid var(--border-line);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            z-index: 3;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step-dot.active {
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(114, 187, 18, 0.15);
+        }
+
+        .step-dot.completed {
+            background-color: var(--brand-primary);
+            border-color: var(--brand-primary);
+            color: #ffffff;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 44px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            color: var(--text-muted);
+        }
+        .step-dot.active .step-label {
+            color: var(--brand-primary);
+        }
+
+        /* Onboarding Master Card Content Box */
+        .onboarding-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border-line);
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02), 0 2px 4px -1px rgba(15, 23, 42, 0.01);
+        }
+
+        /* Form Layout Grid Structure Fields Rules */
+        .form-step-panel {
+            display: none; /* Controlled dynamically via JS classes keys toggles */
+        }
+        .form-step-panel.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #344054;
+        }
+        .form-group label span {
+            color: var(--danger);
+        }
+
+        .form-control {
+            padding: 10px 14px;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-main);
+            outline: none;
+            background-color: var(--surface-card);
+            width: 100%;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .form-control:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 3px rgba(114, 187, 18, 0.1);
+        }
+
+        .checkbox-label-wrap {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 13px;
+            color: #344054;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .checkbox-label-wrap input {
+            margin-top: 3px;
+            accent-color: var(--brand-primary);
+        }
+
+        /* Footer Interaction Action Button Rows layout panel */
+        .stepper-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 28px;
+            border-top: 1px solid var(--border-line);
+            padding-top: 20px;
+        }
+
+        .btn-nav {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+        .btn-prev {
+            background-color: #ffffff;
+            border: 1px solid #d0d5dd;
+            color: #344054;
+        }
+        .btn-prev:hover {
+            background-color: #f9fafb;
+        }
+        .btn-next {
+            background-color: var(--brand-primary);
+            border: none;
+            color: #ffffff;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+        }
+        .btn-next:hover {
+            background-color: var(--brand-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-wrapper">
+
+    <!-- 1. Horizontal Stepper Header Matrix Indicators Progress Dots -->
+    <div class="stepper-header">
+        <div class="stepper-line"></div>
+        <div id="progressBar" class="stepper-progress-bar"></div>
+        
+        <div class="step-dot active" id="dot1">1<span class="step-label">Identity</span></div>
+        <div class="step-dot" id="dot2">2<span class="step-label">Residence</span></div>
+        <div class="step-dot" id="dot3">3<span class="step-label">Emergency</span></div>
+        <div class="step-dot" id="dot4">4<span class="step-label">Documents</span></div>
+    </div>
+
+    <!-- 2. Master Collection Form Sheet Wrapper Container -->
+    <div class="onboarding-card">
+        <form id="onboardingForm" method="POST" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Hidden verification submit anchor flag tracker -->
+            <input type="hidden" name="onboarding_form_submit" value="1">
+
+            <!-- ========================================================================= -->
+            <!-- TAB 1: IDENTITY, CITIZENSHIP & DEMOGRAPHICS -->
+            <!-- ========================================================================= -->
+            <div class="form-step-panel active" id="stepPanel1">
+                <h2 class="section-title"><i class="fa-solid fa-user-check" style="color:var(--brand-primary);"></i> 1. Personal Identity & Civics</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Form of Address <span>*</span></label>
+                        <select name="form_of_address" required class="form-control">
+                            <option value="" disabled selected>Select...</option>
+                            <option value="Mr.">Mr.</option>
+                            <option value="Ms.">Ms.</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender <span>*</span></label>
+                        <select name="gender" required class="form-control">
+                            <option value="" disabled selected>Select...</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-grid">
+                    <div class="form-group">
+                        <label>First Name <span>*</span></label>
+                        <input type="text" name="first_name" required placeholder="e.g. John" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name <span>*</span></label>
+                        <input type="text" name="last_name" required placeholder="e.g. Doe" class="form-control">
+                    </div>
+                </div>
+
+                                        <!-- PASTED DIRECTLY BENEATH GENDER </DIV> BLOCK -->
+                    <div class="form-group">
+                        <label>Date of Birth (DOB) <span>*</span></label>
+                        <input type="date" name="dob" required class="form-control">
+                    </div>
+                </div>
+                                    <!-- 🎯 ADDED: BLOOD GROUP SELECTION DROPDOWN INTERFACE -->
+                    <div class="form-group">
+                        <label>Blood Group <span>*</span></label>
+                        <select name="blood_group" required class="form-control">
+                            <option value="" disabled selected>Select Blood Group...</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                    <!-- 🎯 ADDED: DEPARTMENT & DESIGNATION INPUT FIELDS CONTAINER -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 15px;">
+    <div>
+        <label style="font-size: 13px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Department</label>
+        <select name="department" required class="form-control" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; background: white;">
+            <option value="" disabled selected hidden>Choose Department...</option>
+            <option value="IT Engineering">IT Engineering</option>
+            <option value="HR Services">HR Services</option>
+            <option value="Finance & Accounts">Finance & Accounts</option>
+            <option value="Operations Management">Operations Management</option>
+        </select>
+    </div>
+    <div>
+        <label style="font-size: 13px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Designation</label>
+        <input type="text" name="designation" required 
+               placeholder="e.g., Associate Engineer" 
+               class="form-control"
+               style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+    </div>
+</div>
+
+
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Certificate Name (As written on legal marksheets) <span>*</span></label>
+                        <input type="text" name="certificate_name" required placeholder="e.g. Johnathan S. Doe" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Marital Status <span>*</span></label>
+                        <select name="marital_status" id="maritalSelector" required class="form-control" onchange="toggleMarriageDateView()">
+                            <option value="Single" selected>Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <!-- Conditional Marriage Date block wrapper -->
+                    <div class="form-group" id="marriageDateGroup" style="display: none;">
+                        <label>Marriage Date <span>*</span></label>
+                        <input type="date" name="marriage_date" id="marriageDateInput" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Nationality <span>*</span></label>
+                        <input type="text" name="nationality" required placeholder="e.g. Indian" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Country of Birth <span>*</span></label>
+                        <input type="text" name="country_of_birth" required placeholder="e.g. India" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>State of Birth <span>*</span></label>
+                        <input type="text" name="state_of_birth" required placeholder="e.g. Tamil Nadu" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>City of Birth <span>*</span></label>
+                        <input type="text" name="city_of_birth" required placeholder="e.g. Chennai" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Are you a registered Citizen? <span>*</span></label>
+                        <select name="citizen_status" required class="form-control">
+                            <option value="Yes" selected>Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Do you hold Dual Citizenship? <span>*</span></label>
+                        <select name="dual_citizenship" required class="form-control">
+                            <option value="No" selected>No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Declaring Disability Status? <span>*</span></label>
+                        <select name="disability" id="disabilitySelector" required class="form-control" onchange="toggleDisabilityView()">
+                            <option value="No" selected>No (None)</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <!-- Conditional disability category block field input -->
+                    <div class="form-group" id="disabilityCategoryGroup" style="display: none; grid-column: span 2;">
+                        <label>Disability Category Details <span>*</span></label>
+                        <input type="text" name="disability_category" id="disabilityCategoryInput" placeholder="e.g. Locomotor / Visual" class="form-control">
+                    </div>
+                </div>
+            </div> <!-- 🎯 END OF TAB 1 CONTAINER LAYER -->
+
+                        <!-- ========================================================================= -->
+            <!-- TAB 2: RESIDENTIAL & WORKSITE LOCATIONS -->
+            <!-- ========================================================================= -->
+            <div class="form-step-panel" id="stepPanel2">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-house-chimney" style="color:var(--brand-primary);"></i> 2. Residential Addresses Info
+                </h2>
+                
+                <!-- Current Address Field takes full width -->
+                <div class="form-group full-width">
+                    <label>Current Residential Address <span>*</span></label>
+                    <input type="text" name="current_address" id="currentAddress" required 
+                           placeholder="Door No, Building Name, Street, Area, City" class="form-control">
+                </div>
+
+                <!-- Instant copy utility checkbox -->
+                <div class="form-group full-width" style="margin-bottom: 15px;">
+                    <label class="checkbox-label-wrap">
+                        <input type="checkbox" id="sameAddressCheckbox" onchange="copyAddressFieldsHandler()">
+                        Permanent Address is identical to Current Address
+                    </label>
+                </div>
+
+                <!-- Permanent Address Field takes full width -->
+                <div class="form-group full-width">
+                    <label>Permanent Address <span>*</span></label>
+                    <input type="text" name="permanent_address" id="permanentAddress" required 
+                           placeholder="Legal permanent home address records" class="form-control">
+                </div>
+
+                <!-- Mailing and Worksite grouped into a clean 2-column grid -->
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Mailing / Postal Delivery Address <span>*</span></label>
+                        <input type="text" name="mailing_address" required 
+                               placeholder="Postal courier drop address" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Allocated Office Worksite Campus <span>*</span></label>
+                        <input type="text" name="office_worksite" required 
+                               placeholder="e.g. Voxlom HQ - Campus Chennai" class="form-control">
+                    </div>
+                </div>
+            </div> <!-- 🎯 END OF TAB 2 CONTAINER LAYER -->
+
+
+
+                        <!-- ========================================================================= -->
+            <!-- TAB 3: EMERGENCY INFRASTRUCTURE SUPPORT -->
+            <!-- ========================================================================= -->
+            <div class="form-step-panel" id="stepPanel3">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-phone-volume" style="color:var(--brand-primary);"></i> 3. Emergency Contact Protocol
+                </h2>
+                
+                
+                <!-- Full name field for the primary contact point -->
+                <div class="form-group full-width">
+                    <label>Emergency Contact Full Name <span>*</span></label>
+                    <input type="text" name="emergency_contact_name" required 
+                           placeholder="e.g. Priya Sharma" class="form-control">
+                </div>
+
+                <!-- 2-Column layout grid for relationship tier and phone string -->
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Relationship Tier <span>*</span></label>
+                        <select name="emergency_relationship" required class="form-control">
+                            <option value="" disabled selected>Select relationship...</option>
+                            <option value="Spouse">Spouse</option>
+                            <option value="Parent">Parent</option>
+                            <option value="Sibling">Sibling</option>
+                            <option value="Guardian">Guardian / Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Emergency Phone Number <span>*</span></label>
+                        <input type="text" name="emergency_phone" required 
+                               placeholder="e.g. +91 98765 43210" class="form-control">
+                    </div>
+                </div>
+
+                <!-- Full-width physical mailing coordinate path block -->
+                <div class="form-group full-width">
+                    <label>Emergency Contact Residential Location Address <span>*</span></label>
+                    <input type="text" name="emergency_address" required 
+                           placeholder="Physical home address of the emergency contact person" class="form-control">
+                </div>
+            </div> <!-- 🎯 END OF TAB 3 CONTAINER LAYER -->
+
+
+
+                        <!-- ========================================================================= -->
+            <!-- TAB 4: HR COMPLIANCE, DOCUMENT VAULT & CONSENT -->
+            <!-- ========================================================================= -->
+            <div class="form-step-panel" id="stepPanel4">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-file-shield" style="color:var(--brand-primary);"></i> 4. Compliance, Documents & Consent
+                </h2>
+                
+                <!-- HR Lead Choice Dropdown Mapping -->
+                <div class="form-group full-width">
+                    <label>Target Reporting HR Lead <span>*</span></label>
+                    <select name="hr_reporting_id" required class="form-control">
+                        <option value="" disabled selected>Choose assigned manager...</option>
+                        {% for hr in hr_leads %}
+                            <option value="{{ hr.id }}">{{ hr.full_name|default:hr.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Timeline Onboarding Dates Grid Column -->
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Employment Begin Date</label>
+                        <input type="date" name="personal_data_begin_date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Contract Evaluation End Date</label>
+                        <input type="date" name="personal_data_end_date" class="form-control">
+                    </div>
+                </div>
+
+                <!-- Compliance Legal Document Ingestions -->
+                <div class="form-group full-width">
+                    <label>Upload Valid Passport Copy (.pdf/.jpg) <span>*</span></label>
+                    <input type="file" name="passport_doc" required accept=".pdf,.jpg,.jpeg,.png" class="form-control" style="padding:6px;">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Upload 10th Standard Academic Marksheet (.pdf/.jpg) <span>*</span></label>
+                    <input type="file" name="tenth_certificate_doc" required accept=".pdf,.jpg,.jpeg,.png" class="form-control" style="padding:6px;">
+                </div>
+
+                <!-- ID Badge Biometric Picture Dropzone -->
+                <div class="form-group full-width" style="background:#f8fafc; border:1px dashed #cbd5e1; padding:16px; border-radius:10px; margin-top:10px;">
+                    <label style="color:#1e3a8a;"><i class="fa-solid fa-camera"></i> Formal Profile Headshot Picture Upload (For ID Badge print) <span>*</span></label>
+                    <input type="file" name="profile_photo" required accept=".jpg,.jpeg,.png" class="form-control" style="padding:6px; margin-top:6px; background:white;">
+                </div>
+
+                <!-- Mandatory Data Protection Consent Checkbox (GDPR / DPDP Compliance) -->
+                <div class="form-group full-width" style="margin-top:15px;">
+                    <label class="checkbox-label-wrap" style="line-height:1.5;">
+                        <input type="checkbox" name="consent_checkbox" required>
+                        <span>I hereby confirm that the biometric photo asset and files uploaded are authentic and accurate. By clicking this checkbox, I provide Voxlom my explicit compliance consent to use and display my facial picture for corporate ID pass token prints and safety building access loops registration.</span>
+                    </label>
+                </div>
+            </div> <!-- 🎯 END OF TAB 4 CONTAINER LAYER -->
+
+
+            <!-- ========================================================================= -->
+            <!-- STEPPER NAVIGATIONAL FOOTER BUTTONS DESK -->
+            <!-- ========================================================================= -->
+            <div class="stepper-footer" style="display: flex; justify-content: space-between; margin-top: 28px; border-top: 1px solid var(--border-line); padding-top: 20px;">
+                <button type="button" class="btn-nav btn-prev" id="prevBtn" onclick="navigateStep(-1)" style="visibility: hidden;">
+                    <i class="fa-solid fa-arrow-left"></i> Previous Step
+                </button>
+                <button type="button" class="btn-nav btn-next" id="nextBtn" onclick="navigateStep(1)">
+                    Next Step <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+        </form> <!-- 🎯 END OF MASTER FORM DESK -->
+
+<!-- PLACE AT THE ABSOLUTE BOTTOM OF CANDIDATE_PERSONAL_FORM.HTML -->
+<script>
+    // Global workflow state initialization tracking markers
+    let currentActiveStep = 1;
+    const maxTotalSteps = 4;
+
+    /**
+     * Handles Tab Panel toggles, HTML5 validation checks, 
+     * and advances the wizard progress bars cleanly.
+     */
+    function navigateStep(directionModifier) {
+        
+        // 🛑 STRICT FRONTEND GATE: Enforce field validation before letting user move forward
+        if (directionModifier === 1) {
+            const currentPanel = document.getElementById(`stepPanel${currentActiveStep}`);
+            // Gathers all required fields inside the current tab matrix scope boundary
+            const requiredFields = currentPanel.querySelectorAll('input[required], select[required], textarea[required]');
+            
+            for (let i = 0; i < requiredFields.length; i++) {
+                if (!requiredFields[i].value || !requiredFields[i].checkValidity()) {
+                    // Highlights the empty container layout box with native browser warning popups
+                    requiredFields[i].reportValidity();
+                    return false; // Safely aborts progress navigation
+                }
+            }
+        }
+
+        // Hide current tab panel and remove its active focus dot indicators
+        document.getElementById(`stepPanel${currentActiveStep}`).classList.remove('active');
+        document.getElementById(`dot${currentActiveStep}`).classList.remove('active');
+        
+        // Mark the dot as completed if the employee is advancing forward
+        if (directionModifier === 1) {
+            document.getElementById(`dot${currentActiveStep}`).classList.add('completed');
+        }
+
+        // Apply calculation modifiers parameters
+        currentActiveStep += directionModifier;
+
+        // 🚀 SUBMIT TRIGGER: If stepping past Tab 4, naturally submit the form straight to Django views!
+        if (currentActiveStep > maxTotalSteps) {
+            document.getElementById('onboardingForm').submit();
+            return true;
+        }
+
+        // Mount the newly selected step view elements onto the screen viewport canvas
+        document.getElementById(`stepPanel${currentActiveStep}`).classList.add('active');
+        document.getElementById(`dot${currentActiveStep}`).classList.add('active');
+        document.getElementById(`dot${currentActiveStep}`).classList.remove('completed');
+
+        // Enforce smooth width percentage calculations for the header green stepper progress tracking line
+        const progressPercentageWidth = ((currentActiveStep - 1) / (maxTotalSteps - 1)) * 100;
+        document.getElementById('progressBar').style.width = `${progressPercentageWidth}%`;
+
+        // Sync operational footer button configurations visibility flags
+        const prevBtnElement = document.getElementById('prevBtn');
+        const nextBtnElement = document.getElementById('nextBtn');
+
+        // Hide "Previous" button if the user is sitting back on Tab 1
+        prevBtnElement.style.visibility = (currentActiveStep === 1) ? 'hidden' : 'visible';
+        
+        // Transform button colors and text string tokens once they hit Step 4 final gates
+        if (currentActiveStep === maxTotalSteps) {
+            nextBtnElement.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Complete Registration`;
+            nextBtnElement.style.backgroundColor = '#16a34a'; // Turns button to an active success green shade
+        } else {
+            nextBtnElement.innerHTML = `Next Step <i class="fa-solid fa-arrow-right"></i>`;
+            nextBtnElement.style.backgroundColor = 'var(--brand-primary)';
+        }
+    }
+
+    /**
+     * CONDITIONAL FIELD TRIGGER: Hides/Shows the Marriage Date row based on Marital Selector
+     */
+    function toggleMarriageDateView() {
+        const maritalStatusValue = document.getElementById('maritalSelector').value;
+        const marriageInputGroup = document.getElementById('marriageDateGroup');
+        const marriageInputBox = document.getElementById('marriageDateInput');
+        
+        if (maritalStatusValue === 'Married') {
+            marriageInputGroup.style.display = 'flex';
+            marriageInputBox.setAttribute('required', 'true');
+        } else {
+            marriageInputGroup.style.display = 'none';
+            marriageInputBox.removeAttribute('required');
+            marriageInputBox.value = ''; // Cleans memory row cell logs
+        }
+    }
+
+    /**
+     * CONDITIONAL FIELD TRIGGER: Hides/Shows the Disability details input field
+     */
+    function toggleDisabilityView() {
+        const disabilityValue = document.getElementById('disabilitySelector').value;
+        const disabilityInputGroup = document.getElementById('disabilityCategoryGroup');
+        const disabilityInputBox = document.getElementById('disabilityCategoryInput');
+        
+        if (disabilityValue === 'Yes') {
+            disabilityInputGroup.style.display = 'flex';
+            disabilityInputBox.setAttribute('required', 'true');
+        } else {
+            disabilityInputGroup.style.display = 'none';
+            disabilityInputBox.removeAttribute('required');
+            disabilityInputBox.value = '';
+        }
+    }
+
+    /**
+     * AUTOMATION HANDLER TOOL: Clones Current Address straight to Permanent Address cell rows
+     */
+    function copyAddressFieldsHandler() {
+        const isChecked = document.getElementById('sameAddressCheckbox').checked;
+        const currentAddressText = document.getElementById('currentAddress').value;
+        const permanentAddressField = document.getElementById('permanentAddress');
+        
+        if (isChecked && currentAddressText) {
+            permanentAddressField.value = currentAddressText;
+        } else if (!isChecked) {
+            permanentAddressField.value = '';
+        }
+    }
+</script>
+
+            
+

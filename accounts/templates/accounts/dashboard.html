@@ -1,0 +1,580 @@
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox | Voxlom EMS Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-hover: #1765cc;
+            --bg-body: #f6f8fc;
+            --sidebar-bg: #f6f8fc;
+            --border: #e0e0e0;
+            --text-main: #1f1f1f;
+            --text-sub: #444746;
+            --transition: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-main);
+        }
+
+        .app-shell {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar - Modern Gmail Style */
+        .sidebar {
+            width: 256px;
+            transition: width 300ms var(--transition);
+            display: flex;
+            flex-direction: column;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+
+        .sidebar.collapsed {
+            width: 72px;
+        }
+
+        .sidebar-header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding-left: 16px;
+            margin-bottom: 8px;
+        }
+
+        .btn-menu {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 200ms;
+            color: var(--text-sub);
+            font-size: 20px;
+        }
+
+        .btn-menu:hover {
+            background: #e1e3e1;
+        }
+
+        .compose-container {
+            padding: 8px 16px 16px 8px;
+        }
+
+        .compose-btn {
+            background: #c2e7ff;
+            color: #001d35;
+            height: 56px;
+            padding: 0 24px;
+            border-radius: 16px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: box-shadow 200ms;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .compose-btn:hover {
+            box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+        }
+
+        .compose-btn i {
+            font-size: 20px;
+        }
+
+        .collapsed .compose-btn {
+            width: 56px;
+            padding: 0 18px;
+            border-radius: 16px;
+        }
+
+        .collapsed .compose-btn span {
+            display: none;
+        }
+
+        .nav-items {
+            margin-top: 10px;
+        }
+
+        .nav-item {
+            height: 32px;
+            margin: 1px 0;
+            padding: 0 12px 0 24px;
+            border-radius: 0 16px 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-sub);
+            transition: background 200ms;
+        }
+
+        .nav-item.active {
+            background: #d3e3fd;
+            color: #001d35;
+            font-weight: 700;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: #e1e3e1;
+        }
+
+        .collapsed .nav-item {
+            padding: 0 24px;
+            width: 56px;
+            border-radius: 50%;
+            margin: 4px auto;
+        }
+
+        .collapsed .nav-item span {
+            display: none;
+        }
+
+        /* Main Area */
+        .main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            margin: 8px 8px 8px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            max-width: 720px;
+            background: #eaf1fb;
+            border-radius: 28px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 12px;
+            transition: background 200ms, box-shadow 200ms;
+        }
+
+        .search-box:focus-within {
+            background: #fff;
+            box-shadow: 0 1px 1px 0 rgba(65, 69, 73, 0.3), 0 1px 3px 1px rgba(65, 69, 73, 0.15);
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .search-box i {
+            color: var(--text-sub);
+        }
+
+        .header-tools {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-sub);
+        }
+
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .tool-icon:hover {
+            background: #f1f3f4;
+        }
+
+        .toolbar {
+            height: 48px;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            color: var(--text-sub);
+            font-size: 14px;
+        }
+
+        /* Email Rows */
+        .email-list {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .email-row {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            height: 40px;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+            transition: box-shadow 150ms;
+            font-size: 14px;
+        }
+
+        .email-row:hover {
+            box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3);
+            z-index: 10;
+        }
+
+        .email-row.unread {
+            font-weight: 700;
+            background: #fff;
+        }
+
+        .c-from {
+            width: 200px;
+            padding-right: 32px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .c-main {
+            flex-grow: 1;
+            display: flex;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .c-sub {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .c-snip {
+            color: var(--text-sub);
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .c-date {
+            width: 100px;
+            text-align: right;
+            color: var(--text-sub);
+            font-size: 12px;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: #fff;
+            width: 80%;
+            height: 85%;
+            margin: 40px auto;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+            animation: slideUp 300ms cubic-bezier(0, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .m-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .m-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex-grow: 1;
+            line-height: 1.6;
+        }
+
+        /* Compose */
+        #compose-window {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            right: 30px;
+            width: 540px;
+            background: #fff;
+            box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14);
+            border-radius: 12px 12px 0 0;
+            z-index: 2000;
+        }
+
+        .comp-head {
+            background: #f2f6fc;
+            padding: 12px 16px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .comp-body {
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comp-body input {
+            border: none;
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .comp-body textarea {
+            border: none;
+            padding: 16px 0;
+            outline: none;
+            resize: none;
+            min-height: 300px;
+            font-family: inherit;
+        }
+
+        .comp-foot {
+            padding: 12px 16px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-send-main {
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="btn-menu" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+                <div style="margin-left: 12px; font-size: 22px; color: var(--text-sub);">Voxlom</div>
+            </div>
+            <div class="compose-container">
+                <button class="compose-btn" onclick="openCompose()">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span>Compose</span>
+                </button>
+            </div>
+            <nav class="nav-items">
+                <div class="nav-item active"><i class="fas fa-inbox"></i> <span>Inbox</span></div>
+                <div class="nav-item"><i class="far fa-star"></i> <span>Starred</span></div>
+                <div class="nav-item"><i class="far fa-clock"></i> <span>Snoozed</span></div>
+                <div class="nav-item"><i class="fas fa-paper-plane"></i> <span>Sent</span></div>
+                <div class="nav-item"><i class="far fa-file"></i> <span>Drafts</span></div>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="header">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search mail">
+                </div>
+                <div class="header-tools">
+                    <div class="tool-icon"><i class="far fa-question-circle"></i></div>
+                    <div class="tool-icon"><i class="fas fa-cog"></i></div>
+                    <div
+                        style="background: #1a73e8; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">
+                        V</div>
+                </div>
+            </header>
+
+            <div class="toolbar">
+                <i class="far fa-square"></i>
+                <i class="fas fa-redo" onclick="location.reload()"></i>
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+
+            <div class="email-list">
+                {% if emails %}
+                {% for email in emails %}
+                <div class="email-row"
+                    onclick="viewEmail('{{ email.uid }}', '{{ email.subject|escapejs }}', '{{ email.from|escapejs }}', '{{ email.date }}')">
+                    <div style="width: 40px; display: flex; justify-content: center; color: #dadce0;"><i
+                            class="far fa-square"></i></div>
+                    <div style="width: 40px; display: flex; justify-content: center; color: #dadce0;"><i
+                            class="far fa-star"></i></div>
+                    <div class="c-from">{{ email.from }}</div>
+                    <div class="c-main">
+                        <span class="c-sub">{{ email.subject }}</span>
+                        <span class="c-snip">- {{ email.snippet }}</span>
+                    </div>
+                    <div class="c-date">{{ email.date }}</div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div style="padding: 100px; text-align: center; color: var(--text-sub);">No messages.</div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="email-modal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="m-header">
+                <h2 id="m-subject"></h2>
+                <div class="btn-menu" onclick="closeModal(null)"><i class="fas fa-times"></i></div>
+            </div>
+            <div class="m-body" id="m-body"></div>
+        </div>
+    </div>
+
+    <div id="compose-window">
+        <div class="comp-head">
+            <span>New Message</span>
+            <i class="fas fa-times" onclick="closeCompose()" style="cursor: pointer;"></i>
+        </div>
+        <div class="comp-body">
+            <input type="email" id="c-to" placeholder="Recipients">
+            <input type="text" id="c-subject" placeholder="Subject">
+            <textarea id="c-message" placeholder="Message"></textarea>
+        </div>
+        <div class="comp-foot">
+            <button class="btn-send-main" id="btn-send" onclick="sendEmail()">Send</button>
+            <div class="tool-icon"><i class="far fa-trash-alt"></i></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+        function openCompose() { document.getElementById('compose-window').style.display = 'block'; }
+        function closeCompose() { document.getElementById('compose-window').style.display = 'none'; }
+
+        async function viewEmail(uid, subject, from, date) {
+            const modal = document.getElementById('email-modal');
+            const bodyContainer = document.getElementById('m-body');
+            document.getElementById('m-subject').innerText = subject;
+            bodyContainer.innerHTML = `<div style="text-align: center; padding: 60px;"><i class="fas fa-circle-notch fa-spin" style="font-size: 32px; color: #1a73e8;"></i></div>`;
+            modal.style.display = 'block';
+
+            try {
+                const response = await fetch(`/fetch-email-content/?uid=${uid}`);
+                const data = await response.json();
+                if (data.status === 'success') {
+                    if (data.html) {
+                        bodyContainer.innerHTML = `<iframe srcdoc="${data.html.replace(/"/g, '&quot;')}" style="width: 100%; height: 500px; border: none;"></iframe>`;
+                    } else {
+                        bodyContainer.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit;">${data.body}</pre>`;
+                    }
+                } else { bodyContainer.innerHTML = `Error: ${data.message}`; }
+            } catch (err) { bodyContainer.innerHTML = `Failed to load.`; }
+        }
+
+        function closeModal(e) { if (!e || e.target.classList.contains('modal-overlay')) document.getElementById('email-modal').style.display = 'none'; }
+
+        async function sendEmail() {
+            const btn = document.getElementById('btn-send');
+            const to = document.getElementById('c-to').value;
+            const subject = document.getElementById('c-subject').value;
+            const message = document.getElementById('c-message').value;
+
+            if (!to || !subject || !message) { alert("Please fill all fields."); return; }
+
+            btn.disabled = true;
+            btn.innerText = "Sending...";
+
+            const formData = new FormData();
+            formData.append('to', to);
+            formData.append('subject', subject);
+            formData.append('message', message);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            try {
+                const response = await fetch('/send-email-ajax/', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert("Sent!");
+                    closeCompose();
+                    document.getElementById('c-to').value = '';
+                    document.getElementById('c-subject').value = '';
+                    document.getElementById('c-message').value = '';
+                } else { alert("Error: " + data.message); }
+            } catch (err) { alert("Failed to send."); }
+            finally { btn.disabled = false; btn.innerText = "Send"; }
+        }
+    </script>
+</body>
+
+</html> -->
