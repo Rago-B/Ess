@@ -1,440 +1,93 @@
 {% extends "base.html" %}
 
+{% block title %}My Payslips | Voxlom EMS{% endblock %}
+
+{% block extra_css %}
+{% include "personal_information/_pi_theme.html" %}
+{% endblock %}
+
 {% block content %}
-<div class="payslip-workspace">
+<div class="pi-page">
+    <header class="pi-hero">
+        <div>
+            <p class="pi-hero__eyebrow">Compensation</p>
+            <h1><i class="fa-solid fa-receipt"></i> My Compensation Statements</h1>
+            <p>View monthly salary records and download official payslip documents.</p>
+        </div>
+        <div class="pi-hero__meta">
+            <span class="pi-chip"><i class="fa-solid fa-file-lines"></i> {{ payslips|length }} payslip{{ payslips|length|pluralize }}</span>
+        </div>
+    </header>
 
-    <!-- ══════════ HEADER ══════════ -->
-    <div class="payslip-header">
-        <div class="header-left">
-            <div class="header-icon-box"><i class="fa-solid fa-receipt"></i></div>
+    <div class="pi-stats">
+        <div class="pi-stat">
+            <div class="pi-stat__icon"><i class="fa-solid fa-file-lines"></i></div>
             <div>
-                <h1>My Compensation Statements</h1>
-                <p>View monthly salary records and download official payslip documents.</p>
+                <div class="pi-stat__value" id="stat-total">{{ payslips|length }}</div>
+                <div class="pi-stat__label">Total payslips</div>
+            </div>
+        </div>
+        <div class="pi-stat">
+            <div class="pi-stat__icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div>
+                <div class="pi-stat__value" id="stat-latest" style="color:#059669;">—</div>
+                <div class="pi-stat__label">Latest net pay</div>
+            </div>
+        </div>
+        <div class="pi-stat">
+            <div class="pi-stat__icon"><i class="fa-solid fa-calendar-check"></i></div>
+            <div>
+                <div class="pi-stat__value" id="stat-latest-month" style="color:var(--pi-primary);">—</div>
+                <div class="pi-stat__label">Latest period</div>
             </div>
         </div>
     </div>
 
-    <!-- ══════════ SUMMARY STATS ══════════ -->
-    <div class="stats-row">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(99,102,241,0.1); color: #6366f1;">
-                <i class="fa-solid fa-file-lines"></i>
-            </div>
-            <div class="stat-info">
-                <span class="stat-number" id="stat-total">{{ payslips|length }}</span>
-                <span class="stat-desc">Total Payslips</span>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(16,185,129,0.1); color: #10b981;">
-                <i class="fa-solid fa-indian-rupee-sign"></i>
-            </div>
-            <div class="stat-info">
-                <span class="stat-number stat-green" id="stat-latest">—</span>
-                <span class="stat-desc">Latest Net Pay</span>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(59,130,246,0.1); color: #3b82f6;">
-                <i class="fa-solid fa-calendar-check"></i>
-            </div>
-            <div class="stat-info">
-                <span class="stat-number stat-blue" id="stat-latest-month">—</span>
-                <span class="stat-desc">Latest Period</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- ══════════ PAYSLIP CARDS (Desktop + Mobile) ══════════ -->
     {% if payslips %}
-    <div class="payslip-grid">
+    <div class="pi-payslip-grid">
         {% for row in payslips reversed %}
-        <div class="payslip-card">
-            <!-- Card Header -->
-            <div class="pc-header">
-                <div class="pc-month-badge">
-                    <i class="fa-solid fa-calendar-day"></i>
-                    <span>{{ row.month }}</span>
-                </div>
-                <span class="pc-status"><i class="fa-solid fa-circle-check"></i> Processed</span>
+        <div class="pi-payslip">
+            <div class="pi-payslip__head">
+                <span style="font-weight:800;font-size:15px;"><i class="fa-solid fa-calendar-day" style="color:var(--pi-gold);"></i> <span>{{ row.month }}</span></span>
+                <span class="pi-badge pi-badge--green"><i class="fa-solid fa-circle-check"></i> Processed</span>
             </div>
-
-            <!-- Breakdown Grid -->
-            <div class="pc-breakdown">
-                <div class="pc-row">
-                    <span class="pc-label">Basic Salary</span>
-                    <span class="pc-value">₹{{ row.basic_salary }}</span>
-                </div>
-                <div class="pc-row">
-                    <span class="pc-label">HRA</span>
-                    <span class="pc-value">₹{{ row.hra|default:"0" }}</span>
-                </div>
-                <div class="pc-row">
-                    <span class="pc-label">Allowances</span>
-                    <span class="pc-value">₹{{ row.allowances|default:"0" }}</span>
-                </div>
-                <div class="pc-row deduction">
-                    <span class="pc-label">Deductions / PF / Tax</span>
-                    <span class="pc-value">- ₹{{ row.deductions }}</span>
-                </div>
+            <div class="pi-payslip__body">
+                <div class="pi-payslip__row"><span>Basic salary</span><span>₹{{ row.basic_salary }}</span></div>
+                <div class="pi-payslip__row"><span>HRA</span><span>₹{{ row.hra|default:"0" }}</span></div>
+                <div class="pi-payslip__row"><span>Allowances</span><span>₹{{ row.allowances|default:"0" }}</span></div>
+                <div class="pi-payslip__row pi-payslip__row--deduct"><span>Deductions / PF / Tax</span><span>- ₹{{ row.deductions }}</span></div>
             </div>
-
-            <!-- Net Pay Footer -->
-            <div class="pc-footer">
-                <div class="pc-net">
-                    <span class="pc-net-label">Net Take-Home</span>
-                    <span class="pc-net-value">₹{{ row.net_pay }}</span>
+            <div class="pi-payslip__foot">
+                <div>
+                    <span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">Net take-home</span>
+                    <div class="pi-payslip__net pc-net-value">₹{{ row.net_pay }}</div>
                 </div>
-                <button onclick="window.print()" class="btn-download">
-                    <i class="fa-solid fa-file-arrow-down"></i> Download
-                </button>
+                <button type="button" onclick="window.print()" class="pi-btn pi-btn--download"><i class="fa-solid fa-file-arrow-down"></i> Download</button>
             </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
-    <!-- ══════════ EMPTY STATE ══════════ -->
-    <div class="empty-state">
-        <div class="empty-icon"><i class="fa-solid fa-money-check-dollar"></i></div>
-        <h3>No Payslips Yet</h3>
-        <p>Your compensation statements will appear here once HR processes your monthly salary records.</p>
+    <div class="pi-card">
+        <div class="pi-empty">
+            <i class="fa-solid fa-money-check-dollar"></i>
+            <h4>No payslips yet</h4>
+            <p>Your compensation statements will appear here once HR processes your monthly salary records.</p>
+        </div>
     </div>
     {% endif %}
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.payslip-card');
+    const cards = document.querySelectorAll('.pi-payslip');
     if (cards.length > 0) {
         const latest = cards[0];
         const netEl = latest.querySelector('.pc-net-value');
-        const monthEl = latest.querySelector('.pc-month-badge span');
+        const monthEl = latest.querySelector('.pi-payslip__head span span');
         if (netEl) document.getElementById('stat-latest').textContent = netEl.textContent;
         if (monthEl) document.getElementById('stat-latest-month').textContent = monthEl.textContent;
     }
 });
 </script>
-
-<style>
-/* ─── Workspace ─── */
-.payslip-workspace {
-    padding: clamp(16px, 3vw, 32px);
-    font-family: 'Inter', 'Poppins', system-ui, sans-serif;
-    background: #f8fafc;
-    min-height: 100vh;
-    max-width: 1200px;
-    margin: 0 auto;
-    color: #0f172a;
-}
-
-/* ─── Header ─── */
-.payslip-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 28px 32px;
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 20px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.header-icon-box {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #6366f1, #a855f7);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
-}
-
-.payslip-header h1 {
-    margin: 0;
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.02em;
-}
-
-.payslip-header p {
-    margin: 4px 0 0;
-    font-size: 0.85rem;
-    color: #64748b;
-    font-weight: 500;
-}
-
-/* ─── Stats Row ─── */
-.stats-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 28px;
-}
-
-.stat-card {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 22px 24px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px -4px rgba(0,0,0,0.06);
-    border-color: #cbd5e1;
-}
-
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
-.stat-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.stat-number {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-}
-
-.stat-green { color: #059669; }
-.stat-blue  { color: #3b82f6; }
-
-.stat-desc {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #64748b;
-}
-
-/* ─── Payslip Grid ─── */
-.payslip-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
-/* ─── Payslip Card ─── */
-.payslip-card {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 20px;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.payslip-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px -6px rgba(0,0,0,0.08);
-    border-color: #cbd5e1;
-}
-
-/* Card Header */
-.pc-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 24px;
-    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.pc-month-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #0f172a;
-}
-
-.pc-month-badge i {
-    color: #6366f1;
-    font-size: 0.9rem;
-}
-
-.pc-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 12px;
-    background: #ecfdf5;
-    color: #059669;
-    font-size: 0.7rem;
-    font-weight: 700;
-    border-radius: 20px;
-    border: 1px solid rgba(16,185,129,0.2);
-}
-
-/* Breakdown */
-.pc-breakdown {
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.pc-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.pc-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #64748b;
-}
-
-.pc-value {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #1e293b;
-}
-
-.pc-row.deduction {
-    padding-top: 12px;
-    border-top: 1px dashed #e2e8f0;
-}
-
-.pc-row.deduction .pc-value {
-    color: #ef4444;
-}
-
-/* Footer */
-.pc-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 24px;
-    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-    border-top: 1px solid #d1fae5;
-}
-
-.pc-net {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.pc-net-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.pc-net-value {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #059669;
-    letter-spacing: -0.02em;
-}
-
-.btn-download {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 18px;
-    background: #4f46e5;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.8rem;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(99,102,241,0.2);
-}
-
-.btn-download:hover {
-    background: #4338ca;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(99,102,241,0.35);
-}
-
-/* ─── Empty State ─── */
-.empty-state {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 20px;
-    padding: 80px 40px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.empty-icon {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    background: #f1f5f9;
-    color: #cbd5e1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    margin: 0 auto 20px;
-}
-
-.empty-state h3 {
-    margin: 0 0 8px;
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #334155;
-}
-
-.empty-state p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #94a3b8;
-    font-weight: 500;
-    max-width: 400px;
-    margin: 0 auto;
-    line-height: 1.5;
-}
-
-/* ─── Responsive ─── */
-@media (max-width: 1024px) {
-    .payslip-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 768px) {
-    .stats-row { grid-template-columns: 1fr; }
-    .payslip-header { padding: 20px; }
-    .header-left { flex-direction: column; align-items: flex-start; }
-}
-</style>
 {% endblock %}

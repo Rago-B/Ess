@@ -1,299 +1,519 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candidate Onboarding - Document Upload Desk</title>
-    <!-- FontAwesome & Inter Typefaces Font Links -->
-    <link rel="stylesheet" href="https://cloudflare.com">
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-main: #f8fafc;
-            --surface-card: #ffffff;
-            --text-primary: #0f172a;
-            --text-muted: #64748b;
-            --primary-accent: #7c3aed;
-            --primary-hover: #6d28d9;
-            --border-color: #e2e8f0;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .container {
-            width: 100%;
-            max-width: 640px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 8px;
-        }
-        .icon-circle {
-            background: rgba(124, 58, 237, 0.1);
-            color: var(--primary-accent);
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin: 0 auto 16px auto;
-            border: 2px solid #ddd6fe;
-        }
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1e3a8a;
-            letter-spacing: -0.02em;
-            margin-bottom: 6px;
-        }
-        .header p {
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1.5;
-        }
-        .card {
-            background: var(--surface-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
-        }
-        .status-banner {
-            background: var(--surface-card);
-            border: 1px solid var(--border-color);
-            border-left: 5px solid var(--primary-accent);
-            border-radius: 12px;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
-        }
-        .status-title {
-            font-size: 14px;
-            font-weight: 700;
-        }
-        .status-text {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 2px;
-            font-weight: 500;
-        }
-        .exit-btn {
-            font-size: 12px;
-            color: #ef4444;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            transition: background 0.15s;
-        }
-        .exit-btn:hover {
-            background: #fef2f2;
-        }
-        .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #1e3a8a;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .form-group label {
-            font-weight: 600;
-            font-size: 13px;
-            color: #344054;
-        }
-        .form-control {
-            padding: 11px 14px;
-            border: 1px solid #d0d5dd;
-            border-radius: 8px;
-            font-size: 14px;
-            color: var(--text-primary);
-            outline: none;
-            width: 100%;
-            font-family: inherit;
-            box-shadow: 0 1px 2px rgba(16,24,40,0.05);
-            transition: border-color 0.15s, box-shadow 0.15s;
-        }
-        .form-control:focus {
-            border-color: #a78bfa;
-            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.1);
-        }
-        .row-split {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-        .notice-box {
-            font-size: 12px;
-            color: var(--text-muted);
-            background: #f8fafc;
-            padding: 14px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            line-height: 1.5;
-            margin-top: 4px;
-        }
-        .submit-btn {
-            padding: 12px 28px;
-            background: var(--primary-accent);
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            width: max-content;
-            align-self: flex-end;
-            box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.15);
-            transition: background 0.15s;
-        }
-        .submit-btn:hover {
-            background: var(--primary-hover);
-        }
-        .alert-box {
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #bbf7d0;
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
 
-<div class="container">
-    
-    <!-- Top Action Header Content -->
-    <div class="header">
-        <div class="icon-circle"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-        <h1>Document Verification Desk</h1>
-        <p>Welcome to Voxlom EMS. Please complete your registration files setup below.</p>
-    </div>
+{% block title %}Document Upload | Voxlom EMS{% endblock %}
 
-    <!-- Isolated Pipeline Progress Status Banner -->
-    <div class="status-banner">
+{% block extra_css %}
+<style>
+    .docs-page {
+        --docs-navy: #0c0c14;
+        --docs-gold: #c9a962;
+        --docs-gold-soft: rgba(201, 169, 98, 0.14);
+        --docs-primary: #1e3a8a;
+        --docs-border: rgba(15, 23, 42, 0.08);
+        --docs-ease: cubic-bezier(0.22, 1, 0.36, 1);
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 0 48px;
+        font-family: 'Poppins', sans-serif;
+        color: #0f172a;
+    }
+
+    .docs-hero {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 24px;
+        padding: 28px 32px;
+        border-radius: 22px;
+        background: linear-gradient(125deg, #0c0c14 0%, #1a1a28 50%, #12121c 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 16px 40px rgba(12, 12, 20, 0.35);
+    }
+
+    .docs-hero__eyebrow {
+        margin: 0 0 8px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--docs-gold);
+    }
+
+    .docs-hero h1 {
+        margin: 0 0 8px;
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: clamp(1.75rem, 3vw, 2.1rem);
+        font-weight: 600;
+        color: #f8f6f1;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .docs-hero h1 i {
+        color: var(--docs-gold);
+        font-size: 0.85em;
+    }
+
+    .docs-hero p {
+        margin: 0;
+        max-width: 480px;
+        font-size: 14px;
+        line-height: 1.55;
+        color: rgba(255, 255, 255, 0.55);
+    }
+
+    .docs-hero__meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+    }
+
+    .docs-status {
+        padding: 12px 16px;
+        border-radius: 12px;
+        background: var(--docs-gold-soft);
+        border: 1px solid rgba(201, 169, 98, 0.35);
+        text-align: right;
+    }
+
+    .docs-status__title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #f8f6f1;
+    }
+
+    .docs-status__title span {
+        color: var(--docs-gold);
+    }
+
+    .docs-status__sub {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 2px;
+    }
+
+    .docs-exit {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #fca5a5;
+        text-decoration: none;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        transition: background 0.3s var(--docs-ease), color 0.3s var(--docs-ease);
+    }
+
+    .docs-exit:hover {
+        background: rgba(239, 68, 68, 0.18);
+        color: #fecaca;
+    }
+
+    .docs-alert {
+        margin-bottom: 20px;
+        padding: 14px 18px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .docs-alert--success {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #166534;
+    }
+
+    .docs-alert--error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+    }
+
+    .docs-card {
+        background: #fff;
+        border: 1px solid var(--docs-border);
+        border-radius: 20px;
+        box-shadow: 0 6px 24px rgba(15, 23, 42, 0.05);
+        overflow: hidden;
+    }
+
+    .docs-split {
+        display: grid;
+        grid-template-columns: 1fr minmax(300px, 380px);
+        min-height: 520px;
+    }
+
+    .docs-split__form {
+        padding: 28px 32px 32px;
+    }
+
+    .docs-split__visual {
+        position: relative;
+        padding: 28px 24px;
+        background: linear-gradient(160deg, var(--docs-navy) 0%, #1a1a28 50%, #12121c 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+    }
+
+    .docs-split__visual::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 70% 50% at 90% 0%, rgba(201, 169, 98, 0.16), transparent 55%),
+            radial-gradient(ellipse 50% 40% at 0% 100%, rgba(30, 58, 138, 0.22), transparent 50%);
+        pointer-events: none;
+    }
+
+    .docs-visual-art {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+    }
+
+    .docs-visual-art svg {
+        width: 100%;
+        max-width: 280px;
+        height: auto;
+    }
+
+    .docs-visual-copy {
+        position: relative;
+        z-index: 1;
+    }
+
+    .docs-visual-copy h3 {
+        margin: 0 0 8px;
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #f8f6f1;
+    }
+
+    .docs-visual-copy p {
+        margin: 0 0 16px;
+        font-size: 13px;
+        line-height: 1.55;
+        color: rgba(255, 255, 255, 0.55);
+    }
+
+    .docs-checklist {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .docs-checklist li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 12px;
+        line-height: 1.45;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .docs-checklist li i {
+        margin-top: 2px;
+        color: var(--docs-gold);
+        flex-shrink: 0;
+    }
+
+    .docs-section-title {
+        margin: 0 0 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .docs-section-title i {
+        color: var(--docs-primary);
+    }
+
+    .docs-section-title:not(:first-child) {
+        margin-top: 28px;
+    }
+
+    .docs-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .docs-form-grid .docs-field--full {
+        grid-column: 1 / -1;
+    }
+
+    .docs-field {
+        margin-bottom: 16px;
+    }
+
+    .docs-form-grid .docs-field {
+        margin-bottom: 0;
+    }
+
+    .docs-label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+    }
+
+    .docs-label .required {
+        color: #dc2626;
+    }
+
+    .docs-input,
+    .docs-file {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        color: #0f172a;
+        background: #f8fafc;
+        transition: border-color 0.25s var(--docs-ease), box-shadow 0.25s var(--docs-ease), background 0.25s var(--docs-ease);
+    }
+
+    .docs-file {
+        padding: 10px 12px;
+        border-style: dashed;
+        cursor: pointer;
+    }
+
+    .docs-input:focus,
+    .docs-file:focus {
+        outline: none;
+        border-color: var(--docs-primary);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12);
+    }
+
+    .docs-uploaded {
+        display: block;
+        margin-top: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #16a34a;
+    }
+
+    .docs-notice {
+        margin: 22px 0;
+        padding: 14px 16px;
+        border-radius: 12px;
+        font-size: 12px;
+        line-height: 1.5;
+        color: #64748b;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+
+    .docs-notice i {
+        color: var(--docs-primary);
+        margin-right: 4px;
+    }
+
+    .docs-submit {
+        width: 100%;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--docs-navy);
+        background: var(--docs-gold);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 16px rgba(201, 169, 98, 0.35);
+        transition: transform 0.3s var(--docs-ease), box-shadow 0.3s var(--docs-ease);
+    }
+
+    .docs-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(201, 169, 98, 0.45);
+    }
+
+    @media (max-width: 900px) {
+        .docs-split {
+            grid-template-columns: 1fr;
+            min-height: auto;
+        }
+
+        .docs-split__visual {
+            order: -1;
+            min-height: 240px;
+        }
+
+        .docs-split__form {
+            padding: 24px 20px 28px;
+        }
+
+        .docs-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .docs-hero {
+            padding: 22px 20px;
+        }
+
+        .docs-hero__meta {
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .docs-status {
+            text-align: left;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="docs-page">
+
+    <header class="docs-hero">
         <div>
-            <div class="status-title">Screening State: 
-                <span style="color: var(--primary-accent);">
-                    {% if request.user.step == 5 %}Files Uploaded (Under Review){% else %}Awaiting Documents Submission{% endif %}
-                </span>
-            </div>
-            <div class="status-text">Your profile check trajectory is logged at <strong>Step {{ request.user.step|default:"1" }}</strong>.</div>
+            <p class="docs-hero__eyebrow">Verification desk</p>
+            <h1><i class="fa-solid fa-cloud-arrow-up"></i> Document upload</h1>
+            <p>Complete your identity and certificate files for Voxlom EMS onboarding and HR verification.</p>
         </div>
-        <a href="/logout/" class="exit-btn"><i class="fa-solid fa-power-off"></i> Exit Desk</a>
-    </div>
-
-    <!-- Main Isolation Document Input Form Card -->
-    <div class="card">
-        <!-- Django Notification Success Messages Stack Header -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert-box" style="margin-bottom: 16px;">
-                    <i class="fa-solid fa-circle-check"></i> {{ message }}
+        <div class="docs-hero__meta">
+            <div class="docs-status">
+                <div class="docs-status__title">
+                    Screening:
+                    <span>{% if request.user.step == 5 %}Under review{% else %}Awaiting submission{% endif %}</span>
                 </div>
-            {% endfor %}
-        {% endif %}
-
-        <!-- Inside upload_documents.html -> Replace the <form> content area completely -->
-
-<!-- FIXED: Added enctype="multipart/form-data" to allow binary document transfers -->
-<form method="POST" action="" enctype="multipart/form-data" class="form-grid">
-    {% csrf_token %}
-    
-    <div class="section-title"><i class="fa-solid fa-address-card"></i> Candidate Identity & Certificate Forms</div>
-
-    <!-- 1. Text Field Inputs Row -->
-    <div class="row-split">
-        <div class="form-group">
-            <label>Aadhar Card Number <span style="color:#ef4444;">*</span></label>
-            <input type="text" name="aadhaar" class="form-control" value="{{ verify_info.aadhaar|default:'' }}" placeholder="1234 5678 9012" required>
+                <div class="docs-status__sub">Profile step {{ request.user.step|default:"1" }}</div>
+            </div>
+            <a href="{% url 'logout' %}" class="docs-exit">
+                <i class="fa-solid fa-power-off"></i> Exit desk
+            </a>
         </div>
-        <div class="form-group">
-            <label>PAN Card Number <span style="color:#ef4444;">*</span></label>
-            <input type="text" name="pan" class="form-control" value="{{ verify_info.pan|default:'' }}" placeholder="ABCDE1234F" required>
-        </div>
+    </header>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="docs-alert {% if message.tags == 'error' %}docs-alert--error{% else %}docs-alert--success{% endif %}" role="alert">
+        {{ message }}
     </div>
+    {% endfor %}
+    {% endif %}
 
-    <div class="form-group">
-        <label>Highest Educational Degree Course Specification</label>
-        <input type="text" name="courseType" class="form-control" value="{{ verify_info.courseType|default:'' }}" placeholder="e.g. Bachelor of Technology (Computer Science)">
+    <div class="docs-card">
+        <form method="post" action="{% url 'upload_documents' %}" enctype="multipart/form-data" class="docs-split">
+            {% csrf_token %}
+
+            <div class="docs-split__form">
+                <h2 class="docs-section-title">
+                    <i class="fa-solid fa-address-card"></i> Identity details
+                </h2>
+                <div class="docs-form-grid">
+                    <div class="docs-field">
+                        <label class="docs-label" for="aadhaar">Aadhar card number <span class="required">*</span></label>
+                        <input type="text" id="aadhaar" name="aadhaar" class="docs-input"
+                            value="{{ verify_info.aadhaar|default:'' }}" placeholder="1234 5678 9012" required>
+                    </div>
+                    <div class="docs-field">
+                        <label class="docs-label" for="pan">PAN card number <span class="required">*</span></label>
+                        <input type="text" id="pan" name="pan" class="docs-input"
+                            value="{{ verify_info.pan|default:'' }}" placeholder="ABCDE1234F" required>
+                    </div>
+                    <div class="docs-field docs-field--full">
+                        <label class="docs-label" for="courseType">Highest educational degree</label>
+                        <input type="text" id="courseType" name="courseType" class="docs-input"
+                            value="{{ verify_info.courseType|default:'' }}"
+                            placeholder="e.g. Bachelor of Technology (Computer Science)">
+                    </div>
+                </div>
+
+                <h2 class="docs-section-title">
+                    <i class="fa-solid fa-file-lines"></i> Upload files
+                </h2>
+                <div class="docs-form-grid">
+                    <div class="docs-field">
+                        <label class="docs-label" for="marksheet_doc">
+                            <i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i>
+                            Degree marksheet / certificate <span class="required">*</span>
+                        </label>
+                        <input type="file" id="marksheet_doc" name="marksheet_doc" class="docs-file"
+                            accept=".pdf,.png,.jpg,.jpeg" required>
+                        {% if verify_info.marksheetPath %}
+                        <span class="docs-uploaded"><i class="fa-solid fa-circle-check"></i> Document previously uploaded</span>
+                        {% endif %}
+                    </div>
+                    <div class="docs-field">
+                        <label class="docs-label" for="experience_doc">
+                            <i class="fa-solid fa-file-contract" style="color:#2563eb;"></i>
+                            Experience letter <span style="font-weight:400;color:#94a3b8;">(optional)</span>
+                        </label>
+                        <input type="file" id="experience_doc" name="experience_doc" class="docs-file"
+                            accept=".pdf,.png,.jpg,.jpeg">
+                        {% if verify_info.experiencePath %}
+                        <span class="docs-uploaded"><i class="fa-solid fa-circle-check"></i> Document previously uploaded</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="docs-notice">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Files are stored securely on the HR verification grid. Accepted formats: PDF, JPG, PNG.
+                </div>
+
+                <button type="submit" class="docs-submit">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload & submit
+                </button>
+            </div>
+
+            <aside class="docs-split__visual" aria-hidden="true">
+                <div class="docs-visual-art">
+                    <svg viewBox="0 0 320 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Secure document upload">
+                        <rect x="88" y="32" width="144" height="188" rx="12" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+                        <path d="M108 72H212M108 100H212M108 128H180" stroke="rgba(201,169,98,0.5)" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="160" cy="168" r="28" fill="rgba(30,58,138,0.35)" stroke="#c9a962" stroke-width="2"/>
+                        <path d="M148 168L156 176L176 156" stroke="#c9a962" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M200 48L224 24L248 48L224 72L200 48Z" fill="rgba(201,169,98,0.2)" stroke="#c9a962" stroke-width="1.5"/>
+                        <rect x="40" y="120" width="36" height="48" rx="6" fill="rgba(30,58,138,0.2)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        <rect x="244" y="100" width="36" height="48" rx="6" fill="rgba(201,169,98,0.15)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="docs-visual-copy">
+                    <h3>Secure verification</h3>
+                    <p>Upload clear scans of official documents so HR can complete your background check.</p>
+                    <ul class="docs-checklist">
+                        <li><i class="fa-solid fa-circle-check"></i> Aadhar & PAN for identity match</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Degree certificate for education proof</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Experience letter if applicable</li>
+                    </ul>
+                </div>
+            </aside>
+        </form>
     </div>
-
-    <!-- 2. BRAND NEW BINARY FILE UPLOAD INPUTS -->
-    <div class="row-split" style="margin-top: 10px;">
-        <div class="form-group">
-            <label><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> Highest Degree Marksheet / Certificate <span style="color:#ef4444;">*</span></label>
-            <input type="file" name="marksheet_doc" accept=".pdf,.png,.jpg,.jpeg" class="form-control" style="padding: 6px; border: 1px dashed #d0d5dd;" required>
-            {% if verify_info.marksheetPath %}
-                <span style="font-size: 11px; color: #166534; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Document previously loaded</span>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label><i class="fa-solid fa-file-contract" style="color:#2563eb;"></i> Previous Employment Experience Letter</label>
-            <input type="file" name="experience_doc" accept=".pdf,.png,.jpg,.jpeg" class="form-control" style="padding: 6px; border: 1px dashed #d0d5dd;">
-            {% if verify_info.experiencePath %}
-                <span style="font-size: 11px; color: #166534; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Document previously loaded</span>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="notice-box">
-        <i class="fa-solid fa-shield-halved" style="color: var(--primary-accent); margin-right: 4px;"></i> 
-        Security Notice: Submitting this form uploads your official digital certificates securely straight onto the HR verification grid database rows.
-    </div>
-
-    <button type="submit" class="submit-btn">
-        <i class="fa-solid fa-cloud-arrow-up"></i> Upload & Submit Info
-    </button>
-</form>
-
-    </div>
-
 </div>
-
-</body>
-</html>
+{% endblock %}

@@ -1,173 +1,95 @@
 {% extends "base.html" %}
 
+{% block title %}ID Card Queue | Voxlom EMS{% endblock %}
+
+{% block extra_css %}
+{% include "personal_information/_pi_theme.html" %}
+{% endblock %}
+
 {% block content %}
-<!-- 🪪 MASTER HR ID REQUEUST QUEUE CANVASES CONTAINER -->
-<div class="hr-queue-canvas" style="padding: 32px; font-family: 'Poppins', sans-serif; background-color: #f8fafc; min-height: 100vh; color: #0f172a;">
-    
-    <!-- EXECUTIVE MODULE HEADER TITLE PANEL -->
-    <div style="margin-bottom: 28px; border-bottom: 1px solid #e2e8f0; padding-bottom: 18px;">
-        <h1 style="font-size: 24px; font-weight: 800; color: #1e3a8a; margin: 0; display: inline-flex; align-items: center; gap: 10px;">
-            <i class="fa-solid fa-id-card-clip" style="color: #72BB12;"></i> ID Card Issuance Control Queue
-        </h1>
-        <p style="color: #64748b; font-size: 13.5px; margin: 6px 0 0 0; font-weight: 500; letter-spacing: -0.01em;">
-            Audit incoming employee credential verifications, review profile data rows, and authorize printing queues for the lobby desk desk panels.
-        </p>
-    </div>
-
-    <!-- 📊 CENTRAL HOVER ACTION DATA GRID TABLE MANAGEMENT PORTLET -->
-    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 26px; box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02); overflow-x: auto;">
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 style="margin: 0; font-size: 14.5px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-list-check" style="color:#1e3a8a;"></i> Pending Authorization Log Entries
-            </h3>
-            <!-- Counter Tracker Badge -->
-            <span style="padding: 4px 12px; background-color: #f1f5f9; color: #1e3a8a; font-weight: 700; font-size: 12px; border-radius: 20px;">
-                {{ requests|length }} Request(s) Actionable
-            </span>
+<div class="pi-page">
+    <header class="pi-hero">
+        <div>
+            <p class="pi-hero__eyebrow">HR administration</p>
+            <h1><i class="fa-solid fa-id-card-clip"></i> ID Card Issuance Control Queue</h1>
+            <p>Audit incoming employee credential verifications, review profile data, and authorize printing queues.</p>
         </div>
+        <div class="pi-hero__meta">
+            <span class="pi-chip"><i class="fa-solid fa-list-check"></i> {{ requests|length }} request{{ requests|length|pluralize }}</span>
+        </div>
+    </header>
 
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; min-width: 800px;">
-            <thead>
-                <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                    <th style="padding: 14px 18px; font-weight: 700; color: #475569; letter-spacing: 0.04em; font-size: 12px;">PHOTO</th>
-                    <th style="padding: 14px 18px; font-weight: 700; color: #475569; letter-spacing: 0.04em; font-size: 12px;">EMPLOYEE ID</th>
-                    <th style="padding: 14px 18px; font-weight: 700; color: #475569; letter-spacing: 0.04em; font-size: 12px;">NAME</th>
-                    <th style="padding: 14px 18px; font-weight: 700; color: #475569; letter-spacing: 0.04em; font-size: 12px;">DESIGNATION / DEPT</th>
-                    <th style="padding: 14px 18px; font-weight: 700; color: #475569; letter-spacing: 0.04em; font-size: 12px;">REQUEST DATE</th>
-                    <th style="padding: 14px 18px; font-weight: 700; color: #475569; letter-spacing: 0.04em; font-size: 12px; text-align: center;">STATUS</th>
-                    <th style="padding: 14px 18px; font-weight: 700; color: #475569; letter-spacing: 0.04em; font-size: 12px; text-align: center; width: 220px;">ACTION</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in requests %}
-                <tr class="hr-queue-row" style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.15s;">
-                    
-                    <!-- Column 1: Profile Mugshot Image Micro Frame Preview -->
-                    <td style="padding: 12px 18px;">
-                        <div style="width: 42px; height: 42px; border-radius: 6px; overflow: hidden; border: 1px solid #e2e8f0; background-color: #f8fafc; display: flex; align-items: center; justify-content: center;">
-                            <img src="{{ row.photo_url }}" alt="Profile Thumbnail" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                    </td>
-                    
-                    <!-- Column 2: Employee ID -->
-                    <td style="padding: 16px 18px; font-weight: 700; color: #1e3a8a;">{{ row.employee_id }}</td>
-                    
-                    <!-- Column 3: Employee Full Name -->
-                    <td style="padding: 16px 18px; font-weight: 700; color: #0f172a; text-transform: capitalize;">{{ row.name }}</td>
-                    
-                    <!-- Column 4: Designation / Corporate Placement Vitals -->
-                    <td style="padding: 16px 18px; color: #334155; font-weight: 600;">
-                        {{ row.designation }}
-                        <span style="display: block; font-size: 11.5px; color: #94a3b8; font-weight: 500;">{{ row.department }}</span>
-                    </td>
-                    
-                    <!-- Column 5: Request Date Timestamp -->
-                    <td style="padding: 16px 18px; color: #475569; font-weight: 500;">{{ row.request_date }}</td>
-                    
-                    <!-- Column 6: Status Code Badge Chip -->
-                    <td style="padding: 16px 18px; text-align: center;">
-                        <span style="padding: 4px 12px; font-size: 11.5px; font-weight: 700; border-radius: 20px; background-color: #fef3c7; color: #d97706; display: inline-flex; align-items: center; gap: 4px;">
-                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 10px;"></i> {{ row.status }}
-                        </span>
-                    </td>
-                    
-                    <!-- Column 7: HR Core Management Response Buttons Panel (Approve / Reject) -->
-                    <!-- Inside apps/personal_information/templates/personal_information/hr_id_queue.html -->
-<!-- Inside apps/personal_information/templates/personal_information/hr_id_queue.html -->
-<td style="padding: 16px 18px; text-align: center;">
-    <div style="display: inline-flex; align-items: center; gap: 8px; justify-content: center; width: 100%;">
-        
-        <!-- 🎯 THE FIX: Ensure 'row.employee_id' is wrapped cleanly in quotes inside the function call -->
-        <a href="#" class="action-pill approve-pill" onclick="processApproval('{{ row.employee_id }}', 'Approve')">
-            <i class="fa-solid fa-check"></i> Approve
-        </a>
-        
-        <a href="#" class="action-pill reject-pill" onclick="processApproval('{{ row.employee_id }}', 'Reject')">
-            <i class="fa-solid fa-xmark"></i> Reject
-        </a>
-        
-    </div>
-</td>
-
-
-                </tr>
-                {% empty %}
-                <!-- Empty State Grid Row Block Frame -->
-                <tr>
-                    <td colspan="7" style="text-align: center; color: #94a3b8; padding: 56px; font-weight: 500;">
-                        <i class="fa-solid fa-circle-check" style="font-size: 2.5rem; display: block; margin-bottom: 12px; color: #cbd5e1;"></i>
-                        All clear! No employee physical ID card printing authorization requests are pending validation audits.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="pi-card">
+        <div class="pi-card__head">
+            <div class="pi-card__icon"><i class="fa-solid fa-list-check"></i></div>
+            <div><h3>Pending authorization log</h3><p>Employee ID card requests awaiting HR action.</p></div>
+        </div>
+        <div class="pi-table-wrap">
+            <table class="pi-table">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Designation / Dept</th>
+                        <th>Request date</th>
+                        <th class="pi-td-center">Status</th>
+                        <th class="pi-td-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in requests %}
+                    <tr>
+                        <td>
+                            <div class="pi-thumb">
+                                <img src="{{ row.photo_url }}" alt="Profile thumbnail">
+                            </div>
+                        </td>
+                        <td class="pi-td-bold" style="color:var(--pi-primary);">{{ row.employee_id }}</td>
+                        <td class="pi-td-bold" style="text-transform:capitalize;">{{ row.name }}</td>
+                        <td>
+                            {{ row.designation }}
+                            <span style="display:block;font-size:12px;color:#94a3b8;font-weight:500;">{{ row.department }}</span>
+                        </td>
+                        <td>{{ row.request_date }}</td>
+                        <td class="pi-td-center">
+                            <span class="pi-badge pi-badge--amber"><i class="fa-solid fa-spinner fa-spin"></i> {{ row.status }}</span>
+                        </td>
+                        <td class="pi-td-center">
+                            <div class="pi-action-group">
+                                <a href="#" class="pi-btn pi-btn--success" onclick="processApproval('{{ row.employee_id }}', 'Approve'); return false;"><i class="fa-solid fa-check"></i> Approve</a>
+                                <a href="#" class="pi-btn pi-btn--danger" onclick="processApproval('{{ row.employee_id }}', 'Reject'); return false;"><i class="fa-solid fa-xmark"></i> Reject</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="pi-empty">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <h4>All clear</h4>
+                                <p>No employee ID card printing authorization requests are pending validation.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-<form id="hr-action-form" method="POST" action="{% url 'id_card_dashboard' %}" style="display: none;">
+
+<form id="hr-action-form" method="POST" action="{% url 'id_card_dashboard' %}" style="display:none;">
     {% csrf_token %}
     <input type="hidden" name="target_employee_id" id="form-emp-id">
     <input type="hidden" name="action_decision" id="form-decision">
 </form>
 
-<!-- ========================================================================= -->
-<!-- 🎨 INTUITIVE INTERACTIVE ACTION CONTROL HOVER PILLS CSS STYLESHEET        -->
-<!-- ========================================================================= -->
-<style>
-    .hr-queue-row {
-        border-bottom: 1px solid #f1f5f9;
-        transition: background-color 0.2s ease-in-out;
-    }
-    .hr-queue-row:hover {
-        background-color: #f8fafc;
-    }
-
-    .action-pill {
-        padding: 6px 14px;
-        font-weight: 700;
-        font-size: 11.5px;
-        border-radius: 4px;
-        text-decoration: none !important;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        cursor: pointer;
-    }
-
-    /* Approve Green Button Configuration */
-    .approve-pill {
-        background-color: rgba(21, 128, 61, 0.08);
-        color: #15803d;
-    }
-    .approve-pill:hover {
-        background-color: #15803d;
-        color: #ffffff;
-        box-shadow: 0 4px 10px rgba(21, 128, 61, 0.15);
-    }
-
-    /* Reject Coral Red Button Configuration */
-    .reject-pill {
-        background-color: rgba(220, 38, 38, 0.08);
-        color: #dc2626;
-    }
-    .reject-pill:hover {
-        background-color: #dc2626;
-        color: #ffffff;
-        box-shadow: 0 4px 10px rgba(220, 38, 38, 0.15);
-    }
-</style>
-
 <script>
 function processApproval(empId, decision) {
-    // Collect parameters and assign them straight to hidden variables
     document.getElementById("form-emp-id").value = empId;
     document.getElementById("form-decision").value = decision;
-    
-    // Fire the data submission post instantly up to your server!
     document.getElementById("hr-action-form").submit();
 }
 </script>
-
 {% endblock %}

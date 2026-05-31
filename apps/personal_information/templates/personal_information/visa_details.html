@@ -1,402 +1,150 @@
 {% extends "base.html" %}
 
+{% block title %}Visa Details | Voxlom EMS{% endblock %}
+
 {% block extra_css %}
-<style>
-    /* Visa Details Page Styling */
-    .visa-container {
-        padding: 40px;
-        max-width: 1200px;
-        margin: 0 auto;
-        animation: fadeIn 0.4s ease-out forwards;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .page-header {
-        margin-bottom: 32px;
-    }
-
-    .page-title {
-        font-size: 28px;
-        font-weight: 800;
-        color: #0f172a;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .page-title i {
-        color: var(--primary);
-        background: var(--primary-light);
-        padding: 10px;
-        border-radius: 12px;
-        font-size: 20px;
-    }
-
-    .page-subtitle {
-        color: #64748b;
-        font-size: 15px;
-        max-width: 600px;
-        line-height: 1.5;
-    }
-
-    /* Card Styling */
-    .glass-card {
-        background: #ffffff;
-        border-radius: 20px;
-        border: none;
-        padding: 32px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-        margin-bottom: 32px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .glass-card:hover {
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-        transform: translateY(-2px);
-    }
-
-    .card-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 24px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .card-title i {
-        color: var(--primary);
-        font-size: 18px;
-    }
-
-    /* Form Grid */
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        margin-bottom: 24px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .form-label {
-        font-size: 12px;
-        font-weight: 700;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .form-control {
-        padding: 12px 16px;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        font-size: 14px;
-        color: #0f172a;
-        font-family: inherit;
-        font-weight: 500;
-        transition: all 0.2s ease;
-        background: #f8fafc;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: var(--primary);
-        background: #ffffff;
-        box-shadow: 0 0 0 4px var(--primary-light);
-    }
-
-    .file-upload {
-        padding: 12px 16px;
-        border: 2px dashed #e2e8f0;
-        border-radius: 10px;
-        font-size: 13px;
-        color: #64748b;
-        background: #f8fafc;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .file-upload:hover {
-        border-color: var(--primary);
-        background: var(--primary-light);
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, var(--primary), #2563eb);
-        color: #fff;
-        border: none;
-        padding: 14px 28px;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
-    }
-
-    /* Table Styling */
-    .table-responsive {
-        overflow-x: auto;
-        border-radius: 12px;
-    }
-
-    .data-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        text-align: left;
-    }
-
-    .data-table th {
-        background: #f8fafc;
-        padding: 16px 20px;
-        font-size: 12px;
-        font-weight: 700;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .data-table td {
-        padding: 18px 20px;
-        font-size: 14px;
-        font-weight: 500;
-        color: #334155;
-        border-bottom: 1px solid #f1f5f9;
-        transition: background 0.2s ease;
-    }
-
-    .data-table tbody tr:hover td {
-        background: #f8fafc;
-    }
-
-    .data-table tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    /* Badges */
-    .badge-visa-type {
-        background: #eff6ff;
-        color: #1d4ed8;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .expiry-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: #fff7ed;
-        color: #ea580c;
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    /* Action Pills */
-    .action-pill {
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.2s ease;
-    }
-
-    .view-pill {
-        background: #eff6ff;
-        color: #1d4ed8;
-    }
-    .view-pill:hover {
-        background: #1d4ed8;
-        color: #fff;
-    }
-
-    .edit-pill {
-        background: #f8fafc;
-        color: #475569;
-    }
-    .edit-pill:hover {
-        background: #e2e8f0;
-        color: #0f172a;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: #94a3b8;
-    }
-
-    .empty-state i {
-        font-size: 48px;
-        color: #cbd5e1;
-        margin-bottom: 16px;
-        display: block;
-    }
-
-    @media (max-width: 768px) {
-        .visa-container { padding: 20px; }
-        .form-grid { grid-template-columns: 1fr; }
-    }
-</style>
+{% include "personal_information/_pi_theme.html" %}
 {% endblock %}
 
 {% block content %}
-<div class="visa-container">
+<div class="pi-page">
+    <header class="pi-hero">
+        <div>
+            <p class="pi-hero__eyebrow">Immigration portfolio</p>
+            <h1><i class="fa-solid fa-passport"></i> Visa Details</h1>
+            <p>Track international work authorizations, immigration documents, and active assignment clearance papers.</p>
+        </div>
+        <div class="pi-hero__meta">
+            <span class="pi-chip"><i class="fa-solid fa-plane"></i> {{ visa_records|length }} record{{ visa_records|length|pluralize }}</span>
+            <a href="{% url 'personal_info_dashboard' %}" class="pi-back"><i class="fa-solid fa-arrow-left"></i> Back to profile</a>
+        </div>
+    </header>
 
-    <!-- Header -->
-    <div class="page-header">
-        <h1 class="page-title">
-            <i class="fa-solid fa-passport"></i> Visa Details
-        </h1>
-        <p class="page-subtitle">
-            Track international work authorizations, immigration documents, and active assignment clearance papers.
-        </p>
-    </div>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="pi-alert"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
+    {% endfor %}
+    {% endif %}
 
-    <!-- Add Visa Form -->
-    <div class="glass-card">
-        <h3 class="card-title">
-            <i class="fa-solid fa-square-plus"></i> Add Visa Credentials
-        </h3>
-
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <!-- Row 1 -->
-            <div class="form-grid">
-                <div class="form-group">
-                    <label class="form-label">Destination Country</label>
-                    <select name="country" class="form-control" required>
-                        <option value="" disabled selected hidden>Choose Country...</option>
-                        <option value="United States">United States (USA)</option>
-                        <option value="United Kingdom">United Kingdom (UK)</option>
-                        <option value="Singapore">Singapore</option>
-                        <option value="United Arab Emirates">United Arab Emirates (UAE)</option>
-                        <option value="Germany">Germany</option>
-                        <option value="Australia">Australia</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Visa Type</label>
-                    <select name="visa_type" class="form-control" required>
-                        <option value="" disabled selected hidden>Choose Type...</option>
-                        <option value="Business / B1-B2">Business (B1 / B2)</option>
-                        <option value="Work Permit / H-1B">Work Permit (H-1B / Tier 2)</option>
-                        <option value="Dependent Visa">Dependent Visa</option>
-                        <option value="Tourist Visa">Tourist Visa</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Visa Number</label>
-                    <input type="text" name="visa_number" class="form-control" required placeholder="e.g. V12345678">
+    <div class="pi-split">
+        <div class="pi-card">
+            <div class="pi-card__head">
+                <div class="pi-card__icon"><i class="fa-solid fa-square-plus"></i></div>
+                <div>
+                    <h3>Add visa credentials</h3>
+                    <p>Register a new work authorization or travel visa.</p>
                 </div>
             </div>
-
-            <!-- Row 2 -->
-            <div class="form-grid">
-                <div class="form-group">
-                    <label class="form-label">Issue Date</label>
-                    <input type="date" name="issue_date" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Expiry Date</label>
-                    <input type="date" name="expiry_date" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Visa Document Scan</label>
-                    <input type="file" name="visa_file" accept=".pdf,.jpg,.jpeg,.png" class="file-upload">
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-                <button type="submit" class="btn-submit">
-                    <i class="fa-solid fa-floppy-disk"></i> Save Visa Record
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Visa Records Table -->
-    <div class="glass-card">
-        <h3 class="card-title">
-            <i class="fa-solid fa-list-check"></i> Active Visa Portfolio
-        </h3>
-
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Country</th>
-                        <th>Visa Type</th>
-                        <th>Visa Number</th>
-                        <th>Issue Date</th>
-                        <th>Expiry Date</th>
-                        <th style="text-align: center;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in visa_records %}
-                    <tr>
-                        <td style="color: #0f172a; font-weight: 700;">{{ row.country }}</td>
-                        <td><span class="badge-visa-type">{{ row.visa_type }}</span></td>
-                        <td style="font-weight: 600; color: #334155;">{{ row.visa_number }}</td>
-                        <td>{{ row.issue_date }}</td>
-                        <td>
-                            <span class="expiry-pill">
-                                <i class="fa-solid fa-hourglass-half"></i> {{ row.expiry_date }}
-                            </span>
-                        </td>
-                        <td style="text-align: center;">
-                            <div style="display: flex; gap: 8px; justify-content: center;">
-                                {% if row.file_url %}
-                                    <a href="{{ row.file_url }}" target="_blank" class="action-pill view-pill"><i class="fa-solid fa-eye"></i> View</a>
-                                    <a href="#" class="action-pill edit-pill"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
-                                {% else %}
-                                    <span style="color: #94a3b8; font-size: 13px; font-weight: 500;">No File</span>
-                                {% endif %}
+            <div class="pi-card__body">
+                <form method="POST" enctype="multipart/form-data" class="pi-form">
+                    {% csrf_token %}
+                    <div class="pi-grid pi-grid--2">
+                        <div class="pi-field">
+                            <label class="pi-label">Destination country</label>
+                            <div class="pi-select-wrap">
+                                <select name="country" class="pi-select" required>
+                                    <option value="" disabled selected hidden>Choose country…</option>
+                                    <option value="United States">United States (USA)</option>
+                                    <option value="United Kingdom">United Kingdom (UK)</option>
+                                    <option value="Singapore">Singapore</option>
+                                    <option value="United Arab Emirates">United Arab Emirates (UAE)</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="Australia">Australia</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down pi-chevron"></i>
                             </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6">
-                            <div class="empty-state">
-                                <i class="fa-solid fa-plane-departure"></i>
-                                <div style="font-size: 15px; font-weight: 600; color: #475569; margin-bottom: 4px;">No Visa Records</div>
-                                <div>You haven't added any visa details to your profile yet.</div>
+                        </div>
+                        <div class="pi-field">
+                            <label class="pi-label">Visa type</label>
+                            <div class="pi-select-wrap">
+                                <select name="visa_type" class="pi-select" required>
+                                    <option value="" disabled selected hidden>Choose type…</option>
+                                    <option value="Business / B1-B2">Business (B1 / B2)</option>
+                                    <option value="Work Permit / H-1B">Work Permit (H-1B / Tier 2)</option>
+                                    <option value="Dependent Visa">Dependent Visa</option>
+                                    <option value="Tourist Visa">Tourist Visa</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down pi-chevron"></i>
                             </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                    <div class="pi-field">
+                        <label class="pi-label">Visa number</label>
+                        <input type="text" name="visa_number" class="pi-input" required placeholder="e.g. V12345678">
+                    </div>
+                    <div class="pi-grid pi-grid--2">
+                        <div class="pi-field">
+                            <label class="pi-label">Issue date</label>
+                            <input type="date" name="issue_date" class="pi-input" required>
+                        </div>
+                        <div class="pi-field">
+                            <label class="pi-label">Expiry date</label>
+                            <input type="date" name="expiry_date" class="pi-input" required>
+                        </div>
+                    </div>
+                    <div class="pi-field">
+                        <label class="pi-label"><i class="fa-solid fa-file-arrow-up"></i> Visa document scan</label>
+                        <input type="file" name="visa_file" accept=".pdf,.jpg,.jpeg,.png" class="pi-file">
+                    </div>
+                    <div class="pi-actions">
+                        <button type="submit" class="pi-btn pi-btn--primary">
+                            <i class="fa-solid fa-floppy-disk"></i> Save visa record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="pi-card">
+            <div class="pi-card__head">
+                <div class="pi-card__icon"><i class="fa-solid fa-list-check"></i></div>
+                <div>
+                    <h3>Active visa portfolio</h3>
+                    <p>All registered immigration authorizations on file.</p>
+                </div>
+            </div>
+            <div class="pi-table-wrap">
+                <table class="pi-table">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Type</th>
+                            <th>Number</th>
+                            <th>Expiry</th>
+                            <th class="pi-td-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in visa_records %}
+                        <tr>
+                            <td class="pi-td-bold">{{ row.country }}</td>
+                            <td><span class="pi-badge pi-badge--blue">{{ row.visa_type }}</span></td>
+                            <td>{{ row.visa_number }}</td>
+                            <td><span class="pi-badge pi-badge--amber"><i class="fa-solid fa-hourglass-half"></i> {{ row.expiry_date }}</span></td>
+                            <td class="pi-td-center">
+                                <div class="pi-action-group">
+                                    {% if row.file_url %}
+                                    <a href="{{ row.file_url }}" target="_blank" class="pi-action pi-action--view"><i class="fa-solid fa-eye"></i> View</a>
+                                    {% else %}
+                                    <span style="color:#94a3b8;font-size:13px;">No file</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">
+                                <div class="pi-empty">
+                                    <i class="fa-solid fa-plane-departure"></i>
+                                    <h4>No visa records</h4>
+                                    <p>You haven't added any visa details to your profile yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
