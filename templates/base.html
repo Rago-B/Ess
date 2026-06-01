@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Visitor Management | Voxlom EMS{% endblock %}</title>
 
-    <!-- LIVE FONT AWESOME CORE LIBRARY (Loads your <i class="fas fa-clock"></i> icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +14,6 @@
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap"
         rel="stylesheet">
 
-    <!-- Your embedded layout <style> block goes directly below this line -->
     <style>
         :root {
             --primary: #1e3a8a;
@@ -36,821 +34,498 @@
             --nav-text-hover: #f8f6f1;
             --dropdown-bg: #fafaf8;
             --dropdown-shadow: 0 32px 64px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(15, 23, 42, 0.04);
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 68px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
+        html, body {
+            margin: 0; padding: 0; height: 100vh;
             overflow: hidden;
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-body);
         }
 
+        /* ── App Shell ── */
         .app-layout {
             display: flex;
-            flex-direction: column;
             height: 100vh;
         }
 
-        /* ——— Navbar & mega menu ——— */
-        .top-navbar {
-            height: 76px;
-            background: transparent;
-            display: flex;
-            align-items: center;
-            padding: 10px 28px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            flex-shrink: 0;
-        }
-
-        .nav-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 6px 10px 6px 18px;
+        /* ══════════════════════════════════
+           SIDEBAR
+        ══════════════════════════════════ */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
             background: #111827;
-            backdrop-filter: blur(24px) saturate(160%);
-            -webkit-backdrop-filter: blur(24px) saturate(160%);
-            border-radius: 999px;
-            border: 1px solid var(--nav-border);
-            box-shadow:
-                0 12px 40px rgba(0, 0, 0, 0.35),
-                inset 0 1px 0 rgba(255, 255, 255, 0.06);
-            transition: box-shadow 0.5s var(--nav-ease), border-color 0.5s var(--nav-ease);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            border-right: 1px solid var(--nav-border);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 100;
+            transition: width 0.4s var(--nav-ease);
+            overflow: hidden;
         }
 
-        .nav-container:has(.dropdown-active) {
-            border-color: rgba(201, 169, 98, 0.22);
-            box-shadow:
-                0 16px 48px rgba(0, 0, 0, 0.4),
-                0 0 0 1px var(--nav-gold-soft),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
         }
 
-        .nav-brand {
+        /* Brand */
+        .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
+            padding: 20px 16px 18px;
             text-decoration: none;
-            color: inherit;
-            padding-right: 8px;
-            transition: opacity 0.4s var(--nav-ease);
+            border-bottom: 1px solid var(--nav-border);
+            flex-shrink: 0;
+            overflow: hidden;
+            min-height: 72px;
         }
 
-        .nav-brand:hover {
-            opacity: 0.92;
-        }
-
-        .logo-box {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+        .sidebar-brand .logo-box {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.5s var(--nav-ease), box-shadow 0.5s var(--nav-ease);
         }
 
-        .nav-brand:hover .logo-box {
-            transform: scale(1.04);
-            box-shadow: 0 0 24px var(--nav-gold-soft);
+        .sidebar-brand .logo-box img {
+            max-height: 38px;
+            width: auto;
+            border-radius: 4px;
         }
+
+        .sidebar-brand-text {
+            overflow: hidden;
+            white-space: nowrap;
+            transition: opacity 0.3s var(--nav-ease), width 0.3s var(--nav-ease);
+        }
+
+        .sidebar.collapsed .sidebar-brand-text { opacity: 0; width: 0; }
 
         .brand-name {
             font-family: 'Cormorant Garamond', Georgia, serif;
             font-weight: 600;
-            font-size: 22px;
+            font-size: 20px;
             letter-spacing: 0.02em;
             color: var(--nav-text-hover);
             line-height: 1;
+            display: block;
         }
 
         .brand-tagline {
-            display: block;
             font-family: 'Poppins', sans-serif;
-            font-size: 9px;
+            font-size: 8px;
             font-weight: 500;
             letter-spacing: 0.22em;
             text-transform: uppercase;
             color: var(--nav-gold);
             margin-top: 2px;
-            opacity: 0.85;
+            display: block;
         }
 
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            padding: 0 8px;
-        }
-
-        .nav-item {
-            position: relative;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 16px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--nav-text-hover);
-            text-decoration: none;
-            border-radius: 0;
-            transition: color 0.3s var(--nav-ease);
-        }
-
-        /* Slide underline — grows left → right (style 1) */
-        .nav-item::after {
-            content: '';
+        /* Collapse toggle button */
+        .sidebar-toggle {
             position: absolute;
-            left: 0;
-            bottom: 4px;
-            width: 0;
-            height: 2px;
-            border-radius: 2px;
-            background: var(--nav-gold);
-            transition: width 0.35s var(--nav-ease), box-shadow 0.35s var(--nav-ease), height 0.25s var(--nav-ease);
-            pointer-events: none;
-        }
-
-        .nav-item:hover {
-            color: var(--nav-text-hover);
-            background: transparent;
-        }
-
-        .nav-item:hover::after {
-            width: 100%;
-        }
-
-        /* Active / open dropdown — gold text + glowing underline */
-        .nav-item.active,
-        .nav-item.dropdown-active {
-            color: var(--nav-gold);
-            background: transparent;
-        }
-
-        .nav-item.active::after,
-        .nav-item.dropdown-active::after {
-            width: 100%;
-            height: 2.5px;
-            box-shadow: 0 2px 12px rgba(201, 169, 98, 0.55);
-        }
-
-        .nav-item > i:not(.chevron) {
-            font-size: 13px;
-            color: var(--nav-gold);
-            background: none;
-            width: auto;
-            height: auto;
-            transition: color 0.3s var(--nav-ease);
-        }
-
-        .nav-item:hover > i:not(.chevron),
-        .nav-item.active > i:not(.chevron),
-        .nav-item.dropdown-active > i:not(.chevron) {
-            color: var(--nav-gold);
-            background: none;
-        }
-
-        .nav-label {
-            white-space: nowrap;
-            letter-spacing: 0.02em;
-            transition: color 0.3s var(--nav-ease);
-        }
-
-        .nav-item .chevron {
-            font-size: 8px;
-            margin-left: -2px;
-            color: rgba(255, 255, 255, 0.35);
-            transition: transform 0.45s var(--nav-ease), color 0.45s var(--nav-ease);
-        }
-
-        .nav-item:hover .chevron {
-            color: rgba(255, 255, 255, 0.55);
-        }
-
-        .nav-item.active .chevron,
-        .nav-item.dropdown-active .chevron {
-            color: var(--nav-gold);
-        }
-
-        .nav-item.dropdown-active .chevron {
-            transform: rotate(180deg);
-        }
-
-        .nav-dropdown {
-            position: fixed;
-            top: 92px;
-            left: 50%;
-            transform: translateX(-50%) translateY(16px) scale(0.98);
-            background: var(--dropdown-bg);
-            border-radius: 24px;
-            width: calc(100vw - 56px);
-            max-width: 1320px;
-            padding: 28px 32px 32px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            box-shadow: var(--dropdown-shadow);
-            z-index: 1010;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition:
-                opacity 0.45s var(--nav-ease),
-                transform 0.55s var(--nav-ease),
-                visibility 0.45s;
-        }
-
-        .nav-dropdown--right {
-            left: 50%;
-            transform: translateX(-50%) translateY(16px) scale(0.98);
-        }
-
-        .nav-dropdown--single {
-            min-width: 300px;
-            width: auto;
-            grid-template-columns: 1fr;
-        }
-
-        .nav-item.dropdown-active .nav-dropdown,
-        .nav-item.dropdown-active .nav-dropdown--right {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0) scale(1);
-            pointer-events: auto;
-        }
-
-        .nav-dropdown-header {
-            grid-column: 1 / -1;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 16px;
-            padding-bottom: 18px;
-            margin-bottom: 6px;
-            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
-        }
-
-        .nav-dropdown-eyebrow {
+            top: 22px;
+            right: -12px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #1f2937;
+            border: 1.5px solid var(--nav-border);
+            color: var(--nav-text);
             font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--nav-gold);
-            margin-bottom: 6px;
-        }
-
-        .nav-dropdown-title {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 28px;
-            font-weight: 600;
-            color: #0f172a;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
-        }
-
-        .nav-dropdown-hint {
-            font-size: 12px;
-            color: #94a3b8;
-            max-width: 220px;
-            text-align: right;
-            line-height: 1.5;
-        }
-
-        @keyframes megaReveal {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .mega-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 36px 14px 16px;
-            border-radius: 16px;
-            text-decoration: none;
-            color: #475569;
-            background: #fff;
-            border: 1px solid rgba(15, 23, 42, 0.05);
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            transition:
-                transform 0.45s var(--nav-ease),
-                box-shadow 0.45s var(--nav-ease),
-                border-color 0.45s var(--nav-ease),
-                background 0.45s var(--nav-ease);
-        }
-
-        .mega-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 12px;
-            bottom: 12px;
-            width: 3px;
-            border-radius: 0 3px 3px 0;
-            background: var(--item-color, var(--primary));
-            transform: scaleY(0);
-            transform-origin: center top;
-            transition: transform 0.45s var(--nav-ease);
-        }
-
-        .nav-item.dropdown-active .mega-item {
-            animation: megaReveal 0.55s var(--nav-ease) forwards;
-        }
-
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(1) { animation-delay: 0.04s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(2) { animation-delay: 0.07s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(3) { animation-delay: 0.10s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(4) { animation-delay: 0.13s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(5) { animation-delay: 0.16s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(6) { animation-delay: 0.19s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(7) { animation-delay: 0.22s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(8) { animation-delay: 0.25s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(9) { animation-delay: 0.28s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(10) { animation-delay: 0.31s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(11) { animation-delay: 0.34s; }
-        .nav-item.dropdown-active .nav-dropdown > a.mega-item:nth-of-type(n+12) { animation-delay: 0.37s; }
-
-        .mega-item::after {
-            content: '\f054';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%) translateX(0);
-            color: #cbd5e1;
-            font-size: 11px;
-            opacity: 0.6;
-            transition: transform 0.45s var(--nav-ease), color 0.45s var(--nav-ease), opacity 0.45s var(--nav-ease);
-        }
-
-        .mega-item:hover {
-            background: #fff;
-            transform: translateY(-3px) translateX(2px);
-            border-color: rgba(15, 23, 42, 0.08);
-            box-shadow: 0 16px 32px -12px rgba(15, 23, 42, 0.12);
-            z-index: 1;
-        }
-
-        .mega-item:hover::before {
-            transform: scaleY(1);
-        }
-
-        .mega-item:hover::after {
-            transform: translateY(-50%) translateX(5px);
-            color: var(--item-color, var(--primary));
-            opacity: 1;
-        }
-
-        .mega-icon-wrapper {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-            transition: transform 0.5s var(--nav-ease), box-shadow 0.5s var(--nav-ease);
+            z-index: 101;
+            transition: background 0.3s, color 0.3s, transform 0.4s var(--nav-ease);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
 
-        .mega-item:hover .mega-icon-wrapper {
-            transform: scale(1.06) rotate(-2deg);
-            box-shadow: 0 8px 20px -6px var(--item-color, rgba(30, 58, 138, 0.4));
+        .sidebar-toggle:hover { background: #374151; color: var(--nav-gold); }
+        .sidebar.collapsed .sidebar-toggle { transform: rotate(180deg); }
+
+        /* Nav scroll area */
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 12px 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
         }
 
-        .mega-content {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            min-width: 0;
-        }
+        .sidebar-nav::-webkit-scrollbar { width: 4px; }
+        .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
-        .mega-title {
-            font-size: 13px;
+        /* Section label */
+        .sidebar-section-label {
+            font-size: 9px;
             font-weight: 600;
-            color: #1e293b;
-            transition: color 0.4s var(--nav-ease), transform 0.4s var(--nav-ease);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.25);
+            padding: 14px 20px 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.3s var(--nav-ease);
+        }
+        .sidebar.collapsed .sidebar-section-label { opacity: 0; }
+
+        /* ── Nav Item (leaf link) ── */
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 14px;
+            height: 44px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--nav-text);
+            font-size: 13px;
+            font-weight: 500;
+            position: relative;
+            white-space: nowrap;
+            transition: color 0.3s var(--nav-ease), background 0.3s var(--nav-ease);
+            border-radius: 10px;
+            margin: 1px 8px;
         }
 
-        .mega-item:hover .mega-title {
-            color: var(--item-color, #1e3a8a);
-            transform: translateX(2px);
+        .nav-item:hover { color: var(--nav-text-hover); background: rgba(255,255,255,0.06); }
+
+        .nav-item.active {
+            color: var(--nav-gold);
+            background: rgba(201,169,98,0.1);
         }
 
-        .mega-description {
-            font-size: 11px;
-            color: #94a3b8;
-            line-height: 1.45;
-            transition: color 0.4s var(--nav-ease);
+        .nav-item > .nav-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--nav-gold);
+            border-radius: 8px;
+            transition: transform 0.3s var(--nav-ease);
         }
 
-        .mega-item:hover .mega-description {
-            color: #64748b;
+        .nav-item:hover > .nav-icon { transform: scale(1.08); }
+
+        .nav-label {
+            overflow: hidden;
+            white-space: nowrap;
+            transition: opacity 0.3s var(--nav-ease), width 0.3s var(--nav-ease);
+            flex: 1;
         }
 
-        .mega-item.active-green-link {
-            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-            border-color: rgba(16, 185, 129, 0.35);
-            box-shadow: 0 4px 16px -4px rgba(16, 185, 129, 0.25);
+        .sidebar.collapsed .nav-label { opacity: 0; width: 0; }
+
+        .nav-item .chevron {
+            font-size: 9px;
+            color: rgba(255,255,255,0.3);
+            transition: transform 0.4s var(--nav-ease), color 0.3s, opacity 0.3s;
+            flex-shrink: 0;
         }
 
-        .mega-item.active-green-link::before {
-            background: #10b981;
-            transform: scaleY(1);
+        .sidebar.collapsed .nav-item .chevron { opacity: 0; }
+
+        .nav-item.open > .chevron {
+            transform: rotate(180deg);
+            color: var(--nav-gold);
         }
 
-        .mega-item.active-green-link .mega-title {
-            color: #059669;
+        /* ── Accordion sub-menu ── */
+        .sub-menu {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.45s var(--nav-ease);
         }
 
-        .mega-item.active-green-link::after {
-            color: #10b981;
-            opacity: 1;
-        }
+        .sub-menu.open { max-height: 1000px; }
 
-        /* Right Side Actions & Popovers */
-        .nav-right {
+        .sub-menu-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            position: relative;
-            padding-left: 8px;
-        }
-
-        .btn-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--nav-border);
-            color: var(--nav-text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-            transition: background 0.4s var(--nav-ease), color 0.4s var(--nav-ease), transform 0.4s var(--nav-ease), box-shadow 0.4s var(--nav-ease);
-        }
-
-        .btn-icon:hover {
-            background: rgba(255, 255, 255, 0.12);
-            color: var(--nav-text-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .btn-icon .badge {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 8px;
-            height: 8px;
-            background: #ef4444;
-            border-radius: 50%;
-            box-shadow: 0 0 0 2px rgba(12, 12, 18, 0.95);
-            animation: pulse-ring 1.5s infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-            }
-        }
-
-        .bell-icon:hover i {
-            animation: bell-shake 0.5s ease-in-out;
-        }
-
-        @keyframes bell-shake {
-
-            0%,
-            100% {
-                transform: rotate(0);
-            }
-
-            15% {
-                transform: rotate(-12deg);
-            }
-
-            30% {
-                transform: rotate(10deg);
-            }
-
-            45% {
-                transform: rotate(-8deg);
-            }
-
-            60% {
-                transform: rotate(6deg);
-            }
-
-            75% {
-                transform: rotate(-4deg);
-            }
-        }
-
-        /* Popover panel shared styles */
-        .popover-panel {
-            position: absolute;
-            top: calc(100% + 14px);
-            right: 0;
-            background: #ffffff;
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            border-radius: 20px;
-            box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.18);
-            z-index: 1020;
-            display: none;
-            flex-direction: column;
-            opacity: 0;
-            transform: translateY(12px) scale(0.98);
-            transition: opacity 0.4s var(--nav-ease), transform 0.45s var(--nav-ease), display 0.4s;
-        }
-
-        .popover-panel.show {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        /* Notification popover styling */
-        .notif-popover {
-            width: 320px;
-            overflow: hidden;
-        }
-
-        .popover-header {
-            padding: 14px 16px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .popover-header h4 {
-            font-size: 14px;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .popover-header .mark-all {
-            font-size: 11px;
-            color: var(--primary);
+            padding: 8px 14px 8px 54px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.55);
             text-decoration: none;
-            font-weight: 600;
+            border-radius: 8px;
+            margin: 1px 8px;
+            position: relative;
+            transition: color 0.3s var(--nav-ease), background 0.3s var(--nav-ease), padding 0.3s var(--nav-ease);
+            white-space: nowrap;
         }
 
-        .popover-header .mark-all:hover {
-            text-decoration: underline;
-        }
-
-        .notif-list {
-            display: flex;
-            flex-direction: column;
-            max-height: 280px;
-            overflow-y: auto;
-        }
-
-        .notif-item {
-            display: flex;
-            gap: 12px;
-            padding: 12px 16px;
-            border-bottom: 1px solid #f1f5f9;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .notif-item:hover {
-            background: #f8fafc;
-        }
-
-        .notif-icon {
-            width: 28px;
-            height: 28px;
+        .sub-menu-item::before {
+            content: '';
+            position: absolute;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
-            background: rgba(30, 58, 138, 0.1);
-            color: #1e3a8a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
+            background: rgba(255,255,255,0.2);
             flex-shrink: 0;
+            transition: background 0.3s, transform 0.3s;
         }
 
-        .notif-content {
+        .sub-menu-item:hover { color: var(--nav-text-hover); background: rgba(255,255,255,0.05); }
+        .sub-menu-item:hover::before { background: var(--nav-gold); transform: translateY(-50%) scale(1.3); }
+
+        .sub-menu-item.active {
+            color: var(--nav-gold);
+            background: rgba(201,169,98,0.08);
+        }
+        .sub-menu-item.active::before { background: var(--nav-gold); }
+
+        /* When collapsed, hide sub-menu items and use tooltip flyout */
+        .sidebar.collapsed .sub-menu { max-height: 0 !important; }
+
+        /* ── Sidebar Bottom (user + actions) ── */
+        .sidebar-footer {
+            border-top: 1px solid var(--nav-border);
+            padding: 12px 8px;
+            flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 6px;
         }
 
-        .notif-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .notif-time {
-            font-size: 10px;
-            color: #64748b;
-        }
-
-        .popover-footer {
-            padding: 12px;
-            text-align: center;
-            border-top: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        .popover-footer a {
-            font-size: 12px;
-            color: #64748b;
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .popover-footer a:hover {
-            color: #1e3a8a;
-        }
-
-        /* User popover styling */
-        .user-popover {
-            width: 280px;
-            padding: 16px;
-            gap: 12px;
-        }
-
-        .user-popover-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .user-popover-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .user-popover-name {
-            font-size: 14px;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .user-popover-role {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .user-popover-links {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .user-popover-link {
+        .sidebar-user {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #475569;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .user-popover-link:hover {
-            background: #f1f5f9;
-            color: #0f172a;
-        }
-
-        .user-popover-link i {
-            font-size: 14px;
-            width: 16px;
-        }
-
-        .user-popover-divider {
-            height: 1px;
-            background: #e2e8f0;
-        }
-
-        .user-menu {
-            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
             border: 1px solid var(--nav-border);
-            border-radius: 9999px;
-            padding: 4px 14px 4px 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--nav-text-hover);
-            text-decoration: none;
-            transition: background 0.4s var(--nav-ease), border-color 0.4s var(--nav-ease), transform 0.4s var(--nav-ease);
+            cursor: pointer;
+            transition: background 0.3s var(--nav-ease);
+            overflow: hidden;
         }
 
-        .user-menu:hover {
-            background: rgba(255, 255, 255, 0.11);
-            border-color: rgba(201, 169, 98, 0.3);
-            transform: translateY(-1px);
-        }
+        .sidebar-user:hover { background: rgba(255,255,255,0.08); }
 
-        .user-menu .avatar-circle {
+        .avatar-circle {
             background: linear-gradient(135deg, var(--primary) 0%, #312e81 100%);
             color: #fff;
             border-radius: 50%;
             width: 32px;
             height: 32px;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             font-size: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
-        .user-menu .username {
+        .sidebar-user-info {
+            overflow: hidden;
+            white-space: nowrap;
+            transition: opacity 0.3s var(--nav-ease), width 0.3s var(--nav-ease);
+        }
+        .sidebar.collapsed .sidebar-user-info { opacity: 0; width: 0; }
+
+        .sidebar-username {
+            display: block;
             font-size: 12px;
             font-weight: 600;
             color: var(--nav-text-hover);
         }
 
-        .user-menu .fa-chevron-down {
-            color: var(--nav-gold) !important;
+        .sidebar-role {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--nav-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .btn-logout {
-            height: 40px;
-            border-radius: 999px;
-            background: transparent;
-            border: 1px solid rgba(239, 68, 68, 0.25);
-            color: #fca5a5;
+        .sidebar-user-chevron {
+            margin-left: auto;
+            font-size: 10px;
+            color: rgba(255,255,255,0.3);
+            flex-shrink: 0;
+            transition: transform 0.4s var(--nav-ease), opacity 0.3s;
+        }
+        .sidebar.collapsed .sidebar-user-chevron { opacity: 0; width: 0; overflow: hidden; }
+        .sidebar-user.open .sidebar-user-chevron { transform: rotate(180deg); color: var(--nav-gold); }
+
+        /* User popover (above footer) */
+        .user-popover {
+            position: absolute;
+            bottom: 130px;
+            left: 8px;
+            width: calc(var(--sidebar-width) - 16px);
+            background: #fff;
+            border: 1px solid rgba(15,23,42,0.08);
+            border-radius: 16px;
+            box-shadow: 0 24px 48px -12px rgba(15,23,42,0.18);
+            padding: 14px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 200;
+            opacity: 0;
+            transform: translateY(8px) scale(0.98);
+            transition: opacity 0.4s var(--nav-ease), transform 0.4s var(--nav-ease);
+        }
+
+        .user-popover.show { display: flex; opacity: 1; transform: translateY(0) scale(1); }
+
+        .user-popover-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 0 16px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.4s var(--nav-ease), border-color 0.4s var(--nav-ease), color 0.4s var(--nav-ease), transform 0.4s var(--nav-ease);
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.12);
-            border-color: #ef4444;
-            color: #fecaca;
-            transform: translateY(-1px);
+        .user-popover-name { font-size: 13px; font-weight: 700; color: #0f172a; }
+        .user-popover-role { font-size: 10px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .user-popover-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 7px 10px; border-radius: 8px;
+            font-size: 12.5px; font-weight: 500; color: #475569; text-decoration: none;
+            transition: var(--transition);
+        }
+        .user-popover-link:hover { background: #f1f5f9; color: #0f172a; }
+        .user-popover-link i { font-size: 13px; width: 14px; }
+
+        .btn-logout {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 8px 12px; border-radius: 8px;
+            background: transparent; border: 1px solid rgba(239,68,68,0.25);
+            color: #fca5a5; font-size: 12px; font-weight: 600; cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s, border-color 0.3s, color 0.3s;
+        }
+        .btn-logout:hover { background: rgba(239,68,68,0.12); border-color: #ef4444; color: #fecaca; }
+
+        /* Notification button in footer */
+        .btn-notif {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 10px; border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--nav-border);
+            color: var(--nav-text); font-size: 13px; font-weight: 500; cursor: pointer;
+            position: relative; transition: background 0.3s var(--nav-ease), color 0.3s;
+            white-space: nowrap; overflow: hidden;
+        }
+        .btn-notif:hover { background: rgba(255,255,255,0.08); color: var(--nav-text-hover); }
+
+        .btn-notif .notif-icon-wrap {
+            width: 32px; height: 32px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
         }
 
-        /* Main Content Viewport */
+        .btn-notif .badge {
+            position: absolute; top: 8px; left: 30px;
+            width: 7px; height: 7px; background: #ef4444; border-radius: 50%;
+            box-shadow: 0 0 0 2px #111827;
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        .btn-notif-label {
+            overflow: hidden; white-space: nowrap;
+            transition: opacity 0.3s var(--nav-ease), width 0.3s var(--nav-ease);
+        }
+        .sidebar.collapsed .btn-notif-label { opacity: 0; width: 0; }
+
+        @keyframes pulse-ring {
+            0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+            70%  { box-shadow: 0 0 0 5px rgba(239,68,68,0); }
+            100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+        }
+
+        /* Notification popover */
+        .notif-popover {
+            position: absolute;
+            bottom: 70px;
+            left: 8px;
+            width: calc(var(--sidebar-width) - 16px);
+            background: #fff;
+            border: 1px solid rgba(15,23,42,0.08);
+            border-radius: 16px;
+            box-shadow: 0 24px 48px -12px rgba(15,23,42,0.18);
+            display: none;
+            flex-direction: column;
+            z-index: 200;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(8px) scale(0.98);
+            transition: opacity 0.4s var(--nav-ease), transform 0.4s var(--nav-ease);
+        }
+
+        .notif-popover.show { display: flex; opacity: 1; transform: translateY(0) scale(1); }
+
+        .popover-header {
+            padding: 12px 14px; border-bottom: 1px solid #e2e8f0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .popover-header h4 { font-size: 13px; font-weight: 700; color: #0f172a; }
+        .popover-header .mark-all { font-size: 11px; color: var(--primary); text-decoration: none; font-weight: 600; }
+        .popover-header .mark-all:hover { text-decoration: underline; }
+
+        .notif-list { display: flex; flex-direction: column; max-height: 240px; overflow-y: auto; }
+
+        .notif-item {
+            display: flex; gap: 10px; padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9; text-decoration: none;
+            transition: background 0.2s;
+        }
+        .notif-item:hover { background: #f8fafc; }
+
+        .notif-dot {
+            width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+            background: rgba(30,58,138,0.1); color: #1e3a8a;
+            display: flex; align-items: center; justify-content: center; font-size: 11px;
+        }
+        .notif-content { display: flex; flex-direction: column; gap: 2px; }
+        .notif-title { font-size: 11.5px; font-weight: 600; color: #1e293b; }
+        .notif-time { font-size: 10px; color: #64748b; }
+
+        .popover-footer {
+            padding: 10px; text-align: center;
+            border-top: 1px solid #e2e8f0; background: #f8fafc;
+        }
+        .popover-footer a {
+            font-size: 11.5px; color: #64748b; text-decoration: none;
+            font-weight: 600; transition: color 0.2s;
+        }
+        .popover-footer a:hover { color: #1e3a8a; }
+
+        /* ══════════════════════════════════
+           MAIN CONTENT
+        ══════════════════════════════════ */
         main.main-content {
             flex: 1;
             height: 100vh;
             overflow-y: auto;
             overflow-x: hidden;
             background-color: var(--bg-body);
-            padding-top: 100px;
         }
 
         .dashboard-container {
@@ -860,187 +535,78 @@
             width: 100%;
         }
 
-        /* Preserve dashboard layout styles */
-        .welcome-hero {
-            margin-bottom: 40px;
-        }
+        /* Preserved dashboard styles */
+        .welcome-hero { margin-bottom: 40px; }
+        .welcome-hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+        .welcome-hero p { color: var(--text-sub); font-size: 16px; }
 
-        .welcome-hero h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .welcome-hero p {
-            color: var(--text-sub);
-            font-size: 16px;
-        }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-        }
+        .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
 
         .card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            padding: 30px;
+            background: var(--card-bg); border-radius: 24px;
+            border: 1px solid var(--border); padding: 30px;
             transition: var(--transition);
         }
+        .card:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.03); }
 
-        .card:hover {
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .card-title {
-            font-weight: 700;
-            font-size: 18px;
-        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .card-title { font-weight: 700; font-size: 18px; }
 
         .visitor-action-card:hover {
             background: var(--primary-light);
             border-color: var(--primary) !important;
             transform: translateY(-3px);
-            box-shadow: 0 12px 24px rgba(30, 58, 138, 0.06);
+            box-shadow: 0 12px 24px rgba(30,58,138,0.06);
         }
+        .visitor-action-card i { transition: all 0.2s ease; }
+        .visitor-action-card:hover i { transform: scale(1.1); }
 
-        .visitor-action-card i {
-            transition: all 0.2s ease;
-        }
-
-        .visitor-action-card:hover i {
-            transform: scale(1.1);
-        }
-
-        /* Mobile Menu trigger & hamburger */
-        .mobile-toggle {
+        /* Mobile overlay toggle */
+        .mobile-overlay-toggle {
             display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 300;
             width: 44px;
             height: 44px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            background: #111827;
             border: 1px solid var(--nav-border);
             color: var(--nav-text-hover);
             font-size: 18px;
             cursor: pointer;
-            transition: background 0.4s var(--nav-ease), transform 0.4s var(--nav-ease);
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
         }
 
-        .mobile-toggle:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: scale(1.05);
-        }
-
-        .mobile-drawer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 100px 24px 32px;
-            background: linear-gradient(180deg, #0c0c12 0%, #12121a 100%);
-            z-index: 998;
+        .sidebar-overlay {
             display: none;
-            flex-direction: column;
-            overflow-y: auto;
-            gap: 28px;
-            transform: translateY(-8px);
-            opacity: 0;
-            transition: opacity 0.45s var(--nav-ease), transform 0.45s var(--nav-ease);
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
         }
 
-        .mobile-drawer.open {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .mobile-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .mobile-label {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--nav-text-hover);
-            padding-left: 4px;
-            margin-bottom: 4px;
-        }
-
-        .mobile-sub-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding-left: 4px;
-        }
-
-        .mobile-sub-menu a {
-            display: block;
-            padding: 12px 14px;
-            border-radius: 12px;
-            color: var(--nav-text);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.35s var(--nav-ease), color 0.35s var(--nav-ease), transform 0.35s var(--nav-ease);
-        }
-
-        .mobile-sub-menu a:hover {
-            background: rgba(255, 255, 255, 0.07);
-            color: var(--nav-text-hover);
-            transform: translateX(4px);
-        }
-
-        @media (max-width: 1280px) {
-            .nav-dropdown {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 960px) {
-            .nav-dropdown {
-                grid-template-columns: repeat(2, 1fr);
-                padding: 22px 20px 24px;
-            }
-
-            .nav-dropdown-hint {
-                display: none;
-            }
-        }
-
-        /* Responsive Breakpoint */
         @media (max-width: 1024px) {
-            .nav-menu {
-                display: none;
+            .sidebar {
+                position: fixed;
+                top: 0; left: 0;
+                transform: translateX(-100%);
+                transition: transform 0.4s var(--nav-ease), width 0.4s var(--nav-ease);
+                z-index: 200;
             }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .sidebar-overlay.active { display: block; }
+            .mobile-overlay-toggle { display: flex; }
+            .dashboard-container { padding: 20px; padding-top: 72px; }
+        }
 
-            .mobile-toggle {
-                display: block;
-            }
-
-            .nav-right {
-                display: none;
-            }
-
-            .top-navbar {
-                padding: 0 20px;
-            }
-
-            .dashboard-container {
-                padding: 20px;
-            }
+        @media (max-width: 640px) {
+            .dashboard-container { padding: 16px; padding-top: 72px; }
         }
     </style>
 
@@ -1049,762 +615,318 @@
 
 <body>
 
+    <!-- Mobile toggle -->
+    <button class="mobile-overlay-toggle" id="mobile-toggle" title="Open Menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
     <div class="app-layout">
-        <!-- TOP HORIZONTAL NAVBAR -->
-        <header class="top-navbar">
-            <div class="nav-container">
-                <!-- Brand (Left) -->
-                <a href="/employee/dashboard/" class="nav-brand">
-                    <div class="logo-box" style="background: transparent; padding: 0;"><img
-                            src="{% static 'images/logo.png' %}" alt="Voxlom EMS Logo"
-                            style="max-height: 40px; width: auto; border-radius: 4px;"></div>
-                    <span>
-                        <span class="brand-name">Voxlom EMS</span>
-                        <span class="brand-tagline">Enterprise Suite</span>
-                    </span>
-                </a>
 
-                <!-- Navigation Links (Center) -->
-                <nav class="nav-menu">
-                    <!-- Dropdown 1: Profile & Education -->
-                    <div
-                        class="nav-item {% if active_section in 'personal_information_sidebar profile_photo_sidebar upload_docs_sidebar view_docs_sidebar passport_details_view_sidebar visa_details_sidebar view_qualifications_sidebar add_credentials_sidebar' %}active{% endif %}">
-                        <i class="fa-solid fa-address-card"></i>
-                        <span class="nav-label">Profile & Education</span>
-                        <i class="fas fa-chevron-down chevron"></i>
-                        <div class="nav-dropdown">
-                            <div class="nav-dropdown-header">
-                                <div>
-                                    <p class="nav-dropdown-eyebrow">Workspace</p>
-                                    <h3 class="nav-dropdown-title">Profile & Education</h3>
-                                </div>
-                                <p class="nav-dropdown-hint">Personal records, documents & credentials</p>
-                            </div>
-                            <a href="{% url 'personal_info_dashboard' %}"
-                                class="mega-item {% if active_section == 'personal_information_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(30, 58, 138, 0.15); color: #1e3a8a;">
-                                    <i class="fa-solid fa-address-card"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">My Information</div>
-                                    <div class="mega-description">Manage your primary bio, address, and profile.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'profile_photo_setup' %}"
-                                class="mega-item {% if active_section == 'profile_photo_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
-                                    <i class="fa-solid fa-camera"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Photo Setup</div>
-                                    <div class="mega-description">Upload and crop your official corporate photo.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'upload_docs_tab' %}"
-                                class="mega-item {% if active_section == 'upload_docs_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Upload Documents</div>
-                                    <div class="mega-description">Add credentials, IDs, and official forms.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'view_docs_tab' %}"
-                                class="mega-item {% if active_section == 'view_docs_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-                                    <i class="fa-solid fa-file-invoice"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">View Documents</div>
-                                    <div class="mega-description">Browse and retrieve uploaded attachments.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'passport_details_standalone_view' %}"
-                                class="mega-item {% if active_section == 'passport_details_view_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">
-                                    <i class="fa-solid fa-passport"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">My Passport</div>
-                                    <div class="mega-description">Store and verify your passport information.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'family_details' %}"
-                                class="mega-item {% if active_section == 'family_details_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
-                                    <i class="fa-solid fa-people-roof"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Family Details</div>
-                                    <div class="mega-description">Register emergency contacts and dependents.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'visa_details_workspace' %}"
-                                class="mega-item {% if active_section == 'visa_details_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-                                    <i class="fa-solid fa-passport"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Visa Details</div>
-                                    <div class="mega-description">Track visa status, expiration, and permits.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'education_certification_workspace' %}"
-                                class="mega-item {% if active_section == 'view_qualifications_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(132, 204, 22, 0.15); color: #84cc16;">
-                                    <i class="fa-solid fa-graduation-cap"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Educational Certifications</div>
-                                    <div class="mega-description">Record degrees, diplomas, and certifications.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'previous_employer_workspace' %}"
-                                class="mega-item {% if active_section == 'previous_employer_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(100, 116, 139, 0.15); color: #64748b;">
-                                    <i class="fa-solid fa-briefcase"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Previous Employer Overview</div>
-                                    <div class="mega-description">Keep track of past work experience history.</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+        <!-- ═══════════ SIDEBAR ═══════════ -->
+        <aside class="sidebar" id="sidebar">
 
-                    <!-- Dropdown 2: Operations & Tasks (Commented Out)
-                    <div class="nav-item {% if active_section in 'my_tasks_sidebar task_board_sidebar assign_task_sidebar rfid_sidebar gate_activity_sidebar bench_strength_sidebar travel_management_sidebar cost_monitoring_sidebar change_plans_sidebar policy_hub_sidebar' %}active{% endif %}">
-                        <i class="fa-solid fa-list-check"></i>
-                        <span>Operations & Tasks</span>
-                        <i class="fas fa-chevron-down chevron"></i>
-                        <div class="nav-dropdown">
-                            <a href="{% url 'my_tasks' %}" class="mega-item {% if active_section == 'my_tasks_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(168, 85, 247, 0.15); color: #a855f7;">
-                                    <i class="fa-solid fa-list-check"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Task List</div>
-                                    <div class="mega-description">Check your pending, active, and completed duties.</div>
-                                </div>
-                            </a>
-                            {% if request.user.role == 'hr' or request.user.role == 'admin' %}
-                            <a href="{% url 'task_board' %}" class="mega-item {% if active_section == 'task_board_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">
-                                    <i class="fa-solid fa-table-columns"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Kanban Board</div>
-                                    <div class="mega-description">Visualize team workflows on a Kanban board.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'assign_task' %}" class="mega-item {% if active_section == 'assign_task_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(225, 29, 72, 0.15); color: #e11d48;">
-                                    <i class="fa-solid fa-circle-plus"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Assign Task</div>
-                                    <div class="mega-description">Delegate new tasks to members and track.</div>
-                                </div>
-                            </a>
-                            {% endif %}
-                            <a href="{% url 'rfid' %}" class="mega-item {% if active_section == 'rfid_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-                                    <i class="fa-solid fa-microchip"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">RFID Dashboard</div>
-                                    <div class="mega-description">Manage RFID badges and active access keys.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'gateactivity' %}" class="mega-item {% if active_section == 'gate_activity_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(20, 184, 166, 0.15); color: #14b8a6;">
-                                    <i class="fa-solid fa-door-open"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Gate Activity</div>
-                                    <div class="mega-description">Monitor real-time office entries and exits.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'bench_strength' %}" class="mega-item {% if active_section == 'bench_strength_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(30, 58, 138, 0.15); color: #1e3a8a;">
-                                    <i class="fa-solid fa-chart-line"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Bench Strength</div>
-                                    <div class="mega-description">Analyze resource capacity and bench strength.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'travel_management' %}" class="mega-item {% if active_section == 'travel_management_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-                                    <i class="fa-solid fa-plane"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Travel Request</div>
-                                    <div class="mega-description">Submit and monitor business travel requests.</div>
-                                </div>
-                            </a>
-                            {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                            <a href="{% url 'cost_monitoring' %}" class="mega-item {% if active_section == 'cost_monitoring_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
-                                    <i class="fa-solid fa-wallet"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Cost Monitoring</div>
-                                    <div class="mega-description">Audit budgets, bills, and expenditures.</div>
-                                </div>
-                            </a>
-                            {% endif %}
-                            <a href="{% url 'change_plans' %}" class="mega-item {% if active_section == 'change_plans_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">
-                                    <i class="fa-solid fa-sliders"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Change Plans</div>
-                                    <div class="mega-description">Manage subscription tiers and plans.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'policy_hub' %}" class="mega-item {% if active_section == 'policy_hub_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(100, 116, 139, 0.15); color: #64748b;">
-                                    <i class="fa-solid fa-book-open"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Policy Hub</div>
-                                    <div class="mega-description">Read company handbook, compliance, and terms.</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    -->
+            <!-- Collapse/Expand toggle -->
+            <button class="sidebar-toggle" id="sidebar-toggle" title="Collapse sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
 
-                    <!-- Dropdown 3: Core & Logistics -->
-                    {% if request.user.role != 'bgv_officer' %}
-                    <div
-                        class="nav-item {% if active_section in 'user_management_sidebar member_creations_sidebar member_creation_sidebar employee_directory_sidebar client_management_sidebar product_clients_sidebar asset_allocation_sidebar seat_allocation_sidebar transport_passes_sidebar vehicle_passes_sidebar cafeteria_sidebar' %}active{% endif %}">
-                        <i class="fa-solid fa-users"></i>
-                        <span class="nav-label">Core & Logistics</span>
-                        <i class="fas fa-chevron-down chevron"></i>
-                        <div class="nav-dropdown">
-                            <div class="nav-dropdown-header">
-                                <div>
-                                    <p class="nav-dropdown-eyebrow">Operations</p>
-                                    <h3 class="nav-dropdown-title">Core & Logistics</h3>
-                                </div>
-                                <p class="nav-dropdown-hint">People, assets & workplace services</p>
-                            </div>
-                            <a href="{% url 'user_management' %}"
-                                class="mega-item {% if active_section == 'user_management_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(30, 58, 138, 0.15); color: #1e3a8a;">
-                                    <i class="fa-solid fa-user-gear"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">User Management</div>
-                                    <div class="mega-description">Configure users, roles, and authorization levels.
-                                    </div>
-                                </div>
-                            </a>
-                            {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                            <a href="{% url 'employee_directory' %}"
-                                class="mega-item {% if active_section == 'employee_directory_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
-                                    <i class="fa-solid fa-user-plus"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Member Creations</div>
-                                    <div class="mega-description">Add and onboard new employees.</div>
-                                </div>
-                            </a>
-                            {% endif %}
-                            {% if request.user.role == 'admin' or request.user.role == 'hr' or request.user.is_superuser %}
-                            <a href="{% url 'client_management' %}"
-                                class="mega-item {% if active_section == 'client_management_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-                                    <i class="fa-solid fa-handshake"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Clients</div>
-                                    <div class="mega-description">Oversee key clients, accounts, and contacts.</div>
-                                </div>
-                            </a>
-                            {% endif %}
-                            {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                            <a href="{% url 'product_clients' %}"
-                                class="mega-item {% if active_section == 'product_clients_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
-                                    <i class="fa-solid fa-boxes-stacked"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Product Clients</div>
-                                    <div class="mega-description">Track products and associated clients.</div>
-                                </div>
-                            </a>
-                            {% endif %}
-                            <a href="{% url 'assetallocation' %}"
-                                class="mega-item {% if active_section == 'asset_allocation_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-                                    <i class="fa-solid fa-laptop"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Asset Allocation</div>
-                                    <div class="mega-description">Assign laptops, gear, and software licenses.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'seatallocation' %}"
-                                class="mega-item {% if active_section == 'seat_allocation_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">
-                                    <i class="fa-solid fa-chair"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Seat Allocation</div>
-                                    <div class="mega-description">Allocate physical office workspaces and desks.</div>
-                                </div>
-                            </a>
-                            {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                            <a href="{% url 'vehiclepasses' %}"
-                                class="mega-item {% if active_section == 'vehicle_passes_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(225, 29, 72, 0.15); color: #e11d48;">
-                                    <i class="fa-solid fa-car"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Transport / Vehicle</div>
-                                    <div class="mega-description">Issue vehicle decals and shuttle passes.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'cafeteria' %}"
-                                class="mega-item {% if active_section == 'cafeteria_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper"
-                                    style="background: rgba(20, 184, 166, 0.15); color: #14b8a6;">
-                                    <i class="fa-solid fa-utensils"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Cafeteria</div>
-                                    <div class="mega-description">Monitor cafeteria meals and daily menu logs.</div>
-                                </div>
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    <!-- Dropdown 4: Security & Visitors (Commented Out)
-                    <div class="nav-item {% if active_section in 'visitor_management_sidebar add_visitors_sidebar view_visitors_sidebar edit_visitors_sidebar dashboard_visitors_sidebar bgvdashboard_sidebar bgv_officer_desk_sidebar' %}active{% endif %}">
-                        <i class="fa-solid fa-user-tie"></i>
-                        <span>Security & Visitors</span>
-                        <i class="fas fa-chevron-down chevron"></i>
-                        <div class="nav-dropdown">
-                            {% if request.user.role != 'bgv_officer' %}
-                            <a href="{% url 'viewvisitors' %}" class="mega-item {% if active_section == 'view_visitors_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
-                                    <i class="fa-solid fa-users-viewfinder"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">View Visitors</div>
-                                    <div class="mega-description">See today's schedule of incoming guests.</div>
-                                </div>
-                            </a>
-                            {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                            <a href="{% url 'editvisitors' %}" class="mega-item {% if active_section == 'edit_visitors_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-                                    <i class="fa-solid fa-user-pen"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Edit Visitors</div>
-                                    <div class="mega-description">Update details of registered visitors.</div>
-                                </div>
-                            </a>
-                            <a href="{% url 'addvisitors' %}" class="mega-item {% if active_section == 'add_visitors_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
-                                    <i class="fa-solid fa-user-plus"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">Add Visitors</div>
-                                    <div class="mega-description">Register a new guest or contractor entry.</div>
-                                </div>
-                            </a>
-                            {% endif %}
-                            {% endif %}
-                            
-                            {% if request.user.role == 'admin' or request.user.role == 'hr' or request.user.role == 'bgv_officer' %}
-                            {% if request.user.role != 'bgv_officer' %}
-                            <a href="{% url 'bgvdashboard' %}" class="mega-item {% if active_section == 'bgvdashboard_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-                                    <i class="fa-solid fa-shield-halved"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">BGV Dashboard</div>
-                                    <div class="mega-description">Monitor background checks and verifications.</div>
-                                </div>
-                            </a>
-                            {% endif %}
-                            <a href="{% url 'bgv_officer_desk' %}" class="mega-item {% if active_section == 'bgv_officer_desk_sidebar' %}active-green-link{% endif %}">
-                                <div class="mega-icon-wrapper" style="background: rgba(225, 29, 72, 0.15); color: #e11d48;">
-                                    <i class="fa-solid fa-user-shield"></i>
-                                </div>
-                                <div class="mega-content">
-                                    <div class="mega-title">BGV Officer Desk</div>
-                                    <div class="mega-description">Process verifications and security reviews.</div>
-                                </div>
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    -->
-
-                    <!-- Standalone Request Links -->
-                    {% if request.user.role != 'bgv_officer' %}
-                    <a href="{% url 'id_card_dashboard' %}"
-                        class="nav-item {% if active_section == 'id_card_sidebar' %}active{% endif %}">
-                        <i class="fa-solid fa-id-card"></i>
-                        <span class="nav-label">ID Card Request</span>
-                    </a>
-                    <a href="{% url 'communication_overview_dashboard' %}"
-                        class="nav-item {% if active_section == 'communication_sidebar' %}active{% endif %}">
-                        <i class="fa-solid fa-phone-flip"></i>
-                        <span class="nav-label">Comms Overview</span>
-                    </a>
-                    {% endif %}
-                    {% if request.user.role != 'bgv_officer' %}
-                    <a href="{% url 'payslip_workspace' %}"
-                        class="nav-item {% if active_section == 'id_card_sidebar' %}active{% endif %}">
-                        <i class="fa-solid fa-id-card"></i>
-                        <span class="nav-label">Payslip</span>
-                    </a>
-
-                    {% endif %}
-
-
-
-                    <!-- Right Side actions (Desktop User profile & notifications) -->
-                    <div class="nav-right">
-                        <!-- Notifications Button -->
-                        <button class="btn-icon bell-icon" id="notif-toggle" title="Notifications">
-                            <i class="fa-solid fa-bell"></i>
-                            <span class="badge"></span>
-                        </button>
-
-                        <!-- Notifications Dropdown Popover -->
-                        <div class="popover-panel notif-popover" id="notif-popover">
-                            <div class="popover-header">
-                                <h4>Notifications</h4>
-                                <a href="#" class="mark-all" onclick="return false;">Mark all read</a>
-                            </div>
-                            <div class="notif-list">
-                                <div class="notif-item">
-                                    <div class="notif-icon">
-                                        <i class="fa-solid fa-calendar-check"></i>
-                                    </div>
-                                    <div class="notif-content">
-                                        <span class="notif-title">Meeting with visitor John Doe approved</span>
-                                        <span class="notif-time">10 minutes ago</span>
-                                    </div>
-                                </div>
-                                <div class="notif-item">
-                                    <div class="notif-icon"
-                                        style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-                                        <i class="fa-solid fa-list-check"></i>
-                                    </div>
-                                    <div class="notif-content">
-                                        <span class="notif-title">New task assigned by Admin</span>
-                                        <span class="notif-time">1 hour ago</span>
-                                    </div>
-                                </div>
-                                <div class="notif-item">
-                                    <div class="notif-icon"
-                                        style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
-                                        <i class="fa-solid fa-id-card"></i>
-                                    </div>
-                                    <div class="notif-content">
-                                        <span class="notif-title">ID Card Request is ready for pickup</span>
-                                        <span class="notif-time">Yesterday</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="popover-footer">
-                                <a href="#" onclick="return false;">View All Activity</a>
-                            </div>
-                        </div>
-
-                        {% if request.user.is_authenticated %}
-                        <!-- User Dropdown Toggle -->
-                        <div class="user-menu" id="user-menu-toggle" style="cursor: pointer;" title="Profile Menu">
-                            <div class="avatar-circle">{{ request.user.username|slice:":2"|upper }}</div>
-                            <span class="username">{{ request.user.username }}</span>
-                            <i class="fas fa-chevron-down"
-                                style="font-size: 10px; margin-left: 2px; color: #cbd5e1;"></i>
-                        </div>
-
-                        <!-- User popover -->
-                        <div class="popover-panel user-popover" id="user-popover">
-                            <div class="user-popover-header">
-                                <div class="avatar-circle" style="width: 44px; height: 44px; font-size: 16px;">{{
-                                    request.user.username|slice:":2"|upper }}</div>
-                                <div class="user-popover-info">
-                                    <span class="user-popover-name">{{ request.user.username }}</span>
-                                    <span class="user-popover-role">{{ request.user.role|default:"Employee"|upper
-                                        }}</span>
-                                </div>
-                            </div>
-                            <div class="user-popover-links">
-                                <a href="{% url 'personal_info_dashboard' %}" class="user-popover-link">
-                                    <i class="fa-solid fa-address-card"></i> My Information
-                                </a>
-                                <a href="{% url 'gateactivity' %}" class="user-popover-link">
-                                    <i class="fa-solid fa-door-open"></i> Gate Activity
-                                </a>
-                                <a href="{% url 'my_tasks' %}" class="user-popover-link">
-                                    <i class="fa-solid fa-list-check"></i> My Tasks
-                                </a>
-                            </div>
-                            <div class="user-popover-divider"></div>
-                            <a href="{% url 'logout' %}" class="btn-logout" style="text-decoration: none;">
-                                <i class="fas fa-power-off"></i> <span>Logout</span>
-                            </a>
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Hamburger toggle button (Mobile) -->
-                    <button class="mobile-toggle" onclick="toggleMobileMenu()">
-                        <i class="fas fa-bars"></i>
-                    </button>
-            </div>
-        </header>
-
-        <!-- Mobile drawer overlay -->
-        <div class="mobile-drawer" id="mobile-drawer">
-            <!-- Profile & Education -->
-            <div class="mobile-group">
-                <p class="mobile-label">Profile & Education</p>
-                <div class="mobile-sub-menu">
-                    <a href="{% url 'personal_info_dashboard' %}" class="sidebar-sub-item">My Information</a>
-                    <a href="{% url 'profile_photo_setup' %}" class="sidebar-sub-item">Photo Setup</a>
-                    <a href="{% url 'upload_docs_tab' %}" class="sidebar-sub-item">Upload Documents</a>
-                    <a href="{% url 'view_docs_tab' %}" class="sidebar-sub-item">View Documents</a>
-                    <a href="{% url 'passport_details_standalone_view' %}" class="sidebar-sub-item">My Passport</a>
-                    <a href="{% url 'family_details' %}" class="sidebar-sub-item">Family details</a>
-                    <a href="{% url 'visa_details_workspace' %}" class="sidebar-sub-item">Visa Details</a>
-                    <a href="{% url 'education_certification_workspace' %}" class="sidebar-sub-item">Educational
-                        Certifications</a>
-                    <a href="{% url 'previous_employer_workspace' %}" class="sidebar-sub-item">Previous Employer
-                        Overview</a>
+            <!-- Brand -->
+            <a href="/employee/dashboard/" class="sidebar-brand">
+                <div class="logo-box">
+                    <img src="{% static 'images/logo.png' %}" alt="Voxlom EMS Logo">
                 </div>
-            </div>
-
-            <!-- Operations & Tasks (Commented Out)
-            <div class="mobile-group">
-                <p class="mobile-label">Operations & Tasks</p>
-                <div class="mobile-sub-menu">
-                    <a href="{% url 'my_tasks' %}" class="sub-item">Task List</a>
-                    {% if request.user.role == 'hr' or request.user.role == 'admin' %}
-                    <a href="{% url 'task_board' %}" class="sub-item">Kanban Board</a>
-                    <a href="{% url 'assign_task' %}" class="sub-item">Assign Task</a>
-                    {% endif %}
-                    <a href="{% url 'rfid' %}" class="sub-item">RFID Dashboard</a>
-                    <a href="{% url 'gateactivity' %}" class="sub-item">Gate Activity</a>
-                    <a href="{% url 'bench_strength' %}" class="sub-item">Bench Strength</a>
-                    <a href="{% url 'travel_management' %}" class="sub-item">Travel Request</a>
-                    {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                    <a href="{% url 'cost_monitoring' %}" class="sub-item">Cost Monitoring</a>
-                    {% endif %}
-                    <a href="{% url 'change_plans' %}" class="sub-item">Change Plans</a>
-                    <a href="{% url 'policy_hub' %}" class="sub-item">Policy Hub</a>
+                <div class="sidebar-brand-text">
+                    <span class="brand-name">Voxlom EMS</span>
+                    <span class="brand-tagline">Enterprise Suite</span>
                 </div>
-            </div>
-            -->
+            </a>
 
-            <!-- Core & Logistics -->
-            {% if request.user.role != 'bgv_officer' %}
-            <div class="mobile-group">
-                <p class="mobile-label">Core & Logistics</p>
-                <div class="mobile-sub-menu">
-                    <a href="{% url 'user_management' %}" class="sub-item">User Management</a>
+            <!-- Nav -->
+            <nav class="sidebar-nav">
+
+                <!-- ── Profile & Education ── -->
+                <div class="sidebar-section-label">Workspace</div>
+
+                <div class="nav-item {% if active_section in 'personal_information_sidebar profile_photo_sidebar upload_docs_sidebar view_docs_sidebar passport_details_view_sidebar visa_details_sidebar view_qualifications_sidebar add_credentials_sidebar' %}active open{% endif %}"
+                     id="nav-profile" role="button" tabindex="0">
+                    <span class="nav-icon"><i class="fa-solid fa-address-card"></i></span>
+                    <span class="nav-label">Profile & Education</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="sub-menu {% if active_section in 'personal_information_sidebar profile_photo_sidebar upload_docs_sidebar view_docs_sidebar passport_details_view_sidebar visa_details_sidebar view_qualifications_sidebar add_credentials_sidebar' %}open{% endif %}"
+                     id="sub-profile">
+                    <a href="{% url 'personal_info_dashboard' %}"
+                       class="sub-menu-item {% if active_section == 'personal_information_sidebar' %}active{% endif %}">My Information</a>
+                    <a href="{% url 'profile_photo_setup' %}"
+                       class="sub-menu-item {% if active_section == 'profile_photo_sidebar' %}active{% endif %}">Photo Setup</a>
+                    <a href="{% url 'upload_docs_tab' %}"
+                       class="sub-menu-item {% if active_section == 'upload_docs_sidebar' %}active{% endif %}">Upload Documents</a>
+                    <a href="{% url 'view_docs_tab' %}"
+                       class="sub-menu-item {% if active_section == 'view_docs_sidebar' %}active{% endif %}">View Documents</a>
+                    <a href="{% url 'passport_details_standalone_view' %}"
+                       class="sub-menu-item {% if active_section == 'passport_details_view_sidebar' %}active{% endif %}">My Passport</a>
+                    <a href="{% url 'family_details' %}"
+                       class="sub-menu-item {% if active_section == 'family_details_sidebar' %}active{% endif %}">Family Details</a>
+                    <a href="{% url 'visa_details_workspace' %}"
+                       class="sub-menu-item {% if active_section == 'visa_details_sidebar' %}active{% endif %}">Visa Details</a>
+                    <a href="{% url 'education_certification_workspace' %}"
+                       class="sub-menu-item {% if active_section == 'view_qualifications_sidebar' %}active{% endif %}">Educational Certifications</a>
+                    <a href="{% url 'previous_employer_workspace' %}"
+                       class="sub-menu-item {% if active_section == 'previous_employer_sidebar' %}active{% endif %}">Previous Employer Overview</a>
+                </div>
+
+                <!-- ── Core & Logistics ── -->
+                {% if request.user.role != 'bgv_officer' %}
+                <div class="sidebar-section-label">Operations</div>
+
+                <div class="nav-item {% if active_section in 'user_management_sidebar member_creations_sidebar member_creation_sidebar employee_directory_sidebar client_management_sidebar product_clients_sidebar asset_allocation_sidebar seat_allocation_sidebar transport_passes_sidebar vehicle_passes_sidebar cafeteria_sidebar' %}active open{% endif %}"
+                     id="nav-core" role="button" tabindex="0">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    <span class="nav-label">Core & Logistics</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="sub-menu {% if active_section in 'user_management_sidebar member_creations_sidebar member_creation_sidebar employee_directory_sidebar client_management_sidebar product_clients_sidebar asset_allocation_sidebar seat_allocation_sidebar transport_passes_sidebar vehicle_passes_sidebar cafeteria_sidebar' %}open{% endif %}"
+                     id="sub-core">
+                    <a href="{% url 'user_management' %}"
+                       class="sub-menu-item {% if active_section == 'user_management_sidebar' %}active{% endif %}">User Management</a>
                     {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                    <a href="{% url 'employee_directory' %}" class="sub-item">Member Creations</a>
+                    <a href="{% url 'employee_directory' %}"
+                       class="sub-menu-item {% if active_section == 'employee_directory_sidebar' %}active{% endif %}">Member Creations</a>
                     {% endif %}
                     {% if request.user.role == 'admin' or request.user.role == 'hr' or request.user.is_superuser %}
-                    <a href="{% url 'client_management' %}" class="sub-item">Clients</a>
+                    <a href="{% url 'client_management' %}"
+                       class="sub-menu-item {% if active_section == 'client_management_sidebar' %}active{% endif %}">Clients</a>
                     {% endif %}
                     {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                    <a href="{% url 'product_clients' %}" class="sub-item">Product Clients</a>
+                    <a href="{% url 'product_clients' %}"
+                       class="sub-menu-item {% if active_section == 'product_clients_sidebar' %}active{% endif %}">Product Clients</a>
                     {% endif %}
-                    <a href="{% url 'assetallocation' %}" class="sub-item">Asset Allocation</a>
-                    <a href="{% url 'seatallocation' %}" class="sub-item">Seat Allocation</a>
+                    <a href="{% url 'assetallocation' %}"
+                       class="sub-menu-item {% if active_section == 'asset_allocation_sidebar' %}active{% endif %}">Asset Allocation</a>
+                    <a href="{% url 'seatallocation' %}"
+                       class="sub-menu-item {% if active_section == 'seat_allocation_sidebar' %}active{% endif %}">Seat Allocation</a>
                     {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                    <a href="{% url 'vehiclepasses' %}" class="sub-item">Transport / Vehicle</a>
-                    <a href="{% url 'cafeteria' %}" class="sub-item">Cafeteria</a>
+                    <a href="{% url 'vehiclepasses' %}"
+                       class="sub-menu-item {% if active_section == 'vehicle_passes_sidebar' %}active{% endif %}">Transport / Vehicle</a>
+                    <a href="{% url 'cafeteria' %}"
+                       class="sub-menu-item {% if active_section == 'cafeteria_sidebar' %}active{% endif %}">Cafeteria</a>
                     {% endif %}
                 </div>
-            </div>
-            {% endif %}
+                {% endif %}
 
-            <!-- Security & Visitors (Commented Out)
-            <div class="mobile-group">
-                <p class="mobile-label">Security & Visitors</p>
-                <div class="mobile-sub-menu">
-                    {% if request.user.role != 'bgv_officer' %}
-                    <a href="{% url 'viewvisitors' %}" class="sub-item">View Visitors</a>
-                    {% if request.user.role == 'admin' or request.user.role == 'hr' %}
-                    <a href="{% url 'editvisitors' %}" class="sub-item">Edit Visitors</a>
-                    <a href="{% url 'addvisitors' %}" class="sub-item">Add Visitors</a>
-                    {% endif %}
-                    {% endif %}
-                    
-                    {% if request.user.role == 'admin' or request.user.role == 'hr' or request.user.role == 'bgv_officer' %}
-                    {% if request.user.role != 'bgv_officer' %}
-                    <a href="{% url 'bgvdashboard' %}" class="sub-item">BGV Dashboard</a>
-                    {% endif %}
-                    <a href="{% url 'bgv_officer_desk' %}" class="sub-item">BGV Officer Desk</a>
-                    {% endif %}
+                <!-- ── Requests ── -->
+                {% if request.user.role != 'bgv_officer' %}
+                <div class="sidebar-section-label">Requests</div>
+
+                <a href="{% url 'id_card_dashboard' %}"
+                   class="nav-item {% if active_section == 'id_card_sidebar' %}active{% endif %}">
+                    <span class="nav-icon"><i class="fa-solid fa-id-card"></i></span>
+                    <span class="nav-label">ID Card Request</span>
+                </a>
+
+                <a href="{% url 'communication_overview_dashboard' %}"
+                   class="nav-item {% if active_section == 'communication_sidebar' %}active{% endif %}">
+                    <span class="nav-icon"><i class="fa-solid fa-phone-flip"></i></span>
+                    <span class="nav-label">Comms Overview</span>
+                </a>
+
+                <a href="{% url 'payslip_workspace' %}"
+                   class="nav-item {% if active_section == 'payslip_sidebar' %}active{% endif %}">
+                    <span class="nav-icon"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+                    <span class="nav-label">Payslip</span>
+                </a>
+                {% endif %}
+
+            </nav>
+
+            <!-- Footer: notifications + user -->
+            <div class="sidebar-footer">
+
+                <!-- Notification button -->
+                <button class="btn-notif" id="notif-toggle" title="Notifications">
+                    <span class="notif-icon-wrap">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="badge"></span>
+                    </span>
+                    <span class="btn-notif-label">Notifications</span>
+                </button>
+
+                <!-- User row -->
+                {% if request.user.is_authenticated %}
+                <div class="sidebar-user" id="user-menu-toggle" title="Profile">
+                    <div class="avatar-circle">{{ request.user.username|slice:":2"|upper }}</div>
+                    <div class="sidebar-user-info">
+                        <span class="sidebar-username">{{ request.user.username }}</span>
+                        <span class="sidebar-role">{{ request.user.role|default:"Employee" }}</span>
+                    </div>
+                    <i class="fas fa-chevron-up sidebar-user-chevron"></i>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Notifications popover -->
+            <div class="notif-popover" id="notif-popover">
+                <div class="popover-header">
+                    <h4>Notifications</h4>
+                    <a href="#" class="mark-all" onclick="return false;">Mark all read</a>
+                </div>
+                <div class="notif-list">
+                    <div class="notif-item">
+                        <div class="notif-dot"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div class="notif-content">
+                            <span class="notif-title">Meeting with visitor John Doe approved</span>
+                            <span class="notif-time">10 minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="notif-item">
+                        <div class="notif-dot" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <div class="notif-content">
+                            <span class="notif-title">New task assigned by Admin</span>
+                            <span class="notif-time">1 hour ago</span>
+                        </div>
+                    </div>
+                    <div class="notif-item">
+                        <div class="notif-dot" style="background:rgba(16,185,129,0.15);color:#10b981;">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div class="notif-content">
+                            <span class="notif-title">ID Card Request is ready for pickup</span>
+                            <span class="notif-time">Yesterday</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="popover-footer">
+                    <a href="#" onclick="return false;">View All Activity</a>
                 </div>
             </div>
-            -->
 
-            <!-- Quick Requests -->
-            {% if request.user.role != 'bgv_officer' %}
-            <div class="mobile-group">
-                <p class="mobile-label">Requests</p>
-                <div class="mobile-sub-menu">
-                    <a href="{% url 'id_card_dashboard' %}" class="sub-item">ID Card Request</a>
-                    <a href="{% url 'communication_overview_dashboard' %}" class="sub-item">Comms Overview</a>
+            <!-- User popover -->
+            {% if request.user.is_authenticated %}
+            <div class="user-popover" id="user-popover">
+                <div class="user-popover-header">
+                    <div class="avatar-circle" style="width:40px;height:40px;font-size:15px;">
+                        {{ request.user.username|slice:":2"|upper }}
+                    </div>
+                    <div>
+                        <div class="user-popover-name">{{ request.user.username }}</div>
+                        <div class="user-popover-role">{{ request.user.role|default:"Employee"|upper }}</div>
+                    </div>
                 </div>
-            </div>
-            {% endif %}
-
-            <!-- Logout -->
-            <div class="mobile-group"
-                style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">
-                <a href="{% url 'logout' %}" class="btn-logout" style="width: 100%; justify-content: center;">
-                    <i class="fas fa-power-off"></i> <span>Logout</span>
+                <a href="{% url 'personal_info_dashboard' %}" class="user-popover-link">
+                    <i class="fa-solid fa-address-card"></i> My Information
+                </a>
+                <a href="{% url 'gateactivity' %}" class="user-popover-link">
+                    <i class="fa-solid fa-door-open"></i> Gate Activity
+                </a>
+                <a href="{% url 'my_tasks' %}" class="user-popover-link">
+                    <i class="fa-solid fa-list-check"></i> My Tasks
+                </a>
+                <div style="height:1px;background:#e2e8f0;"></div>
+                <a href="{% url 'logout' %}" class="btn-logout">
+                    <i class="fas fa-power-off"></i> Logout
                 </a>
             </div>
-        </div>
+            {% endif %}
 
-        <!-- CONTAINER APP AREA -->
+        </aside>
+
+        <!-- ═══════════ MAIN CONTENT ═══════════ -->
         <main class="main-content">
             <div class="dashboard-container">
                 {% block content %}
                 {% endblock %}
             </div>
         </main>
+
     </div>
 
     <script>
-        function toggleMobileMenu() {
-            const drawer = document.getElementById("mobile-drawer");
-            const toggleIcon = document.querySelector(".mobile-toggle i");
+        // ── Collapse / expand sidebar ──
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
 
-            if (drawer.classList.contains("open")) {
-                drawer.classList.remove("open");
-                toggleIcon.className = "fas fa-bars";
-            } else {
-                drawer.classList.add("open");
-                toggleIcon.className = "fas fa-times";
-            }
-        }
-
-        // Popover toggle logic
-        const notifToggle = document.getElementById("notif-toggle");
-        const notifPopover = document.getElementById("notif-popover");
-        const userToggle = document.getElementById("user-menu-toggle");
-        const userPopover = document.getElementById("user-popover");
-
-        if (notifToggle && notifPopover) {
-            notifToggle.addEventListener("click", function (e) {
-                e.stopPropagation();
-                notifPopover.classList.toggle("show");
-                if (userPopover) userPopover.classList.remove("show");
-            });
-        }
-
-        if (userToggle && userPopover) {
-            userToggle.addEventListener("click", function (e) {
-                e.stopPropagation();
-                userPopover.classList.toggle("show");
-                if (notifPopover) notifPopover.classList.remove("show");
-            });
-        }
-
-        // Close popovers and mobile drawer when clicking outside
-        document.addEventListener('click', function (e) {
-            if (notifPopover && !notifPopover.contains(e.target) && notifToggle && !notifToggle.contains(e.target)) {
-                notifPopover.classList.remove("show");
-            }
-            if (userPopover && !userPopover.contains(e.target) && userToggle && !userToggle.contains(e.target)) {
-                userPopover.classList.remove("show");
-            }
-
-            const drawer = document.getElementById('mobile-drawer');
-            const toggle = document.querySelector('.mobile-toggle');
-            if (drawer && drawer.classList.contains('open') && !drawer.contains(e.target) && !toggle.contains(e.target)) {
-                drawer.classList.remove('open');
-                document.querySelector('.mobile-toggle i').className = 'fas fa-bars';
-            }
-
-            // Close mega menus
-            if (!e.target.closest('.nav-item') && !e.target.closest('.nav-dropdown')) {
-                closeNavDropdowns();
-            }
+        sidebarToggle.addEventListener('click', function () {
+            sidebar.classList.toggle('collapsed');
         });
 
-        function closeNavDropdowns() {
-            document.querySelectorAll('.nav-item.dropdown-active').forEach(nav => {
-                nav.classList.remove('dropdown-active');
-            });
-        }
+        // ── Accordion nav items ──
+        document.querySelectorAll('.nav-item[id^="nav-"]').forEach(function (item) {
+            const subId = item.id.replace('nav-', 'sub-');
+            const sub = document.getElementById(subId);
+            if (!sub) return;
 
-        // Mega menu toggle logic
-        document.querySelectorAll('.nav-item').forEach(item => {
-            const dropdown = item.querySelector('.nav-dropdown');
-            if (dropdown) {
-                item.addEventListener('click', function(e) {
-                    if (e.target.closest('.nav-dropdown')) {
-                        return;
-                    }
-                    if (e.target === this || e.target.closest('.nav-label') || e.target.closest('i.chevron') || (e.target.closest('i.fa-solid') && !e.target.closest('.nav-dropdown'))) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        const isActive = this.classList.contains('dropdown-active');
-                        closeNavDropdowns();
-
-                        if (!isActive) {
-                            this.classList.add('dropdown-active');
-                        }
-                    }
-                });
-            }
-        });
-        // Removed active-state auto-mark script per user request
-        // Extract icon color to apply dynamic hover effects for mega-items
-        (function () {
-            document.querySelectorAll('.mega-item').forEach(function (item) {
-                const iconWrapper = item.querySelector('.mega-icon-wrapper');
-                if (iconWrapper) {
-                    const iconColor = iconWrapper.style.color || window.getComputedStyle(iconWrapper).color;
-                    item.style.setProperty('--item-color', iconColor);
+            item.addEventListener('click', function () {
+                const isOpen = item.classList.contains('open');
+                // Close all
+                document.querySelectorAll('.nav-item[id^="nav-"]').forEach(i => i.classList.remove('open'));
+                document.querySelectorAll('.sub-menu').forEach(s => s.classList.remove('open'));
+                // Open clicked if it was closed
+                if (!isOpen) {
+                    item.classList.add('open');
+                    sub.classList.add('open');
                 }
             });
-        })();
+        });
+
+        // ── Notifications popover ──
+        const notifToggle = document.getElementById('notif-toggle');
+        const notifPopover = document.getElementById('notif-popover');
+        const userToggle = document.getElementById('user-menu-toggle');
+        const userPopover = document.getElementById('user-popover');
+
+        if (notifToggle && notifPopover) {
+            notifToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                notifPopover.classList.toggle('show');
+                if (userPopover) userPopover.classList.remove('show');
+                if (userToggle) userToggle.classList.remove('open');
+            });
+        }
+
+        // ── User popover ──
+        if (userToggle && userPopover) {
+            userToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                userPopover.classList.toggle('show');
+                userToggle.classList.toggle('open');
+                if (notifPopover) notifPopover.classList.remove('show');
+            });
+        }
+
+        // ── Close popovers on outside click ──
+        document.addEventListener('click', function (e) {
+            if (notifPopover && !notifPopover.contains(e.target) && notifToggle && !notifToggle.contains(e.target)) {
+                notifPopover.classList.remove('show');
+            }
+            if (userPopover && !userPopover.contains(e.target) && userToggle && !userToggle.contains(e.target)) {
+                userPopover.classList.remove('show');
+                userToggle && userToggle.classList.remove('open');
+            }
+        });
+
+        // ── Mobile overlay ──
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        mobileToggle.addEventListener('click', function () {
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+            this.querySelector('i').className = sidebar.classList.contains('mobile-open') ? 'fas fa-times' : 'fas fa-bars';
+        });
+
+        overlay.addEventListener('click', function () {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            mobileToggle.querySelector('i').className = 'fas fa-bars';
+        });
     </script>
 
     {% block script %}{% endblock %}
 
 </body>
-
 </html>

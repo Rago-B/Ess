@@ -4,116 +4,404 @@
 
 {% block extra_css %}
 {% include "personal_information/_pi_theme.html" %}
+<style>
+    /* IT Company ESS Style - Clean, Minimalist, High-end Tech Vibe */
+    .pi-split {
+        grid-template-columns: 1.1fr 1fr;
+        gap: 32px;
+        align-items: stretch;
+    }
+    
+    @media (max-width: 1024px) {
+        .pi-split {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .ess-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .ess-card__head {
+        padding: 24px 28px;
+        border-bottom: 1px solid #edf2f7;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .ess-card__icon {
+        color: #3b82f6; /* Modern Tech Blue */
+        font-size: 20px;
+    }
+
+    .ess-card__head h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+    }
+
+    .ess-card__head p {
+        margin: 2px 0 0;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .ess-card__body {
+        padding: 28px;
+        flex: 1;
+    }
+
+    /* Minimal Form Design */
+    .ess-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    @media (max-width: 640px) {
+        .ess-form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .ess-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .ess-field--full {
+        grid-column: span 2;
+    }
+
+    @media (max-width: 640px) {
+        .ess-field--full {
+            grid-column: span 1;
+        }
+    }
+
+    .ess-label {
+        font-size: 12px;
+        font-weight: 550;
+        color: #334155;
+        letter-spacing: 0.01em;
+    }
+
+    .ess-input,
+    .ess-select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 13.5px;
+        color: #0f172a;
+        background: #ffffff;
+        font-family: inherit;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .ess-input::placeholder {
+        color: #94a3b8;
+    }
+
+    .ess-input:focus,
+    .ess-select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* ESS Submit Button */
+    .ess-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 20px;
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        border: 1px solid transparent;
+        width: 100%;
+        margin-top: 12px;
+    }
+
+    .ess-btn--primary {
+        background: #0f172a; /* Dark Tech Blue/Slate */
+        color: #ffffff;
+    }
+
+    .ess-btn--primary:hover {
+        background: #1e293b;
+        transform: translateY(-0.5px);
+    }
+
+    /* Minimal Dependents List */
+    .ess-member-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .ess-member-row {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .ess-member-row:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+    }
+
+    .ess-member-details {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+    }
+
+    .ess-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid #e2e8f0;
+        flex-shrink: 0;
+    }
+
+    .ess-info {
+        min-width: 0;
+    }
+
+    .ess-name {
+        margin: 0 0 4px 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .ess-meta-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .ess-tag {
+        font-size: 11px;
+        font-weight: 500;
+        color: #475569;
+        background: #f1f5f9;
+        padding: 2px 8px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .ess-tag--blue {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-color: #dbeafe;
+    }
+
+    .ess-tag--red {
+        background: #fef2f2;
+        color: #b91c1c;
+        border-color: #fee2e2;
+    }
+
+    .ess-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .ess-icon-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: #64748b;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        text-decoration: none;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .ess-icon-btn:hover {
+        color: #0f172a;
+        border-color: #cbd5e1;
+        background: #f8fafc;
+    }
+
+    .ess-icon-btn--danger:hover {
+        color: #df2c2c;
+        border-color: #fca5a5;
+        background: #fff5f5;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="pi-page">
-    <header class="pi-hero">
+    <header class="pi-hero" style="background: #ffffff; border: 1px solid #e2e8f0; box-shadow: none; border-radius: 12px; padding: 24px 28px; margin-bottom: 24px;">
         <div>
-            <p class="pi-hero__eyebrow">Personal information</p>
-            <h1><i class="fa-solid fa-people-roof"></i> Family Registry</h1>
-            <p>Add dependents and emergency contacts for insurance, benefits, and HR records.</p>
+            <p class="pi-hero__eyebrow" style="color: #3b82f6; font-weight: 600; font-size: 11px; margin-bottom: 6px;">Employee Self Service</p>
+            <h1 style="color: #0f172a; font-family: inherit; font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; margin: 0 0 6px 0;">
+                <i class="fa-solid fa-people-roof" style="color: #3b82f6;"></i> Family Registry
+            </h1>
+            <p style="color: #64748b; font-size: 13.5px; margin: 0;">Add and manage dependents and emergency contacts for insurance and HR benefits.</p>
         </div>
         <div class="pi-hero__meta">
-            <span class="pi-chip"><i class="fa-solid fa-users"></i> {{ family_records|length }} dependent{{ family_records|length|pluralize }}</span>
-            <a href="{% url 'personal_info_dashboard' %}" class="pi-back"><i class="fa-solid fa-arrow-left"></i> Back to profile</a>
+            <span class="pi-chip" style="background: #f1f5f9; border: 1px solid #e2e8f0; color: #334155; font-size: 12px; padding: 8px 14px; border-radius: 8px;">
+                <i class="fa-solid fa-users" style="color: #3b82f6;"></i> {{ family_records|length }} dependent{{ family_records|length|pluralize }}
+            </span>
+            <a href="{% url 'personal_info_dashboard' %}" class="pi-back" style="background: #ffffff; border: 1px solid #cbd5e1; color: #334155; font-size: 12px; padding: 8px 14px; border-radius: 8px; box-shadow: none;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Profile
+            </a>
         </div>
     </header>
 
     {% if messages %}
     {% for message in messages %}
-    <div class="pi-alert" role="alert">{{ message }}</div>
+    <div class="pi-alert" role="alert" style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; border-radius: 8px; padding: 12px 16px; font-size: 13.5px; margin-bottom: 20px;">
+        {{ message }}
+    </div>
     {% endfor %}
     {% endif %}
 
     <div class="pi-split">
-        <div class="pi-card">
-            <div class="pi-card__head">
-                <div class="pi-card__icon"><i class="fa-solid fa-user-plus"></i></div>
-                <div><h3>Add family member</h3><p>Complete the form and save to your registry.</p></div>
+        <!-- Minimal Form Card -->
+        <div class="ess-card">
+            <div class="ess-card__head">
+                <div class="ess-card__icon"><i class="fa-solid fa-user-plus"></i></div>
+                <div>
+                    <h3>Add Family Member</h3>
+                    <p>Enter details below to register a new dependent.</p>
+                </div>
             </div>
-            <div class="pi-card__body">
+            <div class="ess-card__body">
                 <form method="post" action="{% url 'family_details' %}" class="pi-form">
                     {% csrf_token %}
-                    <p class="pi-section" style="margin:0 0 12px;"><i class="fa-solid fa-user"></i> Identity</p>
-                    <div class="pi-field">
-                        <label class="pi-label" for="full_name">Full name</label>
-                        <input type="text" id="full_name" name="full_name" class="pi-input" required placeholder="e.g. Jane Doe" autocomplete="name">
-                    </div>
-                    <div class="pi-field">
-                        <label class="pi-label" for="relationship">Relationship</label>
-                        <div class="pi-select-wrap">
-                            <select id="relationship" name="relationship" class="pi-select" required>
-                                <option value="" disabled selected hidden>Select relationship</option>
-                                <option value="Mother">Mother</option>
-                                <option value="Father">Father</option>
-                                <option value="Spouse">Spouse</option>
-                                <option value="Child">Child</option>
-                                <option value="Sibling">Sibling</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down pi-chevron"></i>
+                    
+                    <div class="ess-form-grid">
+                        <div class="ess-field ess-field--full">
+                            <label class="ess-label" for="full_name">Full Name</label>
+                            <input type="text" id="full_name" name="full_name" class="ess-input" required placeholder="e.g. Jane Doe" autocomplete="name">
+                        </div>
+                        
+                        <div class="ess-field">
+                            <label class="ess-label" for="relationship">Relationship</label>
+                            <div class="pi-select-wrap">
+                                <select id="relationship" name="relationship" class="ess-select" required>
+                                    <option value="" disabled selected hidden>Select relationship</option>
+                                    <option value="Mother">Mother</option>
+                                    <option value="Father">Father</option>
+                                    <option value="Spouse">Spouse</option>
+                                    <option value="Child">Child</option>
+                                    <option value="Sibling">Sibling</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down pi-chevron"></i>
+                            </div>
+                        </div>
+
+                        <div class="ess-field">
+                            <label class="ess-label" for="blood_group">Blood Group</label>
+                            <div class="pi-select-wrap">
+                                <select id="blood_group" name="blood_group" class="ess-select" required>
+                                    <option value="" disabled selected hidden>Select blood group</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down pi-chevron"></i>
+                            </div>
+                        </div>
+
+                        <div class="ess-field ess-field--full">
+                            <label class="ess-label" for="dob">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" class="ess-input" required>
                         </div>
                     </div>
-                    <p class="pi-section" style="margin:16px 0 12px;"><i class="fa-solid fa-heart-pulse"></i> Medical</p>
-                    <div class="pi-field">
-                        <label class="pi-label" for="dob">Date of birth</label>
-                        <input type="date" id="dob" name="dob" class="pi-input" required>
-                    </div>
-                    <div class="pi-field">
-                        <label class="pi-label" for="blood_group">Blood group</label>
-                        <div class="pi-select-wrap">
-                            <select id="blood_group" name="blood_group" class="pi-select" required>
-                                <option value="" disabled selected hidden>Select blood group</option>
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="B+">B+</option>
-                                <option value="B-">B-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
-                                <option value="AB+">AB+</option>
-                                <option value="AB-">AB-</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down pi-chevron"></i>
-                        </div>
-                    </div>
-                    <button type="submit" class="pi-btn pi-btn--primary" style="width:100%;justify-content:center;margin-top:8px;">
-                        <i class="fa-solid fa-floppy-disk"></i> Save dependent record
+
+                    <button type="submit" class="ess-btn ess-btn--primary">
+                        <i class="fa-solid fa-plus"></i> Add Dependent
                     </button>
                 </form>
             </div>
         </div>
 
-        <div class="pi-card">
-            <div class="pi-card__head">
-                <div class="pi-card__icon"><i class="fa-solid fa-address-book"></i></div>
-                <div><h3>Registered dependents</h3><p>Members currently on your family profile.</p></div>
+        <!-- Minimal Registered List -->
+        <div class="ess-card">
+            <div class="ess-card__head">
+                <div class="ess-card__icon"><i class="fa-solid fa-address-book" style="color: #64748b;"></i></div>
+                <div>
+                    <h3>Registered Dependents</h3>
+                    <p>Current list of family members on your profile.</p>
+                </div>
             </div>
-            <div class="pi-card__body">
+            <div class="ess-card__body">
                 {% if family_records %}
-                <div class="pi-member-list">
+                <div class="ess-member-list">
                     {% for item in family_records %}
-                    <article class="pi-member">
-                        <div class="pi-member__avatar">{{ item.full_name|slice:":1"|upper }}</div>
-                        <div style="flex:1;min-width:0;">
-                            <h3 class="pi-member__name">{{ item.full_name }}</h3>
-                            <div class="pi-member__meta">
-                                <span class="pi-tag">{{ item.relationship }}</span>
-                                <span class="pi-tag"><i class="fa-regular fa-calendar"></i> {{ item.dob }}</span>
-                                <span class="pi-tag pi-tag--blood"><i class="fa-solid fa-droplet"></i> {{ item.blood_group }}</span>
+                    <article class="ess-member-row">
+                        <div class="ess-member-details">
+                            <div class="ess-avatar">{{ item.full_name|slice:":1"|upper }}</div>
+                            <div class="ess-info">
+                                <h3 class="ess-name">{{ item.full_name }}</h3>
+                                <div class="ess-meta-tags">
+                                    <span class="ess-tag ess-tag--blue">{{ item.relationship }}</span>
+                                    <span class="ess-tag"><i class="fa-regular fa-calendar"></i> {{ item.dob }}</span>
+                                    <span class="ess-tag ess-tag--red"><i class="fa-solid fa-droplet"></i> {{ item.blood_group }}</span>
+                                </div>
                             </div>
                         </div>
-                        <div style="display:flex;gap:8px;flex-shrink:0;">
-                            <a href="#" class="pi-icon-btn" title="Edit"><i class="fa-solid fa-pen"></i></a>
-                            <a href="#" class="pi-icon-btn pi-icon-btn--danger" title="Remove"><i class="fa-solid fa-trash-can"></i></a>
+                        <div class="ess-actions">
+                            <a href="#" class="ess-icon-btn" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                            <a href="#" class="ess-icon-btn ess-icon-btn--danger" title="Remove"><i class="fa-solid fa-trash-can"></i></a>
                         </div>
                     </article>
                     {% endfor %}
                 </div>
                 {% else %}
-                <div class="pi-empty">
-                    <i class="fa-solid fa-folder-open"></i>
-                    <h4>No dependents yet</h4>
-                    <p>Use the form on the left to add your first family member.</p>
+                <div class="pi-empty" style="padding: 40px 20px;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 32px; color: #cbd5e1; margin-bottom: 8px;"></i>
+                    <h4 style="font-size: 14px; font-weight: 600; color: #475569; margin: 0 0 4px 0;">No Dependents Registered</h4>
+                    <p style="font-size: 12.5px; color: #94a3b8; margin: 0;">Add your family members using the form to the left.</p>
                 </div>
                 {% endif %}
             </div>
