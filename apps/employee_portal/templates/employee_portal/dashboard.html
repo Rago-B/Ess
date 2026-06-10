@@ -1,229 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Love+Light&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Love+Light&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
 
 
-<link href="https://fonts.googleapis.com/css2?family=Lavishly+Yours&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lavishly+Yours&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <div class="nav-bar">
-    
-    
-    <div class="nav-container" style="display: flex; margin: 0px !important; justify-content: space-between; align-items: center;  background-color: #ffffff; border-bottom: 1px solid #e2e8f0;"> 
-        <div class="logo-head">
-           <!-- rgba(0, 38, 87) -->
-        <h1 class="brand-name" style="color: #4169E1;">Voxlom</h1>
-
-    </div>
-
-    <div class="nav-links" style="margin-top : 0px; display: flex;">
-
-        <a href="#" class="nav-link">Home</a>
-        <a href="#" class="nav-link">Company News</a>
-        <a href="#" class="nav-link">Quick Links</a>
-        <a href="#" class="nav-link">Studio</a>
-        <a href="#" class="nav-link">Opportunities</a>
-        <a href="#" class="nav-link">Events</a>
-        <a href="#" class="nav-link">Help</a>
-        <a href="#" class="nav-link">Logout</a>
 
 
+        <div class="nav-container"
+            style="display: flex; margin: 0px !important; justify-content: space-between; align-items: center;  background-color: #ffffff; border-bottom: 1px solid #e2e8f0;">
+            <div class="logo-head">
+                <!-- rgba(0, 38, 87) -->
+                <h1 class="brand-name" style="color: #4169E1;">Voxlom</h1>
 
-      </div>
-    </div>
+            </div>
 
-<div class="dashboard-wrapper">
-    
-    
-    <div class="glass-dashboard-card-full">
-        
-        <!-- 1. FULL-WIDTH HEADER BANNER SECTION -->
-        <div class="banner-header">
-            <video autoplay loop muted playsinline preload="metadata" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; pointer-events: none;">
-        <source src="{% static 'images/vc_6.mp4' %}" type="video/mp4">
-    </video>
+            <div class="nav-links" style="margin-top : 0px; display: flex;">
 
-            <!-- <div class="welcome-text">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Company News</a>
+                <a href="#" class="nav-link">Quick Links</a>
+                <a href="#" class="nav-link">Studio</a>
+                <a href="#" class="nav-link">Opportunities</a>
+                <a href="#" class="nav-link">Events</a>
+                <a href="#" class="nav-link">Help</a>
+                <a href="#" class="nav-link">Logout</a>
+                <!-- <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-right: 20px; position: relative; top: 4px;">
+                    {% if request.user.profile_photo %}
+                        <img src="{{ request.user.profile_photo.url }}" alt="Profile" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #4169E1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    {% else %}
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #f1f5f9; display: flex; align-items: center; justify-content: center; border: 2px solid #4169E1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <i class="fa-solid fa-user" style="color: #4169E1; font-size: 14px;"></i>
+                        </div>
+                    {% endif %}
+                    <a href="/logout/" class="nav-link" style="padding-right: 0 !important; font-size: 12px !important; font-weight: 700 !important; margin-top: 2px; text-decoration: none; color: #4169E1;">Logout</a>
+                </div> -->
+
+
+
+            </div>
+        </div>
+
+        <div class="dashboard-wrapper">
+
+
+            <div class="glass-dashboard-card-full">
+
+                <!-- 1. FULL-WIDTH HEADER BANNER SECTION -->
+                <div class="banner-header">
+                    <video autoplay loop muted playsinline preload="metadata"
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; pointer-events: none;">
+                        <source src="{% static 'images/vc_6.mp4' %}" type="video/mp4">
+                    </video>
+
+                    <!-- <div class="welcome-text">
                 <h1 style="margin: 0; font-size: 67px; color: #1e293b;font-family: 'Lavishly Yours', cursive;">Welcome</h1>
             </div> -->
-    <!-- Dropdown Search Box Container -->
-    <div class="dropdown-search-container" style="display: flex; align-items: center; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); border: 1px solid #cbd5e1; height: 50px; width: 100%; max-width: 380px; margin-top: 60px; z-index: 99 !important; position: relative;">
-        
-        <!-- Category Dropdown Trigger -->
-        <div class="search-category-dropdown" onclick="toggleCategoryMenu(event)" style="position: relative; height: 100%; display: flex; align-items: center; padding: 0 15px; cursor: pointer; user-select: none;">
-            <span id="selected-category" style="font-size: 14px; font-weight: 700; color: #475569; letter-spacing: 0.05em; min-width: 45px; text-align: left;">ALL</span>
-            <span style="margin-left: 8px; display: flex; align-items: center; color: #2563eb;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" style="width: 10px; height: 10px; fill: currentColor;">
-                    <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/>
-                </svg>
-            </span>
-            
-            <!-- Category Dropdown Options Menu (Floating) -->
-            <div id="category-options-menu" style="display: none; position: absolute; top: calc(100% + 5px); left: 0; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); width: 120px; z-index: 10000; overflow: hidden;">
-                <div class="category-option" onclick="selectSearchCategory('ALL', event)" style="padding: 10px 14px; font-size: 13px; color: #475569; font-weight: 600; transition: background 0.2s;">All</div>
-                <div class="category-option" onclick="selectSearchCategory('ESS', event)" style="padding: 10px 14px; font-size: 13px; color: #475569; font-weight: 600; transition: background 0.2s;">ESS</div>
-                <div class="category-option" onclick="selectSearchCategory('MSS', event)" style="padding: 10px 14px; font-size: 13px; color: #475569; font-weight: 600; transition: background 0.2s;">MSS</div>
-            </div>
-        </div>
-        
-        <!-- Separation Line -->
-        <div style="align-self: stretch; width: 1px; background-color: #cbd5e1;"></div>
-        
-        <!-- Input and Search Icon -->
-        <div style="display: flex; align-items: center; flex: 1; height: 100%; padding: 0 15px; position: relative;">
-            <input type="text" id="dashboardSearchInput" placeholder="Search" onkeyup="executeGridSearch()" style="border: none; outline: none; width: 100%; height: 100%; font-size: 14px; color: #1e293b; background: transparent;">
-            
-            <!-- Magnifying Glass (Blue) -->
-            <span style="display: flex; align-items: center; color: #2563eb; cursor: pointer;" onclick="executeGridSearch()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 16px; height: 16px; fill: currentColor;">
-                    <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
-                </svg>
-            </span>
+                    <!-- Dropdown Search Box Container -->
+                    <div class="dropdown-search-container"
+                        style="display: flex; align-items: center; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); border: 1px solid #cbd5e1; height: 48px; width: 100%; max-width: 380px; margin-top: 60px; z-index: 99 !important; position: relative;">
 
-            <!-- Autocomplete Suggestions Dropdown -->
-            <div id="search-results-dropdown" style="display: none; position: absolute; top: calc(100% + 5px); left: 0; right: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); max-height: 250px; overflow-y: auto; z-index: 10000;">
-                <!-- Matching suggested fields populated here -->
-            </div>
-        </div>
-    </div>
+                        <!-- Category Dropdown Trigger -->
+                        <div class="search-category-dropdown" onclick="toggleCategoryMenu(event)"
+                            style="position: relative; height: 30px; display: flex; align-items: center; padding: 0 15px; cursor: pointer; user-select: none;">
+                            <span id="selected-category"
+                                style="font-size: 14px; font-weight: 700; color: #475569; letter-spacing: 0.05em; min-width: 45px; text-align: left;">Search</span>
+                            <span style="margin-left: 8px; display: flex; align-items: center; color: #2563eb;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"
+                                    style="width: 10px; height: 10px; fill: currentColor;">
+                                    <path
+                                        d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z" />
+                                </svg>
+                            </span>
+
+                            <!-- Category Dropdown Options Menu (Floating) -->
+                            <div id="category-options-menu"
+                                style="display: none; position: absolute; top: calc(100% + 5px); left: 0; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); width: 120px; z-index: 10000; overflow: hidden;">
+                                <div class="category-option" onclick="selectSearchCategory('ALL', event)"
+                                    style="padding: 10px 14px; font-size: 13px; color: #475569; font-weight: 600; transition: background 0.2s;">
+                                    All</div>
+                                <div class="category-option" onclick="selectSearchCategory('ESS', event)"
+                                    style="padding: 10px 14px; font-size: 13px; color: #475569; font-weight: 600; transition: background 0.2s;">
+                                    ESS</div>
+                                <div class="category-option" onclick="selectSearchCategory('MSS', event)"
+                                    style="padding: 10px 14px; font-size: 13px; color: #475569; font-weight: 600; transition: background 0.2s;">
+                                    MSS</div>
+                            </div>
+                        </div>
+
+                        <!-- Separation Line -->
+                        <div style="align-self: stretch; width: 1px; background-color: #cbd5e1;"></div>
+
+                        <!-- Input and Search Icon -->
+                        <!-- Magnifying Glass (Blue) -->
+                        <span
+                            style="display: flex; align-items: center; color: #2563eb; cursor: pointer; margin-left: 10px;"
+                            onclick="executeGridSearch()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                                style="width: 16px; height: 16px; fill: currentColor;">
+                                <path
+                                    d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+                            </svg>
+                        </span>
+                        <div
+                            style="display: flex; align-items: center; flex: 1; height: 100%; padding: 0 15px; position: relative;">
+                            <input type="text" id="dashboardSearchInput" onkeyup="executeGridSearch()"
+                                onfocus="executeGridSearch()"
+                                style="border: none; outline: none; width: 100%; height: 100%; font-size: 14px; color: #1e293b; background: transparent;">
 
 
 
-    <!-- Beautiful signature greeting banner -->
-    <h1 style="z-index: 2; position: relative;" class="signature">Name</h1>
-</div>
+                            <!-- Autocomplete Suggestions Dropdown -->
+                            <div id="search-results-dropdown"
+                                style="display: none; position: absolute; top: calc(100% + 5px); left: 0; right: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); max-height: 650px; overflow-y: auto; z-index: 10000;">
+                                <!-- Matching suggested fields populated here -->
+                            </div>
+                        </div>
+                    </div>
 
 
-        <!-- 2. EXPANDED APPS GRID MENU -->
-        <div class="apps-grid-menu">
-            
-    <!-- HOME GRID ITEM (Index 0) -->
-    <a href="#" class="grid-item-link" data-category="all">
-        <div class="icon-wrapper home-icon">
-           <i class="fa-sharp fa-solid fa-house" style="color: #0d9488 !important;"></i>
-        </div>
-        <span class="grid-item-label">Home</span>
-    </a>
 
-    <!-- GATE ACTIVITY STREAM GRID ITEM (Index 1) -->
-    <a href="{% url 'personal_info_dashboard' %}" class="grid-item-link" data-category="ess">
-        <div class="icon-wrapper analytics-icon">
-            <i class="fa-solid fa-person" style="font-size: 24px; color: #7ab33a !important;" ></i>
-        </div>
-        <span class="grid-item-label">Personal Data</span>
-    </a>
-
-    <!-- PROJECTS GRID ITEM (Index 2) -->
-    <a href="{% url 'profile_photo_setup' %}" class="grid-item-link" data-category="ess">
-        <div class="icon-wrapper projects-icon">
-            <i class="fa-solid fa-camera"  style="color: #1f5797 !important;"></i>
-        </div>
-        <span class="grid-item-label">Profile Picture</span>
-    </a>
-
-    <!-- TEAM DIRECTORY GRID ITEM (Index 3) -->
-    <a href="#" class="grid-item-link" data-category="ess">
-        <div class="icon-wrapper team-icon">
-            <i class="fa-solid fa-plus" style="color: #839b67 !important;"></i>
-        </div>
-        <span class="grid-item-label">Additional Data</span>
-    </a>
-
-    <!-- MESSAGES GRID ITEM (Index 4) -->
-    <a href="#" class="grid-item-link" data-category="ess">
-        <div class="icon-wrapper messages-box-icon">
-            <i class="fa-solid fa-map-pin" style="color: #2acfc7 !important;"></i>
+                    <!-- Beautiful signature greeting banner -->
+                    <h1 style="z-index: 2; position: relative;" class="signature">Name</h1>
                 </div>
-        <span class="grid-item-label">Address Data</span>
-    </a>
 
-    <!-- DYNAMIC COLLAPSIBLE ICON ITEMS (Indices 5 through 9) -->
-    <a href="{% url 'education_certification_workspace' %}" class="grid-item-link collapsible-icon" data-category="ess" style="display: none;">
-        <div class="icon-wrapper messages-box-icon">
-            <i class="fa-solid fa-user-graduate" style="color: #4919b9 !important;"></i>
-        </div>
-        <span class="grid-item-label">Education Certifications </span>
-    </a>
 
-    <a href="{% url 'previous_employer_workspace' %}" class="grid-item-link collapsible-icon" data-category="ess" style="display: none;">
-        <div class="icon-wrapper profile-avatar-icon">
-            <i class="fa-solid fa-backward" style="color: #db811a !important;"></i>
-        </div>
-        <span class="grid-item-label">Previous Employment</span>
-    </a>
-    
-    <a href="{% url 'communication_overview_dashboard' %}" class="grid-item-link collapsible-icon" data-category="mss" style="display: none;">
-        <div class="icon-wrapper analytics-icon">
-            <i class="fa-solid fa-bullhorn" style="color: #22d8cf !important;"></i>
-        </div>
-        <span class="grid-item-label">Communication Overview</span>
-    </a>
-    
-    <a href="#" class="grid-item-link collapsible-icon" data-category="ess" style="display: none;">
-        <div class="icon-wrapper analytics-icon">
-            <i class="fa-solid fa-passport" style="color: #cf34c8 !important;"></i>
-        </div>
-        <span class="grid-item-label">Passport</span>
-    </a>
-    
-    <a href="#" class="grid-item-link collapsible-icon" data-category="ess" style="display: none;">
-        <div class="icon-wrapper analytics-icon">
-            <i class="fa-solid fa-cake-candles" style="color: #a0952e !important;"></i>
-        </div>
-        <span class="grid-item-label">DOB Update</span>
-    </a>
-   
-    <a href="{% url 'family_details' %}" class="grid-item-link collapsible-icon" data-category="ess" style="display: none;">
-        <div class="icon-wrapper analytics-icon">
-            <i class="fa-solid fa-hands-holding-child" style="color: #b64f6e !important;"></i>
-        </div>
-        <span class="grid-item-label">Family Details</span>
-    </a>
+                <!-- 3. STATIC MANAGEMENT SECTION -->
+                <div class="management-container">
+                    <!-- Left Group (Timesheet & Asset) -->
+                    <div class="management-group">
+                        <!-- Timesheet Management (Left) -->
+                        <a href="#" class="management-row-item">
+                            <div class="management-icon-wrapper timesheet-icon-theme">
+                                <i class="fa-brands fa-atlassian"></i>
+                            </div>
+                            <span class="management-row-label">Timesheet Management</span>
+                        </a>
+                        <!-- Asset Management (Right) -->
+                        <a href="#" class="management-row-item">
+                            <div class="management-icon-wrapper asset-icon-theme">
+                                <i class="fa-brands fa-atlassian"></i>
+                            </div>
+                            <span class="management-row-label">Asset Management</span>
+                        </a>
+                    </div>
 
-    <a href="{% url 'visa_details_workspace' %}" class="grid-item-link collapsible-icon" data-category="ess" style="display: none;">
-        <div class="icon-wrapper analytics-icon">
-            <i class="fa-brands fa-cc-visa" style="color: #b7e075 !important;"></i>
-        </div>
-        <span class="grid-item-label">Visa Details</span>
-    </a>
+                    <!-- Right Group (Shift & Leave) -->
+                    <div class="management-group">
+                        <!-- Shift Management -->
+                        <a href="#" class="management-row-item">
+                            <div class="management-icon-wrapper shift-icon-theme">
+                                <i class="fa-brands fa-atlassian"></i>
+                            </div>
+                            <span class="management-row-label">Shift Management</span>
+                        </a>
+                        <!-- Leave Management (Right) -->
+                        <a href="#" class="management-row-item">
+                            <div class="management-icon-wrapper leave-icon-theme">
+                                <i class="fa-brands fa-atlassian"></i>
+                            </div>
+                            <span class="management-row-label">Leave Management</span>
+                        </a>
+                    </div>
+                </div>
 
-    <a href="{% url 'payslip_workspace' %}" class="grid-item-link collapsible-icon" data-category="ess mss" style="display: none;">
-        <div class="icon-wrapper analytics-icon">
-            <i class="fa-brands fa-paypal" style="color: #5d07978f !important;"></i>
-        </div>
-        <span class="grid-item-label">Payslip Details</span>
-    </a>
 
-    <!-- CONTROL TOGGLE TRIGGERS -->
-    <a href="#" id="btn-view-all" class="grid-item-link" onclick="ShowIcons(event)">
-        <div class="icon-wrapper analytics-icon" style="display: flex; align-items: center; justify-content: center;">
-            <i class="fa-solid fa-expand" style="font-size: 20px; color: currentColor;"></i>
-        </div>
-        <span class="grid-item-label">View All</span>
-    </a>
+                <!-- 2. EXPANDED APPS GRID MENU -->
+                <div class="apps-grid-menu">
 
-    <a href="#" id="btn-view-less" class="grid-item-link" onclick="HideIcons(event)" style="display: none;">
-        <div class="icon-wrapper analytics-icon" style="display: flex; align-items: center; justify-content: center;">
-            <i class="fa-solid fa-compress" style="font-size: 20px; color: currentColor;"></i>
-        </div>
-        <span class="grid-item-label">View Less</span>
-    </a>
+                    <!-- HOME GRID ITEM (Index 0) -->
+                    <a href="#" class="grid-item-link" data-category="all">
+                        <div class="icon-wrapper home-icon">
+                            <i class="fa-sharp fa-solid fa-house" style="color: #0d9488 !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Home</span>
+                    </a>
 
-</div>
-    </div>
-</div>
-    
+                    <!-- GATE ACTIVITY STREAM GRID ITEM (Index 1) -->
+                    <a href="{% url 'personal_info_dashboard' %}" class="grid-item-link" data-category="ess">
+                        <div class="icon-wrapper analytics-icon">
+                            <i class="fa-solid fa-person" style="font-size: 24px; color: #7ab33a !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Personal Data <i class="fa-solid fa-star"></i></span>
+                    </a>
+
+                    <!-- PROJECTS GRID ITEM (Index 2) -->
+                    <a href="{% url 'profile_photo_setup' %}" class="grid-item-link" data-category="ess">
+                        <div class="icon-wrapper projects-icon">
+                            <i class="fa-solid fa-camera" style="color: #1f5797 !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Profile Picture</span>
+                    </a>
+
+                    <!-- TEAM DIRECTORY GRID ITEM (Index 3) -->
+                    <a href="#" class="grid-item-link" data-category="ess">
+                        <div class="icon-wrapper team-icon">
+                            <i class="fa-solid fa-plus" style="color: #839b67 !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Additional Data</span>
+                    </a>
+
+                    <!-- MESSAGES GRID ITEM (Index 4) -->
+                    <a href="#" class="grid-item-link" data-category="ess">
+                        <div class="icon-wrapper messages-box-icon">
+                            <i class="fa-solid fa-map-pin" style="color: #2acfc7 !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Address Data</span>
+                    </a>
+
+                    <!-- DYNAMIC COLLAPSIBLE ICON ITEMS (Indices 5 through 9) -->
+                    <a href="{% url 'education_certification_workspace' %}" class="grid-item-link collapsible-icon"
+                        data-category="ess" style="display: none;">
+                        <div class="icon-wrapper messages-box-icon">
+                            <i class="fa-solid fa-user-graduate" style="color: #4919b9 !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Education Certifications </span>
+                    </a>
+
+                    <a href="{% url 'previous_employer_workspace' %}" class="grid-item-link collapsible-icon"
+                        data-category="ess" style="display: none;">
+                        <div class="icon-wrapper profile-avatar-icon">
+                            <i class="fa-solid fa-backward" style="color: #db811a !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Previous Employment</span>
+                    </a>
+
+                    <a href="{% url 'communication_overview_dashboard' %}" class="grid-item-link collapsible-icon"
+                        data-category="mss" style="display: none;">
+                        <div class="icon-wrapper analytics-icon">
+                            <i class="fa-solid fa-bullhorn" style="color: #22d8cf !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Communication Overview</span>
+                    </a>
+
+                    <a href="#" class="grid-item-link collapsible-icon" data-category="ess" style="display: none;">
+                        <div class="icon-wrapper analytics-icon">
+                            <i class="fa-solid fa-passport" style="color: #cf34c8 !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Passport</span>
+                    </a>
+
+                    <a href="#" class="grid-item-link collapsible-icon" data-category="ess" style="display: none;">
+                        <div class="icon-wrapper analytics-icon">
+                            <i class="fa-solid fa-cake-candles" style="color: #a0952e !important;"></i>
+                        </div>
+                        <span class="grid-item-label">DOB Update</span>
+                    </a>
+
+                    <a href="{% url 'family_details' %}" class="grid-item-link collapsible-icon" data-category="ess"
+                        style="display: none;">
+                        <div class="icon-wrapper analytics-icon">
+                            <i class="fa-solid fa-hands-holding-child" style="color: #b64f6e !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Family Details</span>
+                    </a>
+
+                    <a href="{% url 'visa_details_workspace' %}" class="grid-item-link collapsible-icon"
+                        data-category="ess" style="display: none;">
+                        <div class="icon-wrapper analytics-icon">
+                            <i class="fa-brands fa-cc-visa" style="color: #b7e075 !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Visa Details</span>
+                    </a>
+
+                    <a href="{% url 'payslip_workspace' %}" class="grid-item-link collapsible-icon"
+                        data-category="ess mss" style="display: none;">
+                        <div class="icon-wrapper analytics-icon">
+                            <i class="fa-brands fa-paypal" style="color: #5d07978f !important;"></i>
+                        </div>
+                        <span class="grid-item-label">Payslip Details</span>
+                    </a>
+
+                    <!-- CONTROL TOGGLE TRIGGERS -->
+                    <a href="#" id="btn-view-all" class="grid-item-link" onclick="ShowIcons(event)">
+                        <div class="icon-wrapper analytics-icon"
+                            style="display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-expand" style="font-size: 20px; color: currentColor;"></i>
+                        </div>
+                        <span class="grid-item-label">View All</span>
+                    </a>
+
+                    <a href="#" id="btn-view-less" class="grid-item-link" onclick="HideIcons(event)"
+                        style="display: none;">
+                        <div class="icon-wrapper analytics-icon"
+                            style="display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-compress" style="font-size: 20px; color: currentColor;"></i>
+                        </div>
+                        <span class="grid-item-label">View Less</span>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
 </body>
+
 </html>
 
 
@@ -238,141 +328,160 @@
 
 
 <style>
-
-    html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    overflow-x: hidden;
-}
-/* Styles the video to act as a full-size background canvas layer */
-.background-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    z-index: 1;       
-    pointer-events: none; 
-}
-
-
-
-.nav-bar, 
-.dashboard-wrapper,
-.main-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0;
-    padding-right: 0;
-}
-.nav-bar {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-    
-    .dashboard-wrapper { 
-        width: 100%; 
-
-        padding: 0;
-        
-        font-family: 'Plus Jakarta Sans', sans-serif; 
-        box-sizing: border-box; 
-        background: transparent;
-        
+    html,
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        overflow-x: hidden;
     }
-    .dashboard-wrapper * { box-sizing: border-box; }
-    
-    
-    .glass-dashboard-card-full { 
-        background: #ffffff; 
-        width: 100%; 
-        border-radius: 20px; 
+
+    /* Styles the video to act as a full-size background canvas layer */
+    .background-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+
+
+    .nav-bar,
+    .dashboard-wrapper,
+    .main-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .nav-bar {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .dashboard-wrapper {
+        width: 100%;
+        padding: 0;
+
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        box-sizing: border-box;
+        background: transparent;
+        min-height: calc(100vh - 70px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dashboard-wrapper * {
+        box-sizing: border-box;
+    }
+
+
+    .glass-dashboard-card-full {
+        background: #ffffff;
+        width: 100%;
+        border-radius: 20px;
         box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 16px -6px rgba(15, 23, 42, 0.04);
-        
-        overflow: visible; 
-        display: flex; 
-        flex-direction: column; 
+
+        overflow: visible !important;
+        display: flex;
+        flex-direction: column;
         position: relative;
-        min-height: auto; 
+        flex-grow: 1;
         margin-top: 0 !important;
     }
+
     /* .nav-container {
         background-color: #e25555 !;
     } */
 
-    
-    .banner-header { 
+
+    .banner-header {
         background-image: url('/static/images/dash2.jpg');
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat; 
-        padding: 60px 20px 84px 20px; /* Enhanced baseline cushion room to balanced negative pulls */
-        text-align: center; 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        gap: 24px; 
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        padding: 60px 20px 84px 20px;
+        /* Enhanced baseline cushion room to balanced negative pulls */
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
         width: 100%;
         height: 320px;
-         /* Ensures the banner content layers above the video background */
-         position: relative; /* Establishes a new stacking context for the banner content */
+        /* Ensures the banner content layers above the video background */
+        position: relative;
+        /* Establishes a new stacking context for the banner content */
+        overflow: visible !important;
     }
-    
+
     /* Translucent Opaque Floating Search Bar */
-    .search-bar-container { 
-        background: rgba(255, 255, 255, 0.12); 
-        border: 1px solid rgba(255, 255, 255, 0.08); 
-        width: 100%; 
-        max-width: 380px; 
-        padding: 10px 18px; 
-        border-radius: 50px; 
-        display: flex; 
-        align-items: center; 
-        gap: 12px; 
-        backdrop-filter: blur(12px); 
+    .search-bar-container {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        width: 100%;
+        max-width: 380px;
+        padding: 10px 18px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        backdrop-filter: blur(12px);
         transition: background-color 0.2s;
     }
+
     .search-bar-container:focus-within {
         background: rgba(255, 255, 255, 0.18);
     }
-    .search-icon { font-size: 13px; opacity: 0.7; color: white; }
-    .search-input { background: transparent; border: none; outline: none; width: 100%; color: white; font-size: 13px; }
+
+    .search-icon {
+        font-size: 13px;
+        opacity: 0.7;
+        color: white;
+    }
+
+    .search-input {
+        background: transparent;
+        border: none;
+        outline: none;
+        width: 100%;
+        color: white;
+        font-size: 13px;
+    }
 
     /* Custom Cursive Script Welcome Typography Style */
-   .signature { 
-    font-family: "Love Light", cursive;
-    font-size: 100px; /* You can make it slightly larger or smaller depending on the font */
-    font-weight: 400; 
-    color: #ffffff; 
-    margin: 0; 
-    text-shadow: 0 2px 12px rgba(0,0,0,0.15); 
-     display: inline-block; /* Required for the transform rotation to calculate properly */
-    transform: rotate(-15deg);
-}
+    .signature {
+        font-family: "Love Light", cursive;
+        font-size: 100px;
+        /* You can make it slightly larger or smaller depending on the font */
+        font-weight: 400;
+        color: #ffffff;
+        margin: 0;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+        display: inline-block;
+        /* Required for the transform rotation to calculate properly */
+        transform: rotate(-15deg);
+    }
 
-.welcome-text  {   
+    .welcome-text {
 
-    padding-bottom: 20px;
-     display: inline-block;
-     z-index: 2; /* Required for the transform rotation to calculate properly */
-}
+        padding-bottom: 20px;
+        display: inline-block;
+        z-index: 2;
+        /* Required for the transform rotation to calculate properly */
+    }
 
 
-   
-    .apps-grid-menu { 
-        display: grid; 
-        grid-template-columns: repeat(7, 1fr); 
-        gap: 24px 16px; 
-        padding: 0px 40px 70px 40px; 
-        background: #fff6f6; 
-        width: 100%; 
-        flex-grow: 1; 
-        justify-items: center; 
-        align-content: start; 
+
+    .apps-grid-menu {
+        display: none !important;
     }
 
     .nav-links a {
@@ -386,73 +495,80 @@
     }
 
     /* Navigation Link Box Wrappers */
-    .grid-item-link { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 14px; 
-    text-decoration: none; 
-    width: 100%; 
-    max-width: 120px; 
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-    position: relative;
-    padding-top: 42px; 
-    
-    /* 📐 INCREASES THE BOTTOM EXPORT ROOM BELOW THE TEXT LABELS */
-    padding-bottom: 24px; /* Increase this value (e.g., 32px, 40px) if you need more space */
-}
+    .grid-item-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        text-decoration: none;
+        width: 100%;
+        max-width: 120px;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        padding-top: 42px;
 
-.brand-name {
-    font-family: "Cinzel", serif;
-    font-size: 37px;  
-    margin-left: 20px;  
-    font-weight: 700 !important;
-}
+        /* 📐 INCREASES THE BOTTOM EXPORT ROOM BELOW THE TEXT LABELS */
+        padding-bottom: 24px;
+        /* Increase this value (e.g., 32px, 40px) if you need more space */
+    }
 
-    .grid-item-link:hover { transform: translateY(-5px); }
+    .brand-name {
+        font-family: "Cinzel", serif;
+        font-size: 37px;
+        margin-left: 20px;
+        font-weight: 700 !important;
+    }
+
+    .grid-item-link:hover {
+        transform: translateY(-5px);
+    }
 
     /* Rounded Geometric Icon Bubble Elements with Absolute Boundary Interception Positioning */
-        /* UPDATED: Modern Floating Squircle Container Styles */
-    .icon-wrapper { 
-        width: 64px; 
-        height: 64px; 
-        
+    /* UPDATED: Modern Floating Squircle Container Styles */
+    .icon-wrapper {
+        width: 64px;
+        height: 64px;
+
         /* THE SQUIRCLE SECRET: Changes it from a perfect circle to a smooth rounded square */
-        border-radius: 16px; 
-        
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        border: 1px solid transparent; 
-        box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.05); 
-        background-color: #ffffff; 
-        
+        border-radius: 16px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid transparent;
+        box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.05);
+        background-color: #ffffff;
+
         /* Ensures any background color changes or shadow growth animations fluidly glide */
-        transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-                    background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-                    border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
-        
+        transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+            background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+            border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+            transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
         /* Keeps your existing center threshold line overlay layout intact */
         position: absolute;
         top: 0;
         transform: translateY(-50%);
         z-index: 10;
-        
+
     }
+
     .icon-wrapper i {
         transition: color 0.3s ease, transform 0.3s ease;
     }
-    
-    .icon-wrapper svg { width: 26px; height: 26px; }
-    
+
+    .icon-wrapper svg {
+        width: 26px;
+        height: 26px;
+    }
+
     /* Elegant Pop-Up Lift Animation on Mouse Hover */
-    .grid-item-link:hover .icon-wrapper { 
+    .grid-item-link:hover .icon-wrapper {
         /* Drops a soft, deep realistic floating drop shadow underneath the squircle card block */
-        box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04); 
-        
+        box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+
         /* Lifts the button slightly higher and scales it up 5% for a premium responsive feel */
-        transform: translateY(-55%) scale(1.05); 
+        transform: translateY(-55%) scale(1.05);
     }
 
     /* .nav-bar {
@@ -460,211 +576,447 @@
         justify-content: space-between;
     } */
 
-    
-    .grid-item-link:hover .icon-wrapper { 
-        box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.15); 
+
+    .grid-item-link:hover .icon-wrapper {
+        box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.15);
     }
 
     /* Soft Themed Palette Colors matching modern UI rules */
-    .home-icon { background: #f0f9ff; color: #0284c7; border-color: #e0f2fe; }
-    .home-icon:hover { background: #e0f2fe; }
-    
-    .analytics-icon { background: #fef2f2; color: #ef4444; border-color: #fee2e2; }
-    .analytics-icon:hover { background: #fee2e2; }
-    
-    .projects-icon { background: #fff7ed; color: #ea580c; border-color: #ffedd5; }
-    .projects-icon:hover { background: #ffedd5; }
-    
-    .team-icon { background: #f0fdf4; color: #16a34a; border-color: #dcfce7; }
-    .team-icon:hover { background: #dcfce7; }
-    
-    .messages-box-icon { background: #f5f3ff; color: #7c3aed; border-color: #ede9fe; }
-    .messages-box-icon:hover { background: #ede9fe; }
-    
-    .profile-avatar-icon { background: #fff1f2; color: #e11d48; border-color: #ffe4e6; }
-    .profile-avatar-icon:hover { background: #ffe4e6; }
-    
-    .hardware-settings-icon { background: #f0fdfa; color: #0d9488; border-color: #ccfbf1; }
-    .hardware-settings-icon:hover { background: #ccfbf1; }
-    
-    .documentation-help-icon { background: #ecfeff; color: #0891b2; border-color: #cffafe; }
-    .documentation-help-icon:hover { background: #cffafe; }
+    .home-icon {
+        background: #f0f9ff;
+        color: #0284c7;
+        border-color: #e0f2fe;
+    }
+
+    .home-icon:hover {
+        background: #e0f2fe;
+    }
+
+    .analytics-icon {
+        background: #fef2f2;
+        color: #ef4444;
+        border-color: #fee2e2;
+    }
+
+    .analytics-icon:hover {
+        background: #fee2e2;
+    }
+
+    .projects-icon {
+        background: #fff7ed;
+        color: #ea580c;
+        border-color: #ffedd5;
+    }
+
+    .projects-icon:hover {
+        background: #ffedd5;
+    }
+
+    .team-icon {
+        background: #f0fdf4;
+        color: #16a34a;
+        border-color: #dcfce7;
+    }
+
+    .team-icon:hover {
+        background: #dcfce7;
+    }
+
+    .messages-box-icon {
+        background: #f5f3ff;
+        color: #7c3aed;
+        border-color: #ede9fe;
+    }
+
+    .messages-box-icon:hover {
+        background: #ede9fe;
+    }
+
+    .profile-avatar-icon {
+        background: #fff1f2;
+        color: #e11d48;
+        border-color: #ffe4e6;
+    }
+
+    .profile-avatar-icon:hover {
+        background: #ffe4e6;
+    }
+
+    .hardware-settings-icon {
+        background: #f0fdfa;
+        color: #0d9488;
+        border-color: #ccfbf1;
+    }
+
+    .hardware-settings-icon:hover {
+        background: #ccfbf1;
+    }
+
+    .documentation-help-icon {
+        background: #ecfeff;
+        color: #0891b2;
+        border-color: #cffafe;
+    }
+
+    .documentation-help-icon:hover {
+        background: #cffafe;
+    }
 
     /* Clean Subtle Font Label Elements text style rules */
-    .grid-item-label { font-size: 13.5px; font-weight: 500; color: #64748b; transition: color 0.2s; text-align: center; }
-    .grid-item-link:hover .grid-item-label { color: #0f172a; font-weight: 600; }
+    .grid-item-label {
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #64748b;
+        transition: color 0.2s;
+        text-align: center;
+    }
+
+    .grid-item-link:hover .grid-item-label {
+        color: #0f172a;
+        font-weight: 600;
+    }
 
     /* =========================================================================
    📦 COLLAPSIBLE GRID ITEM TRANSITION SYSTEM (100% PURE CSS)
    ========================================================================= */
 
-/* 🔒 1. Hidden State: Applied by default when the page renders */
+    /* 🔒 1. Hidden State: Applied by default when the page renders */
 
 
 
-    
+
 
     /* Responsive Screen Breaks rules adaptions configuration */
     @media (max-width: 1024px) {
-        .apps-grid-menu { grid-template-columns: repeat(4, 1fr); row-gap: 50px; }
+        .apps-grid-menu {
+            grid-template-columns: repeat(4, 1fr);
+            row-gap: 50px;
+        }
     }
+
     @media (max-width: 640px) {
-        .apps-grid-menu { grid-template-columns: repeat(2, 1fr); row-gap: 50px; padding: 0px 20px 40px 20px; }
-        .signature { font-size: 36px; }
-        .banner-header { padding: 40px 20px 70px 20px; }
+        .apps-grid-menu {
+            grid-template-columns: repeat(2, 1fr);
+            row-gap: 50px;
+            padding: 0px 20px 40px 20px;
+        }
+
+        .signature {
+            font-size: 36px;
+        }
+
+        .banner-header {
+            padding: 40px 20px 70px 20px;
+        }
     }
+
     .category-option:hover {
         background: #f1f5f9;
         color: #2563eb !important;
     }
+
     .search-result-item {
         display: flex;
         align-items: center;
         gap: 12px;
         padding: 10px 14px;
         text-decoration: none;
-        border-bottom: 1px solid #f8fafc;
+        border-bottom: 1px solid #cfcfcf;
         transition: background-color 0.2s;
     }
+
     .search-result-item:last-child {
         border-bottom: none;
     }
+
     .search-result-item:hover {
         background-color: #f1f5f9;
     }
 
+    .search-result-item .icon-wrapper i {
+        font-size: 14px !important;
+    }
+
+    /* 🛠️ MANAGEMENT SECTION STYLES */
+    .management-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 32px;
+        padding: 40px 80px 60px 80px;
+        background: #f8fafc;
+        width: 100%;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+
+    .management-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+    }
+
+    @media (max-width: 768px) {
+        .management-container {
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            gap: 32px;
+        }
+
+        .management-group {
+            flex-direction: row;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
+    }
+
+    .management-row-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        width: 100%;
+        max-width: 140px;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+    }
+
+    .management-row-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .management-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        border: 1px solid transparent;
+        box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.05);
+        background-color: #ffffff;
+        transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+            background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+            border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+            transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .management-row-item:hover .management-icon-wrapper {
+        box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+        transform: scale(1.05);
+    }
+
+    .management-row-label {
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #64748b;
+        transition: color 0.2s;
+        text-align: center;
+    }
+
+    .management-row-item:hover .management-row-label {
+        color: #0f172a;
+        font-weight: 600;
+    }
+
+    /* Icon Themes matching UI guidelines */
+    .timesheet-icon-theme {
+        background: #f0f9ff;
+        color: #0284c7;
+        border-color: #e0f2fe;
+    }
+
+    .timesheet-icon-theme:hover {
+        background: #e0f2fe;
+    }
+
+    .shift-icon-theme {
+        background: #fff7ed;
+        color: #ea580c;
+        border-color: #ffedd5;
+    }
+
+    .shift-icon-theme:hover {
+        background: #ffedd5;
+    }
+
+    .asset-icon-theme {
+        background: #f0fdf4;
+        color: #16a34a;
+        border-color: #dcfce7;
+    }
+
+    .asset-icon-theme:hover {
+        background: #dcfce7;
+    }
+
+    .leave-icon-theme {
+        background: #f5f3ff;
+        color: #7c3aed;
+        border-color: #ede9fe;
+    }
+
+    .leave-icon-theme:hover {
+        background: #ede9fe;
+    }
 </style>
 <script>
-function executeGridSearch() {
-    const searchVal = document.getElementById('dashboardSearchInput').value.toLowerCase().trim();
-    const selectedCat = document.getElementById('selected-category').textContent.trim().toLowerCase();
-    const dropdown = document.getElementById('search-results-dropdown');
-    
-    // Clear previous results
-    dropdown.innerHTML = '';
-    
-    // Select all navigational application item blocks from your grid menu
-    const targetCards = document.querySelectorAll('.apps-grid-menu .grid-item-link');
-    
-    let matchesCount = 0;
-    
-    targetCards.forEach(card => {
-        // Skip control/view buttons
-        if (card.id === 'btn-view-all' || card.id === 'btn-view-less') {
-            return;
+    window.isMenuCollapsed = true;
+
+    function executeGridSearch() {
+        const searchInput = document.getElementById('dashboardSearchInput');
+        const searchVal = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const categoryElement = document.getElementById('selected-category');
+        let selectedCat = categoryElement ? categoryElement.textContent.trim().toLowerCase() : 'all';
+        if (selectedCat === 'search') {
+            selectedCat = 'all';
+        }
+        const dropdown = document.getElementById('search-results-dropdown');
+
+        if (dropdown) {
+            dropdown.innerHTML = '';
         }
 
-        const cardCat = (card.getAttribute('data-category') || '').toLowerCase();
-        const textLabel = card.querySelector('.grid-item-label');
-        if (!textLabel) return;
-        
-        const cleanText = (textLabel.textContent || textLabel.innerText).trim();
-        const textLower = cleanText.toLowerCase();
-        
-        // 1. Text Search Check: matches search input
-        const matchesText = textLower.indexOf(searchVal) > -1 || cardCat.indexOf(searchVal) > -1;
-        
-        // 2. Dropdown Category Check: matches selected category
-        let matchesCategory = false;
-        if (selectedCat === 'all') {
-            matchesCategory = true;
-        } else {
-            const categories = cardCat.split(/\s+/);
-            matchesCategory = categories.includes(selectedCat);
+        const targetCards = document.querySelectorAll('.apps-grid-menu .grid-item-link');
+        let matchesCount = 0;
+        const hasActiveFilter = searchVal !== '' || selectedCat !== 'all';
+
+        targetCards.forEach(card => {
+            if (card.id === 'btn-view-all' || card.id === 'btn-view-less') {
+                return;
+            }
+
+            const cardCat = (card.getAttribute('data-category') || '').toLowerCase();
+            const textLabel = card.querySelector('.grid-item-label');
+            if (!textLabel) return;
+
+            const cleanText = (textLabel.textContent || textLabel.innerText).trim();
+            const textLower = cleanText.toLowerCase();
+
+            const matchesText = searchVal === '' || textLower.indexOf(searchVal) > -1 || cardCat.indexOf(searchVal) > -1;
+
+            let matchesCategory = false;
+            if (selectedCat === 'all') {
+                matchesCategory = true;
+            } else {
+                const categories = cardCat.split(/\s+/);
+                matchesCategory = categories.includes(selectedCat);
+            }
+
+            const isCollapsible = card.classList.contains('collapsible-icon');
+            let shouldDisplayInGrid = false;
+
+            if (matchesText && matchesCategory) {
+                if (hasActiveFilter) {
+                    shouldDisplayInGrid = true;
+                } else {
+                    shouldDisplayInGrid = !(isCollapsible && window.isMenuCollapsed);
+                }
+            }
+
+            if (shouldDisplayInGrid) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+
+            if (matchesText && matchesCategory && searchVal !== '') {
+                matchesCount++;
+                const iconWrapper = card.querySelector('.icon-wrapper');
+                const iconHTML = iconWrapper ? iconWrapper.innerHTML : '<i class="fa-solid fa-link"></i>';
+                const iconClassList = iconWrapper ? iconWrapper.className : 'icon-wrapper';
+
+                const itemElement = document.createElement('a');
+                itemElement.href = card.getAttribute('href');
+                itemElement.className = 'search-result-item';
+                itemElement.innerHTML = `
+                    <div class="${iconClassList}" style="position: static; transform: none; width: 28px; height: 28px; border-radius: 6px; font-size: 13px; box-shadow: none; display: flex; align-items: center; justify-content: center;">
+                        ${iconHTML}
+                    </div>
+                    <span style="font-size: 13.5px; font-weight: 600; color: #475569;">${cleanText}</span>
+                `;
+                if (dropdown) {
+                    dropdown.appendChild(itemElement);
+                }
+            }
+        });
+
+        const viewAllBtn = document.getElementById('btn-view-all');
+        const viewLessBtn = document.getElementById('btn-view-less');
+        if (viewAllBtn && viewLessBtn) {
+            if (hasActiveFilter) {
+                viewAllBtn.style.display = 'none';
+                viewLessBtn.style.display = 'none';
+            } else {
+                if (window.isMenuCollapsed) {
+                    viewAllBtn.style.display = 'flex';
+                    viewLessBtn.style.display = 'none';
+                } else {
+                    viewAllBtn.style.display = 'none';
+                    viewLessBtn.style.display = 'flex';
+                }
+            }
         }
-        
-        // If it matches both, add it to suggestions
-        if (matchesText && matchesCategory && searchVal !== '') {
-            matchesCount++;
-            
-            // Extract the icon HTML and class list
-            const iconWrapper = card.querySelector('.icon-wrapper');
-            const iconHTML = iconWrapper ? iconWrapper.innerHTML : '<i class="fa-solid fa-link"></i>';
-            const iconClassList = iconWrapper ? iconWrapper.className : 'icon-wrapper';
-            
-            // Create list element link
-            const itemElement = document.createElement('a');
-            itemElement.href = card.getAttribute('href');
-            itemElement.className = 'search-result-item';
-            
-            itemElement.innerHTML = `
-                <div class="${iconClassList}" style="position: static; transform: none; width: 28px; height: 28px; border-radius: 6px; font-size: 13px; box-shadow: none; display: flex; align-items: center; justify-content: center;">
-                    ${iconHTML}
-                </div>
-                <span style="font-size: 13.5px; font-weight: 600; color: #475569;">${cleanText}</span>
-            `;
-            
-            dropdown.appendChild(itemElement);
+
+        if (dropdown) {
+            if (matchesCount > 0 && searchVal !== '') {
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        }
+    }
+
+    function toggleCategoryMenu(event) {
+        if (event) event.stopPropagation();
+        const menu = document.getElementById('category-options-menu');
+        if (menu) {
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+    }
+
+    function selectSearchCategory(category, event) {
+        if (event) event.stopPropagation();
+        const categoryElement = document.getElementById('selected-category');
+        if (categoryElement) {
+            categoryElement.textContent = category;
+        }
+        const menu = document.getElementById('category-options-menu');
+        if (menu) {
+            menu.style.display = 'none';
+        }
+        executeGridSearch();
+    }
+
+    document.addEventListener('click', function (event) {
+        const categoryDropdown = document.querySelector('.search-category-dropdown');
+        const categoryMenu = document.getElementById('category-options-menu');
+        const searchDropdown = document.getElementById('search-results-dropdown');
+        const searchWrapper = document.querySelector('.dropdown-search-container');
+
+        if (categoryDropdown && !categoryDropdown.contains(event.target)) {
+            if (categoryMenu) categoryMenu.style.display = 'none';
+        }
+
+        if (searchWrapper && !searchWrapper.contains(event.target)) {
+            if (searchDropdown) searchDropdown.style.display = 'none';
         }
     });
-    
-    // Show/hide suggestions dropdown
-    if (matchesCount > 0 && searchVal !== '') {
-        dropdown.style.display = 'block';
-    } else {
-        dropdown.style.display = 'none';
+
+    function ShowIcons(event) {
+        if (event) event.preventDefault();
+        window.isMenuCollapsed = false;
+        executeGridSearch();
     }
-}
 
-function toggleCategoryMenu(event) {
-    if (event) event.stopPropagation();
-    const menu = document.getElementById('category-options-menu');
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-}
-
-function selectSearchCategory(category, event) {
-    if (event) event.stopPropagation();
-    document.getElementById('selected-category').textContent = category;
-    document.getElementById('category-options-menu').style.display = 'none';
-    executeGridSearch();
-}
-
-// Close category dropdown and search results dropdown if user clicks outside
-document.addEventListener('click', function(event) {
-    const categoryDropdown = document.querySelector('.search-category-dropdown');
-    const categoryMenu = document.getElementById('category-options-menu');
-    const searchDropdown = document.getElementById('search-results-dropdown');
-    const searchWrapper = document.querySelector('.dropdown-search-container');
-    
-    if (categoryDropdown && !categoryDropdown.contains(event.target)) {
-        if (categoryMenu) categoryMenu.style.display = 'none';
+    function HideIcons(event) {
+        if (event) event.preventDefault();
+        window.isMenuCollapsed = true;
+        executeGridSearch();
     }
-    
-    if (searchWrapper && !searchWrapper.contains(event.target)) {
-        if (searchDropdown) searchDropdown.style.display = 'none';
-    }
-});
-
-function ShowIcons(event) {
-    if(event) event.preventDefault();
-    
-    const collapsibleItems = document.querySelectorAll('.collapsible-icon');
-    collapsibleItems.forEach(item => {
-        item.style.display = 'flex';
-    });
-    
-    // Switch action buttons visibility
-    document.getElementById('btn-view-all').style.display = 'none';
-    document.getElementById('btn-view-less').style.display = 'flex';
-    executeGridSearch(); // Re-apply current search/category filter rules
-}
-
-function HideIcons(event) {
-    if(event) event.preventDefault();
-    
-    // Hide all items that belong to the collapsible collection
-    const collapsibleItems = document.querySelectorAll('.collapsible-icon');
-    collapsibleItems.forEach(item => {
-        item.style.display = 'none';
-    });
-    
-    // Reset action buttons visibility back to initial state
-    document.getElementById('btn-view-all').style.display = 'flex';
-    document.getElementById('btn-view-less').style.display = 'none';
-    executeGridSearch(); // Re-apply current search/category filter rules
-}
 </script>
-
-
-
-
